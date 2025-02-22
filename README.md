@@ -24,7 +24,7 @@ Bem-vindo ao repositório da API de Estoque da Megaplate, desenvolvida pela Cogn
 2. Acesse a pasta do projeto:
    ```sh
    cd megaplate
-
+   ```
 
 ## Endpoints Principais
 
@@ -35,6 +35,4 @@ Bem-vindo ao repositório da API de Estoque da Megaplate, desenvolvida pela Cogn
 - **DELETE** `/usuario/{id}` - Remove um produto
 
 ## Licença
-Este projeto está sob a licença MIT.'
-
-'
+Este projeto está sob a licença MIT.
