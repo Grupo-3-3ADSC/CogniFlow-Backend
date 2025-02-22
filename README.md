@@ -28,7 +28,7 @@ Bem-vindo ao repositório da API de Estoque da Megaplate, desenvolvida pela Cogn
 
 ## Endpoints Principais
 
-### Produtos (nao desenvolvido)
+### Usuário (nao desenvolvido)
 - **GET** `/usuario` - Lista todos os produtos
 - **POST** `/usuario` - Adiciona um novo produto
 - **PUT** `/usuario/{id}` - Atualiza um produto
