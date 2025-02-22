@@ -29,10 +29,10 @@ Bem-vindo ao repositório da API de Estoque da Megaplate, desenvolvida pela Cogn
 ## Endpoints Principais
 
 ### Usuário (nao desenvolvido)
-- **GET** `/usuario` - Lista todos os usuários
-- **POST** `/usuario` - Adiciona um novo usuário
-- **PUT** `/usuario/{id}` - Atualiza um usuário
-- **DELETE** `/usuario/{id}` - Remove um usuário
+- **GET** `/usuarios` - Lista todos os usuários
+- **POST** `/usuarios` - Adiciona um novo usuário
+- **PUT** `/usuarios/{id}` - Atualiza um usuário
+- **DELETE** `/usuarios/{id}` - Remove um usuário
 
 ## Licença
 Este projeto está sob a licença MIT.
