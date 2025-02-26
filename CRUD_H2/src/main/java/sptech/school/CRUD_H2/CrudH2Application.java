@@ -1,13 +1,13 @@
-package megaplate.megaplate;
+package sptech.school.CRUD_H2;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MegaplateApplication {
+public class CrudH2Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MegaplateApplication.class, args);
+		SpringApplication.run(CrudH2Application.class, args);
 	}
 
 }
