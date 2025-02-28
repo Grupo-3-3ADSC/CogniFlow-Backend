@@ -8,10 +8,16 @@ import jakarta.persistence.Id;
 @Entity
 public class Usuario {
 
+    //  ATRIBUTOS
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nome;
+    private Boolean ativo = true;
+
+
+    // GETTER E SETTER
 
     public Integer getId() {
         return id;
@@ -27,5 +33,13 @@ public class Usuario {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
     }
 }
