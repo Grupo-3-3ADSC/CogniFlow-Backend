@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +38,7 @@ public class UsuarioController {
             @RequestBody Usuario usuarioParaCadastro
     ) {
         Usuario usuarioSalvo = usuarioRepository.save(usuarioParaCadastro);
+
         return ResponseEntity.status(201).body(usuarioSalvo);
     }
 
@@ -48,6 +50,8 @@ public class UsuarioController {
         {
         if (usuarioRepository.existsById(id)) {
             usuarioParaAtualizar.setId(id);
+            usuarioParaAtualizar.setUpdatedAt(LocalDateTime.now());
+
             Usuario usuario = usuarioRepository.save(usuarioParaAtualizar);
             return ResponseEntity.ok().body(usuario);
         }
@@ -62,9 +66,10 @@ public class UsuarioController {
         Optional<Usuario> usuario = usuarioRepository.findById(id);
 
         if (usuario.isPresent()){
-
+            usuario.get().setUpdatedAt(LocalDateTime.now());
             usuario.get().setAtivo(false);
             usuarioRepository.save(usuario.get());
+
             return ResponseEntity.noContent().build();
 
         }
