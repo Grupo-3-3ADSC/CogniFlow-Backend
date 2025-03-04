@@ -1,9 +1,10 @@
-package sptech.school.CRUD_H2;
+package sptech.school.CRUD_H2.Controller;
 
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sptech.school.CRUD_H2.Repository.UsuarioRepository;
+import sptech.school.CRUD_H2.Model.UsuarioModel;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,9 +18,9 @@ public class UsuarioController {
     private UsuarioRepository usuarioRepository;
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> listar() {
+    public ResponseEntity<List<UsuarioModel>> listar() {
 
-        List<Usuario> usuariosAtivos = usuarioRepository.findByAtivoTrue();
+        List<UsuarioModel> usuariosAtivos = usuarioRepository.findByAtivoTrue();
 
         if(usuariosAtivos.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -29,30 +30,30 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> buscarPorId(@PathVariable Integer id) {
+    public ResponseEntity<UsuarioModel> buscarPorId(@PathVariable Integer id) {
         return ResponseEntity.of(usuarioRepository.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Usuario> cadastrar(
-            @RequestBody Usuario usuarioParaCadastro
+    public ResponseEntity<UsuarioModel> cadastrar(
+            @RequestBody UsuarioModel usuarioParaCadastro
     ) {
-        Usuario usuarioSalvo = usuarioRepository.save(usuarioParaCadastro);
+        UsuarioModel usuarioSalvo = usuarioRepository.save(usuarioParaCadastro);
 
         return ResponseEntity.status(201).body(usuarioSalvo);
     }
 
     @PutMapping("/{id}")
-        public ResponseEntity<Usuario> atualizar(
+        public ResponseEntity<UsuarioModel> atualizar(
             @PathVariable Integer id,
-            @RequestBody Usuario usuarioParaAtualizar
+            @RequestBody UsuarioModel usuarioParaAtualizar
          )
         {
         if (usuarioRepository.existsById(id)) {
             usuarioParaAtualizar.setId(id);
             usuarioParaAtualizar.setUpdatedAt(LocalDateTime.now());
 
-            Usuario usuario = usuarioRepository.save(usuarioParaAtualizar);
+            UsuarioModel usuario = usuarioRepository.save(usuarioParaAtualizar);
             return ResponseEntity.ok().body(usuario);
         }
 
@@ -60,10 +61,10 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Usuario> deletar(
+    public ResponseEntity<UsuarioModel> deletar(
             @PathVariable Integer id
     ){
-        Optional<Usuario> usuario = usuarioRepository.findById(id);
+        Optional<UsuarioModel> usuario = usuarioRepository.findById(id);
 
         if (usuario.isPresent()){
             usuario.get().setUpdatedAt(LocalDateTime.now());

@@ -1,15 +1,14 @@
-package sptech.school.CRUD_H2;
+package sptech.school.CRUD_H2.Model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-public class Usuario {
+public class UsuarioModel {
 
     //  ATRIBUTOS
 
