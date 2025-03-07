@@ -3,6 +3,8 @@ package sptech.school.CRUD_H2.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sptech.school.CRUD_H2.Model.CargoModel;
+import sptech.school.CRUD_H2.Repository.CargoRepository;
 import sptech.school.CRUD_H2.Repository.UsuarioRepository;
 import sptech.school.CRUD_H2.Model.UsuarioModel;
 
@@ -17,27 +19,53 @@ public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private CargoRepository cargoRepository;
+
     @GetMapping
     public ResponseEntity<List<UsuarioModel>> listar() {
 
         List<UsuarioModel> usuariosAtivos = usuarioRepository.findByAtivoTrue();
 
         if(usuariosAtivos.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
 
         return ResponseEntity.ok().body(usuariosAtivos);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UsuarioModel> buscarPorId(@PathVariable Integer id) {
+    public ResponseEntity<UsuarioModel> getById(@PathVariable Integer id) {
         return ResponseEntity.of(usuarioRepository.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<UsuarioModel> cadastrar(
+    public ResponseEntity<UsuarioModel> cadastrarComum(
             @RequestBody UsuarioModel usuarioParaCadastro
     ) {
+        CargoModel cargo = cargoRepository.findByNome("comum");
+
+        if(cargo == null) {
+            return ResponseEntity.status(400).build();
+        }
+
+        usuarioParaCadastro.setCargo(cargo);
+        UsuarioModel usuarioSalvo = usuarioRepository.save(usuarioParaCadastro);
+
+        return ResponseEntity.status(201).body(usuarioSalvo);
+    }
+
+    @PostMapping("/gestor")
+    public ResponseEntity<UsuarioModel> cadastrarGestor(
+            @RequestBody UsuarioModel usuarioParaCadastro
+    ) {
+        CargoModel cargo = cargoRepository.findByNome("gestor");
+
+        if(cargo == null) {
+            return ResponseEntity.status(400).build();
+        }
+
+        usuarioParaCadastro.setCargo(cargo);
         UsuarioModel usuarioSalvo = usuarioRepository.save(usuarioParaCadastro);
 
         return ResponseEntity.status(201).body(usuarioSalvo);
@@ -57,7 +85,7 @@ public class UsuarioController {
             return ResponseEntity.ok().body(usuario);
         }
 
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")

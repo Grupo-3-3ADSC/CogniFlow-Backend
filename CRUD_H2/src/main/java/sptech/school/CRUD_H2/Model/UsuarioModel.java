@@ -1,9 +1,6 @@
 package sptech.school.CRUD_H2.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
@@ -17,9 +14,15 @@ public class UsuarioModel {
     private Integer id;
     private String nome;
     private String email;
+    private String password;
     private Boolean ativo = true;
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
+
+    @ManyToOne
+    @JoinColumn(name = "cargo_id")
+    private CargoModel cargo;
+
 
     // GETTER E SETTER
 
@@ -69,5 +72,21 @@ public class UsuarioModel {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public CargoModel getCargo() {
+        return cargo;
+    }
+
+    public void setCargo(CargoModel cargo) {
+        this.cargo = cargo;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
