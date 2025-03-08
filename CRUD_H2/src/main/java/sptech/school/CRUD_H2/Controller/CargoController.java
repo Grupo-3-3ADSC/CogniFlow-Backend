@@ -20,8 +20,6 @@ public class CargoController {
     @GetMapping
     public ResponseEntity<List<CargoModel>> getAll() {
 
-
-
         if(cargoRepository.findAll().isEmpty()) {
             return ResponseEntity.noContent().build();
         }

@@ -23,7 +23,6 @@ public class UsuarioModel {
     @JoinColumn(name = "cargo_id")
     private CargoModel cargo;
 
-
     // GETTER E SETTER
 
     public Integer getId() {

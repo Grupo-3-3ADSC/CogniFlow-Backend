@@ -8,3 +8,4 @@ import java.util.List;
 public interface UsuarioRepository extends JpaRepository<UsuarioModel, Integer> {
     List<UsuarioModel> findByAtivoTrue();
 }
+    
