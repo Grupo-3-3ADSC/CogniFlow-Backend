@@ -21,18 +21,21 @@ Bem-vindo ao repositório da API de Estoque da Megaplate, desenvolvida pela Cogn
    ```sh
    git clone https://github.com/Grupo-3-3ADSC/CogniFlow-Backend.git
    ```
-2. Acesse a pasta do projeto:
-   ```sh
-   cd megaplate
-   ```
 
 ## Endpoints Principais
 
-### Usuário (nao desenvolvido)
+### Usuário
 - **GET** `/usuarios` - Lista todos os usuários
-- **POST** `/usuarios` - Adiciona um novo usuário
+- **POST** `/usuarios` - Adiciona um novo usuário com cargo comum
+- **POST** `/usuarios/gestor` - Adiciona um novo usuário com cargo de gestor
 - **PUT** `/usuarios/{id}` - Atualiza um usuário
 - **DELETE** `/usuarios/{id}` - Remove um usuário
+
+- ### GESTOR
+- **GET** `/cargo` - Lista todos os cargos
+- **POST** `/cargo` - Adiciona um novo cargo
+- **PUT** `/cargo/{id}` - Atualiza um cargo
+- **DELETE** `/cargo` - Remove um cargo
 
 ## Licença
 Este projeto está sob a licença MIT.
