@@ -31,7 +31,7 @@ Bem-vindo ao repositório da API de Estoque da Megaplate, desenvolvida pela Cogn
 - **PUT** `/usuarios/{id}` - Atualiza um usuário
 - **DELETE** `/usuarios/{id}` - Remove um usuário
 
-- ### GESTOR
+### GESTOR
 - **GET** `/cargo` - Lista todos os cargos
 - **POST** `/cargo` - Adiciona um novo cargo
 - **PUT** `/cargo/{id}` - Atualiza um cargo
