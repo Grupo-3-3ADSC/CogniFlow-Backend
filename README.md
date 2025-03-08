@@ -1,6 +1,6 @@
 # API de Estoque - Megaplate
 
-Bem-vindo ao repositório da API de Estoque da Megaplate, desenvolvida pela Cogniflow. Esta API fornece funcionalidades para gerenciamento de estoque, relatórios, etc.
+Bem-vindo ao repositório da API de orçamento da Megaplate, desenvolvida pela Cogniflow. Esta API fornece funcionalidades para gerenciamento de orçamento, etc.
 
 ## Tecnologias Utilizadas
 
