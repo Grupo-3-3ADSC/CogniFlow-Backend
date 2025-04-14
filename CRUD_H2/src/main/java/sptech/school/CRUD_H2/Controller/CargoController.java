@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.CRUD_H2.Model.CargoModel;
 import sptech.school.CRUD_H2.Repository.CargoRepository;
+import sptech.school.CRUD_H2.service.CargoService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,45 +15,27 @@ import java.util.List;
 @RequestMapping("/cargos")
 public class CargoController {
 
-    @Autowired
-    private CargoRepository cargoRepository;
+    private final CargoService cargoService;
+
+    public CargoController(CargoService cargoService) {
+        this.cargoService = cargoService;
+    }
 
     @GetMapping
     public ResponseEntity<List<CargoModel>> getAll() {
-
-        if(cargoRepository.findAll().isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.ok().body(cargoRepository.findAll());
+        return ResponseEntity.ok().body(cargoService.getAll());
     }
 
     @PostMapping
     public ResponseEntity<CargoModel> post(@RequestBody CargoModel cargo) {
-        return ResponseEntity.status(201).body(cargoRepository.save(cargo));
-    }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<CargoModel> put(@PathVariable int id, @RequestBody CargoModel cargo) {
+        CargoModel cargoPost = cargoService.post(cargo);
 
-        if (cargoRepository.existsById(id)) {
-            cargo.setId(id);
-            cargo.setUpdatedAt(LocalDateTime.now());
-            return ResponseEntity.ok().body(cargoRepository.save(cargo));
+        if(cargoPost == null) {
+            return ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity.notFound().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
-
-        if(cargoRepository.existsById(id)) {
-            cargoRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(201).body(cargoPost);
     }
 
 }

@@ -7,6 +7,7 @@ import sptech.school.CRUD_H2.Model.CargoModel;
 import sptech.school.CRUD_H2.Repository.CargoRepository;
 import sptech.school.CRUD_H2.Repository.UsuarioRepository;
 import sptech.school.CRUD_H2.Model.UsuarioModel;
+import sptech.school.CRUD_H2.service.UsuarioService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,16 +17,16 @@ import java.util.Optional;
 @RequestMapping("/usuarios")
 public class UsuarioController {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioService usuarioService;
 
-    @Autowired
-    private CargoRepository cargoRepository;
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
 
     @GetMapping
     public ResponseEntity<List<UsuarioModel>> listar() {
 
-        List<UsuarioModel> usuariosAtivos = usuarioRepository.findByAtivoTrue();
+        List<UsuarioModel> usuariosAtivos = usuarioService.getAll();
 
         if(usuariosAtivos.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -36,39 +37,33 @@ public class UsuarioController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioModel> getById(@PathVariable Integer id) {
-        return ResponseEntity.of(usuarioRepository.findById(id));
+        return ResponseEntity.of(usuarioService.getById(id));
     }
 
     @PostMapping
     public ResponseEntity<UsuarioModel> cadastrarComum(
             @RequestBody UsuarioModel usuarioParaCadastro
     ) {
-        CargoModel cargo = cargoRepository.findByNome("comum");
+        UsuarioModel usuario = usuarioService.cadastrarUsuarioComum(usuarioParaCadastro);
 
-        if(cargo == null) {
+        if(usuario == null) {
             return ResponseEntity.status(400).build();
         }
 
-        usuarioParaCadastro.setCargo(cargo);
-        UsuarioModel usuarioSalvo = usuarioRepository.save(usuarioParaCadastro);
-
-        return ResponseEntity.status(201).body(usuarioSalvo);
+        return ResponseEntity.status(201).body(usuario);
     }
 
     @PostMapping("/gestor")
     public ResponseEntity<UsuarioModel> cadastrarGestor(
             @RequestBody UsuarioModel usuarioParaCadastro
     ) {
-        CargoModel cargo = cargoRepository.findByNome("gestor");
+        UsuarioModel usuario = usuarioService.cadastrarUsuarioGestor(usuarioParaCadastro);
 
-        if(cargo == null) {
+        if(usuario == null) {
             return ResponseEntity.status(400).build();
         }
 
-        usuarioParaCadastro.setCargo(cargo);
-        UsuarioModel usuarioSalvo = usuarioRepository.save(usuarioParaCadastro);
-
-        return ResponseEntity.status(201).body(usuarioSalvo);
+        return ResponseEntity.status(201).body(usuario);
     }
 
     @PutMapping("/{id}")
@@ -77,13 +72,11 @@ public class UsuarioController {
             @RequestBody UsuarioModel usuarioParaAtualizar
          )
         {
-        if (usuarioRepository.existsById(id)) {
-            usuarioParaAtualizar.setId(id);
-            usuarioParaAtualizar.setUpdatedAt(LocalDateTime.now());
+            UsuarioModel usuario = usuarioService.put(usuarioParaAtualizar, id);
 
-            UsuarioModel usuario = usuarioRepository.save(usuarioParaAtualizar);
-            return ResponseEntity.ok().body(usuario);
-        }
+            if(usuario == null) {
+                return ResponseEntity.notFound().build();
+            }
 
         return ResponseEntity.noContent().build();
     }
@@ -92,17 +85,13 @@ public class UsuarioController {
     public ResponseEntity<UsuarioModel> deletar(
             @PathVariable Integer id
     ){
-        Optional<UsuarioModel> usuario = usuarioRepository.findById(id);
+        Optional<UsuarioModel> usuario = usuarioService.delete(id);
 
-        if (usuario.isPresent()){
-            usuario.get().setUpdatedAt(LocalDateTime.now());
-            usuario.get().setAtivo(false);
-            usuarioRepository.save(usuario.get());
-
-            return ResponseEntity.noContent().build();
-
+        if (usuario.isEmpty()){
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
+
     }
 
 }
