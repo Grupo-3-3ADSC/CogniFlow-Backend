@@ -23,6 +23,7 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping
     public ResponseEntity<List<UsuarioModel>> listar() {
 
@@ -35,11 +36,13 @@ public class UsuarioController {
         return ResponseEntity.ok().body(usuariosAtivos);
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioModel> getById(@PathVariable Integer id) {
         return ResponseEntity.ok((usuarioService.getById(id)));
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @PostMapping
     public ResponseEntity<UsuarioModel> cadastrarComum(
             @RequestBody UsuarioModel usuarioParaCadastro
@@ -53,6 +56,7 @@ public class UsuarioController {
         return ResponseEntity.status(201).body(usuario);
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @PostMapping("/gestor")
     public ResponseEntity<UsuarioModel> cadastrarGestor(
             @RequestBody UsuarioModel usuarioParaCadastro
@@ -66,6 +70,7 @@ public class UsuarioController {
         return ResponseEntity.status(201).body(usuario);
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @PutMapping("/{id}")
         public ResponseEntity<UsuarioModel> atualizar(
             @PathVariable Integer id,
@@ -81,6 +86,7 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @DeleteMapping("/{id}")
     public ResponseEntity<UsuarioModel> deletar(
             @PathVariable Integer id
