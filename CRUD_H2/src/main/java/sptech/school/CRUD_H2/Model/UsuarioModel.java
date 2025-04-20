@@ -1,13 +1,16 @@
 package sptech.school.CRUD_H2.Model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 
 import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UsuarioModel {
 
     @Id
@@ -24,4 +27,6 @@ public class UsuarioModel {
     @JoinColumn(name = "cargo_id")
     private CargoModel cargo;
 
+    public UsuarioModel(@NotBlank String nome, @NotBlank String email, @NotBlank String password) {
+    }
 }

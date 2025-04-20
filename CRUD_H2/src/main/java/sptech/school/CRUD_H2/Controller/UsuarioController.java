@@ -37,7 +37,7 @@ public class UsuarioController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioModel> getById(@PathVariable Integer id) {
-        return ResponseEntity.of(usuarioService.getById(id));
+        return ResponseEntity.ok((usuarioService.getById(id)));
     }
 
     @PostMapping
