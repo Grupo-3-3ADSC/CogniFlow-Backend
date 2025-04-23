@@ -12,7 +12,11 @@ import sptech.school.CRUD_H2.service.UsuarioService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
@@ -35,7 +39,11 @@ public class UsuarioController {
         return ResponseEntity.ok().body(usuariosAtivos);
     }
 
+
+
     @GetMapping("/{id}")
+    @Operation(summary = "Busca um usuário pelo ID")
+
     public ResponseEntity<UsuarioModel> getById(@PathVariable Integer id) {
         return ResponseEntity.ok((usuarioService.getById(id)));
     }

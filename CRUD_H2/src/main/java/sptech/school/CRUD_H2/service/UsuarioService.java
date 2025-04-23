@@ -27,7 +27,7 @@ public class UsuarioService {
 
     public UsuarioModel getById(int id) {
         return usuarioRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Usuario de id %d não encontrado".formatted(id)));
+                .orElseThrow(()-> new EntidadeNaoEncontrado("Usuario de id %d não encontrado".formatted(id)));
     }
 
     public UsuarioModel cadastrarUsuarioComum(UsuarioModel usuario) {
