@@ -1,12 +1,22 @@
 package sptech.school.CRUD_H2.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import sptech.school.CRUD_H2.Model.CargoModel;
 import sptech.school.CRUD_H2.Model.UsuarioModel;
 import sptech.school.CRUD_H2.Repository.CargoRepository;
 import sptech.school.CRUD_H2.Repository.UsuarioRepository;
+import sptech.school.CRUD_H2.config.GerenciadoTokenJwt;
+import sptech.school.CRUD_H2.dto.UsuarioMapper;
+import sptech.school.CRUD_H2.dto.UsuarioTokenDto;
 import sptech.school.CRUD_H2.exception.EntidadeNaoEncontrado;
 
 import java.time.LocalDateTime;
@@ -20,6 +30,14 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final CargoRepository cargoRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private GerenciadoTokenJwt gerenciadorTokenJwt;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     public List<UsuarioModel> getAll() {
         return usuarioRepository.findByAtivoTrue();
@@ -33,6 +51,9 @@ public class UsuarioService {
     public UsuarioModel cadastrarUsuarioComum(UsuarioModel usuario) {
         CargoModel cargo = cargoRepository.findByNome("comum");
 
+        String senhaCriptografada = passwordEncoder.encode(usuario.getPassword());
+
+        usuario.setPassword(senhaCriptografada);
         usuario.setCargo(cargo);
         return usuarioRepository.save(usuario);
     }
@@ -45,6 +66,9 @@ public class UsuarioService {
             return null;
         }
 
+        String senhaCriptografada = passwordEncoder.encode(usuario.getPassword());
+
+        usuario.setPassword(senhaCriptografada);
         usuario.setCargo(cargo);
         return usuarioRepository.save(usuario);
     }
@@ -70,5 +94,25 @@ public class UsuarioService {
 
     }
 
+    public UsuarioTokenDto autenticar(UsuarioModel usuario){
+
+        final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(
+                usuario.getEmail(), usuario.getPassword()
+        );
+
+        final Authentication authentication = this.authenticationManager.authenticate(credentials);
+
+        UsuarioModel usuarioAutenticado =
+                usuarioRepository.findByEmail(usuario.getEmail())
+                        .orElseThrow(
+                                () -> new ResponseStatusException(404, "Email do usuário não cadastrado", null)
+                        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        final String token = gerenciadorTokenJwt.generateToken(authentication);
+
+        return UsuarioMapper.of(usuarioAutenticado, token);
+    }
 
 }
