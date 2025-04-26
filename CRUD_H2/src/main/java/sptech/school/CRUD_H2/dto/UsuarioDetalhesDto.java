@@ -16,8 +16,6 @@ public class UsuarioDetalhesDto implements UserDetails {
         private final String email;
         private final String password;
 
-
-
     @Override
     public String getUsername(){return  email;}
     @Override

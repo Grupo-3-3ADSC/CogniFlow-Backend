@@ -1,5 +1,7 @@
 package sptech.school.CRUD_H2.Controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -7,6 +9,10 @@ import sptech.school.CRUD_H2.Model.CargoModel;
 import sptech.school.CRUD_H2.Repository.CargoRepository;
 import sptech.school.CRUD_H2.Repository.UsuarioRepository;
 import sptech.school.CRUD_H2.Model.UsuarioModel;
+import sptech.school.CRUD_H2.dto.UsuarioCadastroDto;
+import sptech.school.CRUD_H2.dto.UsuarioLoginDto;
+import sptech.school.CRUD_H2.dto.UsuarioMapper;
+import sptech.school.CRUD_H2.dto.UsuarioTokenDto;
 import sptech.school.CRUD_H2.service.UsuarioService;
 
 import java.time.LocalDateTime;
@@ -23,8 +29,9 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
+
     @GetMapping
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<List<UsuarioModel>> listar() {
 
         List<UsuarioModel> usuariosAtivos = usuarioService.getAll();
@@ -36,41 +43,44 @@ public class UsuarioController {
         return ResponseEntity.ok().body(usuariosAtivos);
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioModel> getById(@PathVariable Integer id) {
         return ResponseEntity.ok((usuarioService.getById(id)));
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
     @PostMapping
-    public ResponseEntity<UsuarioModel> cadastrarComum(
-            @RequestBody UsuarioModel usuarioParaCadastro
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<Void> cadastrarComum(
+            @RequestBody @Valid UsuarioCadastroDto usuarioParaCadastro
     ) {
-        UsuarioModel usuario = usuarioService.cadastrarUsuarioComum(usuarioParaCadastro);
+       final UsuarioModel usuario = UsuarioMapper.of(usuarioParaCadastro);
 
-        if(usuario == null) {
-            return ResponseEntity.status(400).build();
-        }
+       this.usuarioService.cadastrarUsuarioComum(usuario);
 
-        return ResponseEntity.status(201).body(usuario);
+        return ResponseEntity.status(201).build();
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
     @PostMapping("/gestor")
-    public ResponseEntity<UsuarioModel> cadastrarGestor(
-            @RequestBody UsuarioModel usuarioParaCadastro
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<Void> cadastrarGestor(
+            @RequestBody @Valid UsuarioCadastroDto usuarioParaCadastro
     ) {
-        UsuarioModel usuario = usuarioService.cadastrarUsuarioGestor(usuarioParaCadastro);
+        final UsuarioModel usuario = UsuarioMapper.of(usuarioParaCadastro);
 
-        if(usuario == null) {
-            return ResponseEntity.status(400).build();
-        }
+        this.usuarioService.cadastrarUsuarioGestor(usuario);
 
-        return ResponseEntity.status(201).body(usuario);
+        return ResponseEntity.status(201).build();
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
+    @PostMapping("/login")
+    public ResponseEntity<UsuarioTokenDto> login(@RequestBody UsuarioLoginDto usuarioLoginDto){
+
+        final UsuarioModel usuario = UsuarioMapper.of(usuarioLoginDto);
+        UsuarioTokenDto usuarioTokenDto = this.usuarioService.autenticar(usuario);
+
+        return ResponseEntity.status(200).body(usuarioTokenDto);
+    }
+
     @PutMapping("/{id}")
         public ResponseEntity<UsuarioModel> atualizar(
             @PathVariable Integer id,
@@ -86,7 +96,6 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
     @DeleteMapping("/{id}")
     public ResponseEntity<UsuarioModel> deletar(
             @PathVariable Integer id

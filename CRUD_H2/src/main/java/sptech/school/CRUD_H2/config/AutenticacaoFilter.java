@@ -28,7 +28,7 @@ public class AutenticacaoFilter extends OncePerRequestFilter {
 
     private final AutenticacaoService autenticacaoService;
 
-    private final GerenciadoTokenJwt jwtTokenManager;
+    private final GerenciadorTokenJwt jwtTokenManager;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

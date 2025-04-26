@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class GerenciadoTokenJwt {
+public class GerenciadorTokenJwt {
 
     @Value("${jwt.secret}")
     private String secret;

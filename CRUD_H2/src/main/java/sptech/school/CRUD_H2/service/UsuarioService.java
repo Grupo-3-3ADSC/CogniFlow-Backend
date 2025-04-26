@@ -2,7 +2,6 @@ package sptech.school.CRUD_H2.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,7 +13,7 @@ import sptech.school.CRUD_H2.Model.CargoModel;
 import sptech.school.CRUD_H2.Model.UsuarioModel;
 import sptech.school.CRUD_H2.Repository.CargoRepository;
 import sptech.school.CRUD_H2.Repository.UsuarioRepository;
-import sptech.school.CRUD_H2.config.GerenciadoTokenJwt;
+import sptech.school.CRUD_H2.config.GerenciadorTokenJwt;
 import sptech.school.CRUD_H2.dto.UsuarioMapper;
 import sptech.school.CRUD_H2.dto.UsuarioTokenDto;
 import sptech.school.CRUD_H2.exception.EntidadeNaoEncontrado;
@@ -34,7 +33,7 @@ public class UsuarioService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private GerenciadoTokenJwt gerenciadorTokenJwt;
+    private GerenciadorTokenJwt gerenciadorTokenJwt;
 
     @Autowired
     private AuthenticationManager authenticationManager;

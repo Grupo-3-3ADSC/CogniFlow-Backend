@@ -34,6 +34,25 @@ public class UsuarioMapper {
         return usuarioTokenDto;
     }
 
+    public static UsuarioModel of(UsuarioCadastroDto usuarioParaCadastro) {
+        UsuarioModel usuario = new UsuarioModel();
+
+        usuario.setEmail(usuarioParaCadastro.getEmail());
+        usuario.setNome(usuarioParaCadastro.getNome());
+        usuario.setPassword(usuarioParaCadastro.getPassword());
+
+        return usuario;
+    }
+
+    public static UsuarioModel of(UsuarioLoginDto usuarioLoginDto) {
+        UsuarioModel usuario = new UsuarioModel();
+
+        usuario.setEmail(usuarioLoginDto.getEmail());
+        usuario.setPassword(usuarioLoginDto.getPassword());
+
+        return usuario;
+    }
+
     public static List<UsuarioListagemDto> toListagemDtos(List<UsuarioModel> entities){
         if (entities == null){
             return null;
