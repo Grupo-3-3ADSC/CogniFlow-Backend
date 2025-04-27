@@ -90,16 +90,16 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-        public ResponseEntity<UsuarioModel> atualizar(
+    public ResponseEntity<UsuarioModel> atualizar(
             @PathVariable Integer id,
             @RequestBody UsuarioModel usuarioParaAtualizar
-         )
-        {
-            UsuarioModel usuario = usuarioService.put(usuarioParaAtualizar, id);
+    )
+    {
+        UsuarioModel usuario = usuarioService.put(usuarioParaAtualizar, id);
 
-            if(usuario == null) {
-                return ResponseEntity.notFound().build();
-            }
+        if(usuario == null) {
+            return ResponseEntity.notFound().build();
+        }
 
         return ResponseEntity.noContent().build();
     }
