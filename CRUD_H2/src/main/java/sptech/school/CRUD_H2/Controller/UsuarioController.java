@@ -2,11 +2,13 @@ package sptech.school.CRUD_H2.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.CRUD_H2.Model.CargoModel;
 import sptech.school.CRUD_H2.Repository.CargoRepository;
 import sptech.school.CRUD_H2.Repository.UsuarioRepository;
 import sptech.school.CRUD_H2.Model.UsuarioModel;
+import sptech.school.CRUD_H2.exception.EntidadeNaoEncontrado;
 import sptech.school.CRUD_H2.service.UsuarioService;
 
 import java.time.LocalDateTime;
@@ -43,9 +45,22 @@ public class UsuarioController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Busca um usuário pelo ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuário encontrado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class)))
+    })
 
     public ResponseEntity<UsuarioModel> getById(@PathVariable Integer id) {
-        return ResponseEntity.ok((usuarioService.getById(id)));
+        try {
+            UsuarioModel usuario = usuarioService.getById(id);
+            return ResponseEntity.ok(usuario);
+        } catch (EntidadeNaoEncontrado ex) {
+
+            System.out.println("Erro ao buscar usuário: " + ex.getMessage());
+            throw ex;
+        }
     }
 
     @PostMapping
