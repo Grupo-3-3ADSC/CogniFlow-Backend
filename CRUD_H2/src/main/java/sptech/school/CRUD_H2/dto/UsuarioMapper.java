@@ -40,7 +40,7 @@ public class UsuarioMapper {
         usuario.setEmail(usuarioParaCadastro.getEmail());
         usuario.setNome(usuarioParaCadastro.getNome());
         usuario.setPassword(usuarioParaCadastro.getPassword());
-
+        usuario.setCargo(usuarioParaCadastro.getCargo());
         return usuario;
     }
 

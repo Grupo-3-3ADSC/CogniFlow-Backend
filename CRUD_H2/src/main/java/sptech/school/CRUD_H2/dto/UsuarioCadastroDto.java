@@ -2,6 +2,7 @@ package sptech.school.CRUD_H2.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import sptech.school.CRUD_H2.Model.CargoModel;
 
 @Getter
 @Setter
@@ -16,4 +17,6 @@ public class UsuarioCadastroDto {
     private String email;
     @NotBlank
     private String password;
+    @NotBlank
+    private CargoModel cargo;
 }
