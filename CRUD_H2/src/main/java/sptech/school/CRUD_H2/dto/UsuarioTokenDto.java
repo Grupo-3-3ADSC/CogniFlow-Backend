@@ -2,16 +2,16 @@ package sptech.school.CRUD_H2.dto;
 
 import lombok.*;
 
+
+@Builder
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UsuarioDeleteDto {
+public class UsuarioTokenDto {
 
-
-    private Integer id;
+    private Long userId;
     private String nome;
     private String email;
-    private String password;
+    private String token;
 }

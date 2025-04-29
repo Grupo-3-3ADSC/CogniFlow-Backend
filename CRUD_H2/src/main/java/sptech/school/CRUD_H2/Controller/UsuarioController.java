@@ -1,5 +1,12 @@
 package sptech.school.CRUD_H2.Controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
@@ -9,16 +16,16 @@ import sptech.school.CRUD_H2.Repository.CargoRepository;
 import sptech.school.CRUD_H2.Repository.UsuarioRepository;
 import sptech.school.CRUD_H2.Model.UsuarioModel;
 import sptech.school.CRUD_H2.exception.EntidadeNaoEncontrado;
+import sptech.school.CRUD_H2.dto.UsuarioCadastroDto;
+import sptech.school.CRUD_H2.dto.UsuarioLoginDto;
+import sptech.school.CRUD_H2.dto.UsuarioMapper;
+import sptech.school.CRUD_H2.dto.UsuarioTokenDto;
 import sptech.school.CRUD_H2.service.UsuarioService;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
@@ -30,6 +37,7 @@ public class UsuarioController {
     }
 
     @GetMapping
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<List<UsuarioModel>> listar() {
 
         List<UsuarioModel> usuariosAtivos = usuarioService.getAll();
@@ -40,8 +48,6 @@ public class UsuarioController {
 
         return ResponseEntity.ok().body(usuariosAtivos);
     }
-
-
 
     @GetMapping("/{id}")
     @Operation(summary = "Busca um usuário pelo ID")
@@ -64,29 +70,36 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<UsuarioModel> cadastrarComum(
-            @RequestBody UsuarioModel usuarioParaCadastro
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<Void> cadastrarComum(
+            @RequestBody @Valid UsuarioCadastroDto usuarioParaCadastro
     ) {
-        UsuarioModel usuario = usuarioService.cadastrarUsuarioComum(usuarioParaCadastro);
+       final UsuarioModel usuario = UsuarioMapper.of(usuarioParaCadastro);
 
-        if(usuario == null) {
-            return ResponseEntity.status(400).build();
-        }
+       this.usuarioService.cadastrarUsuarioComum(usuario);
 
-        return ResponseEntity.status(201).body(usuario);
+        return ResponseEntity.status(201).build();
     }
 
     @PostMapping("/gestor")
-    public ResponseEntity<UsuarioModel> cadastrarGestor(
-            @RequestBody UsuarioModel usuarioParaCadastro
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<Void> cadastrarGestor(
+            @RequestBody @Valid UsuarioCadastroDto usuarioParaCadastro
     ) {
-        UsuarioModel usuario = usuarioService.cadastrarUsuarioGestor(usuarioParaCadastro);
+        final UsuarioModel usuario = UsuarioMapper.of(usuarioParaCadastro);
 
-        if(usuario == null) {
-            return ResponseEntity.status(400).build();
-        }
+        this.usuarioService.cadastrarUsuarioGestor(usuario);
 
-        return ResponseEntity.status(201).body(usuario);
+        return ResponseEntity.status(201).build();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UsuarioTokenDto> login(@RequestBody UsuarioLoginDto usuarioLoginDto){
+
+        final UsuarioModel usuario = UsuarioMapper.of(usuarioLoginDto);
+        UsuarioTokenDto usuarioTokenDto = this.usuarioService.autenticar(usuario);
+
+        return ResponseEntity.status(200).body(usuarioTokenDto);
     }
 
     @PutMapping("/{id}")
