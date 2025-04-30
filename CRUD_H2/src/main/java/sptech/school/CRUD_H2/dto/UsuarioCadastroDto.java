@@ -17,6 +17,6 @@ public class UsuarioCadastroDto {
     private String email;
     @NotBlank
     private String password;
-    @NotBlank
+
     private CargoModel cargo;
 }
