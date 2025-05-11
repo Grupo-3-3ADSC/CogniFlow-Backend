@@ -7,7 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-
 public class ContatoModel {
 
     @Id
@@ -18,6 +17,6 @@ public class ContatoModel {
 
     @ManyToOne
     @JoinColumn(name = "fornecedor_id")
-    private Integer fornecedor;
+    private FornecedorModel fornecedor;
 
 }

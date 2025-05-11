@@ -1,6 +1,5 @@
-package sptech.school.CRUD.dto;
+package sptech.school.CRUD.dto.Usuario;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Getter
@@ -8,12 +7,10 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UsuarioAtualizadoDto {
+public class UsuarioListagemDto {
 
-    @NotBlank
+
     private String nome;
-    @NotBlank
     private String email;
-    @NotBlank
     private String password;
 }

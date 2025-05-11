@@ -14,8 +14,8 @@ import sptech.school.CRUD.Model.UsuarioModel;
 import sptech.school.CRUD.Repository.CargoRepository;
 import sptech.school.CRUD.Repository.UsuarioRepository;
 import sptech.school.CRUD.config.GerenciadorTokenJwt;
-import sptech.school.CRUD.dto.UsuarioMapper;
-import sptech.school.CRUD.dto.UsuarioTokenDto;
+import sptech.school.CRUD.dto.Usuario.UsuarioMapper;
+import sptech.school.CRUD.dto.Usuario.UsuarioTokenDto;
 import sptech.school.CRUD.exception.EntidadeNaoEncontrado;
 
 import java.time.LocalDateTime;

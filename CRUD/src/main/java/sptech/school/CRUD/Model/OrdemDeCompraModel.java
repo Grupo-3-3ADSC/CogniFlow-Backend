@@ -25,10 +25,10 @@ public class OrdemDeCompraModel {
 
     @ManyToOne
     @JoinColumn(name = "materia_prima_id")
-    private Integer materiaPrima;
+    private TipoMateriaPrimaModel materiaPrima;
     @ManyToOne
     @JoinColumn(name = "fornecedor_id")
-    private Integer fornecedor;
+    private FornecedorModel fornecedor;
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private UsuarioModel usuario;

@@ -1,4 +1,4 @@
-package sptech.school.CRUD.dto;
+package sptech.school.CRUD.dto.Usuario;
 
 import lombok.*;
 
@@ -7,9 +7,10 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UsuarioListagemDto {
+public class UsuarioDeleteDto {
 
 
+    private Integer id;
     private String nome;
     private String email;
     private String password;

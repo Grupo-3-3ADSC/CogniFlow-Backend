@@ -22,7 +22,7 @@ public class EstoqueModel {
 
         @ManyToOne
         @JoinColumn(name = "materia_prima_id")
-        private Integer materiaPrima;
+        private TipoMateriaPrimaModel materiaPrima;
 
 
 }

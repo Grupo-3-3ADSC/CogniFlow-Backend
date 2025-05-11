@@ -1,4 +1,4 @@
-package sptech.school.CRUD.dto;
+package sptech.school.CRUD.dto.Usuario;
 
 import sptech.school.CRUD.Model.UsuarioModel;
 

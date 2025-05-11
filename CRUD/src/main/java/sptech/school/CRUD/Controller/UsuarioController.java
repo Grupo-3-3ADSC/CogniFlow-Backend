@@ -12,10 +12,10 @@ import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.CRUD.Model.UsuarioModel;
 import sptech.school.CRUD.exception.EntidadeNaoEncontrado;
-import sptech.school.CRUD.dto.UsuarioCadastroDto;
-import sptech.school.CRUD.dto.UsuarioLoginDto;
-import sptech.school.CRUD.dto.UsuarioMapper;
-import sptech.school.CRUD.dto.UsuarioTokenDto;
+import sptech.school.CRUD.dto.Usuario.UsuarioCadastroDto;
+import sptech.school.CRUD.dto.Usuario.UsuarioLoginDto;
+import sptech.school.CRUD.dto.Usuario.UsuarioMapper;
+import sptech.school.CRUD.dto.Usuario.UsuarioTokenDto;
 import sptech.school.CRUD.service.UsuarioService;
 
 import java.util.List;

@@ -21,6 +21,6 @@ public class EnderecoModel {
 
     @ManyToOne
     @JoinColumn(name = "fornecedor_id")
-    private Integer fornecedor;
+    private FornecedorModel fornecedor;
 
 }
