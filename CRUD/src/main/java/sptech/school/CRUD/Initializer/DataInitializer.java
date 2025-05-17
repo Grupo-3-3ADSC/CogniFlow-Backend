@@ -5,9 +5,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import sptech.school.CRUD.Model.CargoModel;
 import sptech.school.CRUD.Model.FornecedorModel;
+import sptech.school.CRUD.Model.TipoMateriaPrimaModel;
 import sptech.school.CRUD.Model.UsuarioModel;
 import sptech.school.CRUD.Repository.CargoRepository;
 import sptech.school.CRUD.Repository.FornecedorRepository;
+import sptech.school.CRUD.Repository.TipoMaterialPrimaRepository;
 import sptech.school.CRUD.Repository.UsuarioRepository;
 
 @Configuration
@@ -21,6 +23,9 @@ public class DataInitializer implements CommandLineRunner {
 
     @Autowired
     private FornecedorRepository fornecedorRepository;
+
+    @Autowired
+    private TipoMaterialPrimaRepository materialPrimaRepository;
 
 
     @Override
@@ -36,6 +41,7 @@ public class DataInitializer implements CommandLineRunner {
             gestor.setNome("gestor");
             cargoRepository.save(gestor);
         }
+
 
         if(usuarioRepository.count() == 0) {
 
@@ -70,5 +76,21 @@ public class DataInitializer implements CommandLineRunner {
 
             fornecedorRepository.save(fornecedor);
         }
+        if (materialPrimaRepository.count()== 0){
+            TipoMateriaPrimaModel model1 = new TipoMateriaPrimaModel();
+            model1.setTipoMaterial("SAE 1020");
+            materialPrimaRepository.save(model1);
+
+            TipoMateriaPrimaModel model2 = new TipoMateriaPrimaModel();
+            model2.setTipoMaterial("SAE 1045");
+            materialPrimaRepository.save(model2);
+
+            TipoMateriaPrimaModel model3 = new TipoMateriaPrimaModel();
+            model3.setTipoMaterial("HARDOX 450");
+            materialPrimaRepository.save(model3);
+        }
+
+
+
     }
 }
