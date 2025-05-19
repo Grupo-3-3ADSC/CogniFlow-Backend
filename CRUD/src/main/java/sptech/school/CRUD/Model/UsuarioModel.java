@@ -21,6 +21,7 @@ public class UsuarioModel {
     private String email;
     private String password;
     private Boolean ativo = true;
+    private byte[] foto;
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
 

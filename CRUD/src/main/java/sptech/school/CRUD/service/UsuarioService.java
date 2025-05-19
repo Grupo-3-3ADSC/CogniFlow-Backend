@@ -8,6 +8,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import sptech.school.CRUD.Model.CargoModel;
 import sptech.school.CRUD.Model.UsuarioModel;
@@ -15,11 +17,15 @@ import sptech.school.CRUD.Repository.CargoRepository;
 import sptech.school.CRUD.Repository.UsuarioRepository;
 import sptech.school.CRUD.config.GerenciadorTokenJwt;
 import sptech.school.CRUD.dto.Usuario.UsuarioMapper;
+import sptech.school.CRUD.dto.Usuario.UsuarioPatchDto;
 import sptech.school.CRUD.dto.Usuario.UsuarioTokenDto;
 import sptech.school.CRUD.exception.EntidadeNaoEncontrado;
 
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -83,14 +89,58 @@ public class UsuarioService {
         }
     }
 
+    public UsuarioModel patch(int id, UsuarioPatchDto dto){
+        Optional<UsuarioModel> usuarioOpt = usuarioRepository.findById(id);
+
+        if(usuarioOpt.isEmpty()){
+            return null;
+        }
+
+        UsuarioModel usuario = usuarioOpt.get();
+
+        if(dto.getNome() != null){
+            usuario.setNome(dto.getNome());
+        }
+
+        if(dto.getEmail() != null){
+            usuario.setEmail(dto.getEmail());
+        }
+
+        return usuarioRepository.save(usuario);
+    }
+
     public Optional<UsuarioModel> delete(int id) {
         Optional<UsuarioModel> usuario = usuarioRepository.findById(id);
         usuario.get().setUpdatedAt(LocalDateTime.now());
         usuario.get().setAtivo(false);
         usuarioRepository.save(usuario.get());
         return usuario;
+    }
 
+    public Boolean uploadFoto(Integer id, MultipartFile file){
+        if(file == null || file.isEmpty()){
+            return false;
+        }
 
+        Optional<UsuarioModel> usuarioOpt = usuarioRepository.findById(id);
+
+        if (usuarioOpt.isPresent()){
+            UsuarioModel usuario = usuarioOpt.get();
+            try {
+                usuario.setFoto(file.getBytes());
+            }catch (Exception e){
+                return false;
+            }
+            usuarioRepository.save(usuario);
+            return true;
+        }
+
+        return false;
+    }
+
+    public Optional<byte[]> buscarFoto(Integer id){
+        return usuarioRepository.findById(id)
+                .map(UsuarioModel::getFoto);
     }
 
     public UsuarioTokenDto autenticar(UsuarioModel usuario){

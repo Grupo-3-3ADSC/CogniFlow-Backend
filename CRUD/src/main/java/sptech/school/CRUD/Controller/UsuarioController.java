@@ -10,15 +10,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import sptech.school.CRUD.Model.UsuarioModel;
+import sptech.school.CRUD.dto.Usuario.*;
 import sptech.school.CRUD.exception.EntidadeNaoEncontrado;
-import sptech.school.CRUD.dto.Usuario.UsuarioCadastroDto;
-import sptech.school.CRUD.dto.Usuario.UsuarioLoginDto;
-import sptech.school.CRUD.dto.Usuario.UsuarioMapper;
-import sptech.school.CRUD.dto.Usuario.UsuarioTokenDto;
 import sptech.school.CRUD.service.UsuarioService;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -112,6 +112,20 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<UsuarioModel> atualizarParcial(
+            @PathVariable Integer id,
+            @RequestBody UsuarioPatchDto campos
+            ){
+        UsuarioModel usuario = usuarioService.patch(id,campos);
+
+        if(usuario == null){
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<UsuarioModel> deletar(
             @PathVariable Integer id
@@ -125,4 +139,25 @@ public class UsuarioController {
 
     }
 
+    @PostMapping("/{id}/upload-foto")
+    public ResponseEntity<UsuarioModel> postarFoto (
+            @PathVariable Integer id,
+            @RequestParam("foto")MultipartFile file
+            ) {
+        Boolean sucesso = usuarioService.uploadFoto(id, file);
+
+        if(sucesso){
+            return ResponseEntity.status(200).build();
+        }
+
+        return ResponseEntity.status(404).build();
+
+    }
+
+    @GetMapping("/{id}/foto")
+    public ResponseEntity<byte[]> getFoto(@PathVariable Integer id) {
+        return usuarioService.buscarFoto(id)
+                .map(foto -> ResponseEntity.ok().body(foto))
+                .orElse(ResponseEntity.notFound().build());
+    }
 }
