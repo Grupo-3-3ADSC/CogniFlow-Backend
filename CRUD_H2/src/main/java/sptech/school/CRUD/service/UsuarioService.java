@@ -28,9 +28,8 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final CargoRepository cargoRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private GerenciadorTokenJwt gerenciadorTokenJwt;
@@ -85,11 +84,15 @@ public class UsuarioService {
 
     public Optional<UsuarioModel> delete(int id) {
         Optional<UsuarioModel> usuario = usuarioRepository.findById(id);
-        usuario.get().setUpdatedAt(LocalDateTime.now());
-        usuario.get().setAtivo(false);
-        usuarioRepository.save(usuario.get());
-        return usuario;
 
+        if (usuario.isPresent()) {
+            usuario.get().setUpdatedAt(LocalDateTime.now());
+            usuario.get().setAtivo(false);
+            usuarioRepository.save(usuario.get());
+            return usuario;
+        }
+
+        return Optional.empty();
 
     }
 

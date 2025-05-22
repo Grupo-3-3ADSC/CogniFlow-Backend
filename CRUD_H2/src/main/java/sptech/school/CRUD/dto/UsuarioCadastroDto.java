@@ -19,4 +19,6 @@ public class UsuarioCadastroDto {
     private String password;
 
     private CargoModel cargo;
+
+
 }
