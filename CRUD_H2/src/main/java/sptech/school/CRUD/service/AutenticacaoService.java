@@ -23,6 +23,7 @@ public class AutenticacaoService implements UserDetailsService {
         Optional<UsuarioModel> usuarioOpt = usuarioRepository.findByEmail(username);
 
         if(usuarioOpt.isEmpty()){
+            System.out.println("Lançando exceção UsernameNotFoundException!");
             throw new UsernameNotFoundException(String.format("usuario: %s não encontrado", username));
         }
         UsuarioModel usuario = usuarioOpt.get();

@@ -47,8 +47,16 @@ public class UsuarioService {
     }
 
     public UsuarioModel cadastrarUsuarioComum(UsuarioModel usuario) {
-        CargoModel cargo = cargoRepository.findByNome("comum");
+        Optional<UsuarioModel> usuarioExistente = usuarioRepository.findByEmail(usuario.getEmail());
+        if (usuarioExistente.isPresent()) {
+            throw new RuntimeException("Email já cadastrado");
+        }
+        if (usuario.getPassword() == null || usuario.getPassword().length() < 6) {
+            throw new RuntimeException("Senha deve ter pelo menos 6 caracteres");
+        }
 
+        // Continua o cadastro normalmente
+        CargoModel cargo = cargoRepository.findByNome("comum");
         String senhaCriptografada = passwordEncoder.encode(usuario.getPassword());
 
         usuario.setPassword(senhaCriptografada);
@@ -57,10 +65,19 @@ public class UsuarioService {
     }
 
     public UsuarioModel cadastrarUsuarioGestor(UsuarioModel usuario) {
+        Optional<UsuarioModel> usuarioExistente = usuarioRepository.findByEmail(usuario.getEmail());
+        if (usuarioExistente.isPresent()) {
+            throw new RuntimeException("Email já cadastrado");
+        }
+        if (usuario.getPassword() == null || usuario.getPassword().length() < 6) {
+            throw new RuntimeException("Senha deve ter pelo menos 6 caracteres");
+        }
 
+
+        // Continua o cadastro normalmente
         CargoModel cargo = cargoRepository.findByNome("gestor");
 
-        if(cargo == null) {
+        if (cargo == null) {
             return null;
         }
 

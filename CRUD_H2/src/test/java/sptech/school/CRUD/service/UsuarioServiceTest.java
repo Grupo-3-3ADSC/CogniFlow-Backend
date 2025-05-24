@@ -52,7 +52,7 @@ class UsuarioServiceTest {
         UsuarioModel usuario = UsuarioModel.builder()
                 .nome("Bianca")
                 .email("bianca@email.com")
-                .password("1234")
+                .password("1234567")
                 .cargo(cargo)
                 .build();
 
@@ -88,60 +88,36 @@ class UsuarioServiceTest {
     }
 
     @Test
-    @DisplayName("Cadastro de usuário gestor")
-    void testeCadastroUsuarioGestor() {
+    @DisplayName("Cadastro de usuário - e-mail já existente")
+    void testeCadastroUsuarioEmailDuplicado() {
         // Arrange
-        CargoModel cargo = new CargoModel();
-        cargo.setId(2);
-        cargo.setNome("gestor");
+        UsuarioModel usuarioExistente = new UsuarioModel();
+        usuarioExistente.setEmail("usuario@email.com");
 
-        UsuarioModel usuario = UsuarioModel.builder()
-                .nome("Miguel")
-                .email("miguel@email.com")
-                .password("abcd")
-                .cargo(cargo)
-                .build();
+        when(usuarioRepository.findByEmail("usuario@email.com")).thenReturn(Optional.of(usuarioExistente));
 
-        when(cargoRepository.findByNome("gestor")).thenReturn(cargo);
+        UsuarioModel novoUsuario = new UsuarioModel();
+        novoUsuario.setEmail("usuario@email.com");
 
-        UsuarioModel usuarioSalvo = new UsuarioModel();
-        usuarioSalvo.setId(2);
-        usuarioSalvo.setNome("Carlos");
-        usuarioSalvo.setEmail("carlos@email.com");
-        usuarioSalvo.setPassword("senhaCriptografada");
-        usuarioSalvo.setCargo(cargo);
-        usuarioSalvo.setAtivo(true);
-        usuarioSalvo.setCreatedAt(LocalDateTime.now());
+        // Act & Assert
+        Exception exception = assertThrows(RuntimeException.class, () -> usuarioService.cadastrarUsuarioComum(novoUsuario));
 
-        when(usuarioRepository.save(any())).thenReturn(usuarioSalvo);
-
-        // Act
-        UsuarioModel resultado = usuarioService.cadastrarUsuarioGestor(usuario);
-
-        // Assert
-        assertNotNull(resultado);
-        assertEquals("Carlos", resultado.getNome());
-        verify(usuarioRepository).save(any());
-        verify(passwordEncoder, times(1)).encode(anyString());
+        assertEquals("Email já cadastrado", exception.getMessage());
+        verify(usuarioRepository, never()).save(any());
     }
 
     @Test
-    @DisplayName("Cadastro de usuário gestor sem cargo válido")
-    void testeCadastroUsuarioGestorSemCargo() {
+    @DisplayName("Cadastro de usuário - senha muito curta")
+    void testeCadastroUsuarioSenhaCurta() {
         // Arrange
-        UsuarioModel usuario = UsuarioModel.builder()
-                .nome("Gabriel")
-                .email("gabriel@email.com")
-                .password("abcd")
-                .build();
+        UsuarioModel usuario = new UsuarioModel();
+        usuario.setEmail("usuario@email.com");
+        usuario.setPassword("123");
 
-        when(cargoRepository.findByNome("gestor")).thenReturn(null);
+        // Act & Assert
+        Exception exception = assertThrows(RuntimeException.class, () -> usuarioService.cadastrarUsuarioComum(usuario));
 
-        // Act
-        UsuarioModel resultado = usuarioService.cadastrarUsuarioGestor(usuario);
-
-        // Assert
-        assertNull(resultado);
+        assertEquals("Senha deve ter pelo menos 6 caracteres", exception.getMessage());
     }
 
     @Test
@@ -181,6 +157,128 @@ class UsuarioServiceTest {
     }
 
     @Test
+    @DisplayName("Buscar usuário por ID - ID inválido")
+    void testeBuscarUsuarioIdInvalido() {
+        // Arrange
+        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+        // Act & Assert
+        Exception exception = assertThrows(EntidadeNaoEncontrado.class, () -> usuarioService.getById(-1));
+
+        assertEquals("Usuario de id -1 não encontrado", exception.getMessage());
+        verify(usuarioRepository).findById(-1);
+    }
+
+    @Test
+    @DisplayName("Cadastro de usuário sem cargo válido")
+    void testeCadastroUsuarioSemCargo() {
+        // Arrange
+        UsuarioModel usuario = UsuarioModel.builder()
+                .nome("Gabriel")
+                .email("gabriel@email.com")
+                .password("abcdefg")
+                .build();
+
+        when(cargoRepository.findByNome("funcionário")).thenReturn(null);
+
+        // Act
+        UsuarioModel resultado = usuarioService.cadastrarUsuarioComum(usuario);
+
+        // Assert
+        assertNull(resultado);
+    }
+
+    @Test
+    @DisplayName("Cadastro de usuário gestor")
+    void testeCadastroUsuarioGestor() {
+        // Arrange
+        CargoModel cargo = new CargoModel();
+        cargo.setId(2);
+        cargo.setNome("gestor");
+
+        UsuarioModel usuario = UsuarioModel.builder()
+                .nome("Miguel")
+                .email("miguel@email.com")
+                .password("abcdefg")
+                .cargo(cargo)
+                .build();
+
+        when(cargoRepository.findByNome("gestor")).thenReturn(cargo);
+
+        UsuarioModel usuarioSalvo = new UsuarioModel();
+        usuarioSalvo.setId(2);
+        usuarioSalvo.setNome("Carlos");
+        usuarioSalvo.setEmail("carlos@email.com");
+        usuarioSalvo.setPassword("senhaCriptografada");
+        usuarioSalvo.setCargo(cargo);
+        usuarioSalvo.setAtivo(true);
+        usuarioSalvo.setCreatedAt(LocalDateTime.now());
+
+        when(usuarioRepository.save(any())).thenReturn(usuarioSalvo);
+
+        // Act
+        UsuarioModel resultado = usuarioService.cadastrarUsuarioGestor(usuario);
+
+        // Assert
+        assertNotNull(resultado);
+        assertEquals("Carlos", resultado.getNome());
+        verify(usuarioRepository).save(any());
+        verify(passwordEncoder, times(1)).encode(anyString());
+    }
+
+    @Test
+    @DisplayName("Cadastro de usuário gestor - e-mail já existente")
+    void testeCadastroUsuarioGestorEmailDuplicado() {
+        // Arrange
+        UsuarioModel usuarioExistente = new UsuarioModel();
+        usuarioExistente.setEmail("usuario@email.com");
+
+        when(usuarioRepository.findByEmail("usuario@email.com")).thenReturn(Optional.of(usuarioExistente));
+
+        UsuarioModel novoUsuario = new UsuarioModel();
+        novoUsuario.setEmail("usuario@email.com");
+
+        // Act & Assert
+        Exception exception = assertThrows(RuntimeException.class, () -> usuarioService.cadastrarUsuarioGestor(novoUsuario));
+
+        assertEquals("Email já cadastrado", exception.getMessage());
+        verify(usuarioRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Cadastro de usuário gestor- senha muito curta")
+    void testeCadastroUsuarioGestorSenhaCurta() {
+        // Arrange
+        UsuarioModel usuario = new UsuarioModel();
+        usuario.setEmail("usuario@email.com");
+        usuario.setPassword("123");
+
+        // Act & Assert
+        Exception exception = assertThrows(RuntimeException.class, () -> usuarioService.cadastrarUsuarioGestor(usuario));
+
+        assertEquals("Senha deve ter pelo menos 6 caracteres", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Cadastro de usuário gestor sem cargo válido")
+    void testeCadastroUsuarioGestorSemCargo() {
+        // Arrange
+        UsuarioModel usuario = UsuarioModel.builder()
+                .nome("Gabriel")
+                .email("gabriel@email.com")
+                .password("abcdefg")
+                .build();
+
+        when(cargoRepository.findByNome("gestor")).thenReturn(null);
+
+        // Act
+        UsuarioModel resultado = usuarioService.cadastrarUsuarioGestor(usuario);
+
+        // Assert
+        assertNull(resultado);
+    }
+
+    @Test
     @DisplayName("Atualizar usuário - sucesso")
     void testePutSucesso() {
         // Arrange
@@ -207,6 +305,35 @@ class UsuarioServiceTest {
         assertEquals(1, resultado.getId());
         assertEquals("Matheus Souza", resultado.getNome());
         assertEquals("matheussouza@email.com", resultado.getEmail());
+        verify(usuarioRepository).save(any());
+    }
+
+    @Test
+    @DisplayName("Atualizar usuário - atualização parcial")
+    void testeAtualizarUsuarioParcial() {
+        // Arrange
+        UsuarioModel usuarioExistente = new UsuarioModel();
+        usuarioExistente.setId(1);
+        usuarioExistente.setNome("Antigo Nome");
+        usuarioExistente.setEmail("email@email.com");
+
+        when(usuarioRepository.existsById(1)).thenReturn(true);
+        when(usuarioRepository.findById(1)).thenReturn(Optional.of(usuarioExistente));
+
+        UsuarioModel usuarioAtualizado = new UsuarioModel();
+        usuarioAtualizado.setNome("Novo Nome");
+
+        when(usuarioRepository.save(any())).thenAnswer(invocation -> {
+            UsuarioModel usuarioSalvo = invocation.getArgument(0);
+            return usuarioSalvo; // Retorna o objeto atualizado
+        });
+
+        // Act
+        UsuarioModel resultado = usuarioService.put(usuarioAtualizado, 1);
+
+        // Assert
+        assertNotNull(resultado);
+        assertEquals("Novo Nome", resultado.getNome());  // ✅ Agora garantimos que o nome foi atualizado
         verify(usuarioRepository).save(any());
     }
 
