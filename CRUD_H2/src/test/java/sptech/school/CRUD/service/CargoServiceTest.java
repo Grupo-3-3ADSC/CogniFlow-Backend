@@ -56,18 +56,15 @@ class CargoServiceTest {
         verify(cargoRepository, never()).save(any());
     }
 
-
-
-
     @Test
     @DisplayName("Listagem de cargos - sucesso")
     void testeGetAllCargos() {
         // Arrange
         CargoModel cargo1 = new CargoModel();
-        cargo1.setNome("Desenvolvedor");
+        cargo1.setNome("Funcionário");
 
         CargoModel cargo2 = new CargoModel();
-        cargo2.setNome("Analista de Sistemas");
+        cargo2.setNome("Gestor");
 
         List<CargoModel> listaCargos = List.of(cargo1, cargo2);
 
@@ -79,8 +76,8 @@ class CargoServiceTest {
         // Assert
         assertNotNull(resultado);
         assertEquals(2, resultado.size());
-        assertEquals("Desenvolvedor", resultado.get(0).getNome());
-        assertEquals("Analista de Sistemas", resultado.get(1).getNome());
+        assertEquals("Funcionário", resultado.get(0).getNome());
+        assertEquals("Gestor", resultado.get(1).getNome());
         verify(cargoRepository).findAll();
     }
 }

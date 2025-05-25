@@ -121,6 +121,21 @@ class UsuarioServiceTest {
     }
 
     @Test
+    @DisplayName("Cadastro de usuário - senha nula")
+    void testeCadastroUsuarioSenhaNula() {
+        // Arrange
+        UsuarioModel usuario = new UsuarioModel();
+        usuario.setEmail("usuario@email.com");
+        usuario.setPassword(null); // Simulamos um usuário sem senha
+
+        // Act & Assert
+        Exception exception = assertThrows(RuntimeException.class, () -> usuarioService.cadastrarUsuarioComum(usuario));
+
+        assertEquals("Senha deve ter pelo menos 6 caracteres", exception.getMessage());
+    }
+
+
+    @Test
     @DisplayName("Buscar usuário por ID - sucesso")
     void testeGetByIdSucesso() {
         // Arrange
@@ -260,6 +275,21 @@ class UsuarioServiceTest {
     }
 
     @Test
+    @DisplayName("Cadastro de usuário gestor- senha nula")
+    void testeCadastroUsuarioGestorSenhaNula() {
+        // Arrange
+        UsuarioModel usuario = new UsuarioModel();
+        usuario.setEmail("usuario@email.com");
+        usuario.setPassword(null); // Simulamos um usuário sem senha
+
+        // Act & Assert
+        Exception exception = assertThrows(RuntimeException.class, () -> usuarioService.cadastrarUsuarioGestor(usuario));
+
+        assertEquals("Senha deve ter pelo menos 6 caracteres", exception.getMessage());
+    }
+
+
+    @Test
     @DisplayName("Cadastro de usuário gestor sem cargo válido")
     void testeCadastroUsuarioGestorSemCargo() {
         // Arrange
@@ -295,6 +325,7 @@ class UsuarioServiceTest {
         usuarioAtualizado.setPassword("senhaNova");
 
         when(usuarioRepository.existsById(1)).thenReturn(true);
+        when(usuarioRepository.findById(1)).thenReturn(Optional.of(usuarioExistente)); // 🔥 Adicione esta linha
         when(usuarioRepository.save(any())).thenReturn(usuarioAtualizado);
 
         // Act
@@ -335,6 +366,28 @@ class UsuarioServiceTest {
         assertNotNull(resultado);
         assertEquals("Novo Nome", resultado.getNome());  // ✅ Agora garantimos que o nome foi atualizado
         verify(usuarioRepository).save(any());
+    }
+
+    @Test
+    @DisplayName("Atualizar usuário - dados inválidos")
+    void testePutDadosInvalidos() {
+        // Arrange
+        UsuarioModel usuarioAtualizado = new UsuarioModel();
+        usuarioAtualizado.setNome(""); // Nome inválido
+        usuarioAtualizado.setEmail(""); // Email inválido
+
+        when(usuarioRepository.existsById(1)).thenReturn(true);
+
+        // Act & Assert
+        Exception exception = assertThrows(RuntimeException.class, () -> usuarioService.put(usuarioAtualizado, 1));
+
+        System.out.println("Mensagem de erro retornada: " + exception.getMessage()); // 🔥 Depuração
+
+        assertTrue(
+                exception.getMessage().equals("Nome e email não podem estar vazios") ||
+                        exception.getMessage().equals("Nome não pode estar vazio") ||
+                        exception.getMessage().equals("Email não pode estar vazio")
+        );
     }
 
     @Test

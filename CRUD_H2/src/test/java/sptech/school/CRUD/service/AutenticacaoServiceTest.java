@@ -7,14 +7,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import sptech.school.CRUD.Model.UsuarioModel;
 import sptech.school.CRUD.Repository.UsuarioRepository;
 import static org.mockito.Mockito.*;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 class AutenticacaoServiceTest {
@@ -22,6 +22,7 @@ class AutenticacaoServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        authenticationManager = mock(AuthenticationManager.class);
     }
     @InjectMocks
     private UsuarioService usuarioService;
@@ -33,7 +34,7 @@ class AutenticacaoServiceTest {
     private UsuarioRepository usuarioRepository;
 
     @Mock
-    private PasswordEncoder passwordEncoder;
+    private AuthenticationManager authenticationManager;
 
     @Test
     @DisplayName("Autenticação - sucesso")
@@ -68,5 +69,6 @@ class AutenticacaoServiceTest {
         assertEquals("usuario: emailInexistente@email.com não encontrado", exception.getMessage());
         verify(usuarioRepository).findByEmail("emailInexistente@email.com");
     }
+
 
 }

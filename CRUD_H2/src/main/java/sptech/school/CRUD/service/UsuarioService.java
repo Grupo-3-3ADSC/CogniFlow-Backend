@@ -30,12 +30,11 @@ public class UsuarioService {
     private final CargoRepository cargoRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     private GerenciadorTokenJwt gerenciadorTokenJwt;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
     public List<UsuarioModel> getAll() {
         return usuarioRepository.findByAtivoTrue();
@@ -89,6 +88,23 @@ public class UsuarioService {
     }
 
     public UsuarioModel put(UsuarioModel usuarioParaAtualizar, int id) {
+
+        if ((usuarioParaAtualizar.getNome() == null || usuarioParaAtualizar.getNome().trim().isEmpty()) &&
+                (usuarioParaAtualizar.getEmail() == null || usuarioParaAtualizar.getEmail().trim().isEmpty())) {
+            throw new RuntimeException("Nome e email não podem estar vazios");
+        }
+
+        UsuarioModel usuarioExistente = usuarioRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontrado("Usuario de id %d não encontrado".formatted(id)));
+
+        if (usuarioParaAtualizar.getNome() == null || usuarioParaAtualizar.getNome().trim().isEmpty()) {
+            usuarioParaAtualizar.setNome(usuarioExistente.getNome());
+        }
+
+        if (usuarioParaAtualizar.getEmail() == null || usuarioParaAtualizar.getEmail().trim().isEmpty()) {
+            usuarioParaAtualizar.setEmail(usuarioExistente.getEmail());
+        }
+
         if (usuarioRepository.existsById(id)) {
             usuarioParaAtualizar.setId(id);
             usuarioParaAtualizar.setUpdatedAt(LocalDateTime.now());
