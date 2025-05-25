@@ -1,6 +1,7 @@
 package sptech.school.CRUD.dto.Estoque;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -11,9 +12,14 @@ import lombok.*;
 public class EstoqueCadastroDto {
 
     @NotBlank
+    private String materiaPrima;
+
+    @NotNull
     private Integer quantidadeAtual;
-    @NotBlank
+
+    @NotNull
     private Integer quantidadeMinima;
-    @NotBlank
+
+    @NotNull
     private Integer quantidadeMaxima;
 }

@@ -3,14 +3,8 @@ package sptech.school.CRUD.Initializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
-import sptech.school.CRUD.Model.CargoModel;
-import sptech.school.CRUD.Model.FornecedorModel;
-import sptech.school.CRUD.Model.TipoMateriaPrimaModel;
-import sptech.school.CRUD.Model.UsuarioModel;
-import sptech.school.CRUD.Repository.CargoRepository;
-import sptech.school.CRUD.Repository.FornecedorRepository;
-import sptech.school.CRUD.Repository.TipoMaterialPrimaRepository;
-import sptech.school.CRUD.Repository.UsuarioRepository;
+import sptech.school.CRUD.Model.*;
+import sptech.school.CRUD.Repository.*;
 
 @Configuration
 public class DataInitializer implements CommandLineRunner {
@@ -24,9 +18,11 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private FornecedorRepository fornecedorRepository;
 
-    @Autowired
-    private TipoMaterialPrimaRepository materialPrimaRepository;
+//    @Autowired
+//    private TipoMaterialPrimaRepository materialPrimaRepository;
 
+    @Autowired
+    private EstoqueRepository estoqueRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -73,24 +69,35 @@ public class DataInitializer implements CommandLineRunner {
             fornecedor.setCnpj("12345678901234");
             fornecedor.setNomeFantasia("teste");
             fornecedor.setRazaoSocial("teste");
-
             fornecedorRepository.save(fornecedor);
         }
-        if (materialPrimaRepository.count()== 0){
-            TipoMateriaPrimaModel model1 = new TipoMateriaPrimaModel();
+
+
+        if (estoqueRepository.count() == 0) {
+            EstoqueModel model1 = new EstoqueModel();
+
             model1.setTipoMaterial("SAE 1020");
-            materialPrimaRepository.save(model1);
+            model1.setQuantidadeMinima(10);
+            model1.setQuantidadeMaxima(100000);
 
-            TipoMateriaPrimaModel model2 = new TipoMateriaPrimaModel();
+            EstoqueModel model2 = new EstoqueModel();
             model2.setTipoMaterial("SAE 1045");
-            materialPrimaRepository.save(model2);
+            model2.setQuantidadeMinima(10);
+            model2.setQuantidadeMaxima(100000);
 
-            TipoMateriaPrimaModel model3 = new TipoMateriaPrimaModel();
+            EstoqueModel model3 = new EstoqueModel();
             model3.setTipoMaterial("HARDOX 450");
-            materialPrimaRepository.save(model3);
+            model3.setQuantidadeMinima(10);
+            model3.setQuantidadeMaxima(100000);
+
+            estoqueRepository.save(model1);
+            estoqueRepository.save(model2);
+            estoqueRepository.save(model3);
         }
+
+    }
 
 
 
     }
-}
+

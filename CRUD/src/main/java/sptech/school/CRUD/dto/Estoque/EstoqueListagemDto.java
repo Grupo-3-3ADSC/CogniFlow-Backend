@@ -1,6 +1,7 @@
 package sptech.school.CRUD.dto.Estoque;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -10,9 +11,11 @@ import lombok.*;
 @NoArgsConstructor
 public class EstoqueListagemDto {
     @NotBlank
+    private String tipoMaterial;
+    @NotNull
     private Integer quantidadeAtual;
-    @NotBlank
+    @NotNull
     private Integer quantidadeMinima;
-    @NotBlank
+    @NotNull
     private Integer quantidadeMaxima;
 }

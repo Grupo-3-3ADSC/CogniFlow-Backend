@@ -16,9 +16,6 @@ public class EnderecoModel {
     private Integer numero;
     private String complemento;
 
-
-
-
     @ManyToOne
     @JoinColumn(name = "fornecedor_id")
     private FornecedorModel fornecedor;
