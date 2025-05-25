@@ -25,7 +25,7 @@ public class UsuarioModel {
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cargo_id")
     private CargoModel cargo;
 

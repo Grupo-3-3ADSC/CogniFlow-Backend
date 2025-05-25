@@ -106,6 +106,10 @@ public class UsuarioService {
             usuario.setEmail(dto.getEmail());
         }
 
+        if(dto.getCargo() != null){
+            usuario.setCargo(dto.getCargo());
+        }
+
         return usuarioRepository.save(usuario);
     }
 
