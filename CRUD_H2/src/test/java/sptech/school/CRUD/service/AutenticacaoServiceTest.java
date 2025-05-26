@@ -69,6 +69,6 @@ class AutenticacaoServiceTest {
         assertEquals("usuario: emailInexistente@email.com não encontrado", exception.getMessage());
         verify(usuarioRepository).findByEmail("emailInexistente@email.com");
     }
-
+    
 
 }

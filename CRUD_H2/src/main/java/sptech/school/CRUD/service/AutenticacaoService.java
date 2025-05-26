@@ -34,4 +34,5 @@ public class AutenticacaoService implements UserDetailsService {
                 usuario.getPassword()
         );
     }
+
 }
