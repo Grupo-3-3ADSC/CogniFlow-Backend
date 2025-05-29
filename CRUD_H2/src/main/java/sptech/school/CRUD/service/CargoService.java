@@ -22,6 +22,7 @@ public class CargoService {
 
     public CargoModel post(CargoModel cargo) {
 
+
         if(cargo == null) {
             return null;
         }

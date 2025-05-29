@@ -28,15 +28,13 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final CargoRepository cargoRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private GerenciadorTokenJwt gerenciadorTokenJwt;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private GerenciadorTokenJwt gerenciadorTokenJwt;
 
     public List<UsuarioModel> getAll() {
         return usuarioRepository.findByAtivoTrue();
@@ -48,8 +46,16 @@ public class UsuarioService {
     }
 
     public UsuarioModel cadastrarUsuarioComum(UsuarioModel usuario) {
-        CargoModel cargo = cargoRepository.findByNome("comum");
+        Optional<UsuarioModel> usuarioExistente = usuarioRepository.findByEmail(usuario.getEmail());
+        if (usuarioExistente.isPresent()) {
+            throw new RuntimeException("Email já cadastrado");
+        }
+        if (usuario.getPassword() == null || usuario.getPassword().length() < 6) {
+            throw new RuntimeException("Senha deve ter pelo menos 6 caracteres");
+        }
 
+        // Continua o cadastro normalmente
+        CargoModel cargo = cargoRepository.findByNome("comum");
         String senhaCriptografada = passwordEncoder.encode(usuario.getPassword());
 
         usuario.setPassword(senhaCriptografada);
@@ -58,10 +64,19 @@ public class UsuarioService {
     }
 
     public UsuarioModel cadastrarUsuarioGestor(UsuarioModel usuario) {
+        Optional<UsuarioModel> usuarioExistente = usuarioRepository.findByEmail(usuario.getEmail());
+        if (usuarioExistente.isPresent()) {
+            throw new RuntimeException("Email já cadastrado");
+        }
+        if (usuario.getPassword() == null || usuario.getPassword().length() < 6) {
+            throw new RuntimeException("Senha deve ter pelo menos 6 caracteres");
+        }
 
+
+        // Continua o cadastro normalmente
         CargoModel cargo = cargoRepository.findByNome("gestor");
 
-        if(cargo == null) {
+        if (cargo == null) {
             return null;
         }
 
@@ -73,6 +88,23 @@ public class UsuarioService {
     }
 
     public UsuarioModel put(UsuarioModel usuarioParaAtualizar, int id) {
+
+        if ((usuarioParaAtualizar.getNome() == null || usuarioParaAtualizar.getNome().trim().isEmpty()) &&
+                (usuarioParaAtualizar.getEmail() == null || usuarioParaAtualizar.getEmail().trim().isEmpty())) {
+            throw new RuntimeException("Nome e email não podem estar vazios");
+        }
+
+        UsuarioModel usuarioExistente = usuarioRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontrado("Usuario de id %d não encontrado".formatted(id)));
+
+        if (usuarioParaAtualizar.getNome() == null || usuarioParaAtualizar.getNome().trim().isEmpty()) {
+            usuarioParaAtualizar.setNome(usuarioExistente.getNome());
+        }
+
+        if (usuarioParaAtualizar.getEmail() == null || usuarioParaAtualizar.getEmail().trim().isEmpty()) {
+            usuarioParaAtualizar.setEmail(usuarioExistente.getEmail());
+        }
+
         if (usuarioRepository.existsById(id)) {
             usuarioParaAtualizar.setId(id);
             usuarioParaAtualizar.setUpdatedAt(LocalDateTime.now());
@@ -85,11 +117,15 @@ public class UsuarioService {
 
     public Optional<UsuarioModel> delete(int id) {
         Optional<UsuarioModel> usuario = usuarioRepository.findById(id);
-        usuario.get().setUpdatedAt(LocalDateTime.now());
-        usuario.get().setAtivo(false);
-        usuarioRepository.save(usuario.get());
-        return usuario;
 
+        if (usuario.isPresent()) {
+            usuario.get().setUpdatedAt(LocalDateTime.now());
+            usuario.get().setAtivo(false);
+            usuarioRepository.save(usuario.get());
+            return usuario;
+        }
+
+        return Optional.empty();
 
     }
 
