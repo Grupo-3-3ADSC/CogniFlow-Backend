@@ -169,4 +169,10 @@ public class UsuarioController {
         usuarioService.atualizarSenha(id, request.getPassword());
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/buscar-por-email/{email}")
+    public ResponseEntity<UsuarioModel> buscarPorEmail(@PathVariable String email) {
+        UsuarioModel usuario = usuarioService.buscarPorEmail(email);
+        return ResponseEntity.ok(usuario);
+    }
 }
