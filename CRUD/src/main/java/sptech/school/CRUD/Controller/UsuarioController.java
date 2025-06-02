@@ -160,4 +160,13 @@ public class UsuarioController {
                 .map(foto -> ResponseEntity.ok().body(foto))
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @PutMapping("/{id}/senha") // Adicione o path completo
+    public ResponseEntity<Void> atualizarSenha(
+            @PathVariable Integer id, // Corrigido: Integer em vez de String
+            @RequestBody @Valid UsuarioSenhaAtualizada request // DTO para receber a senha
+    ){
+        usuarioService.atualizarSenha(id, request.getPassword());
+        return ResponseEntity.noContent().build();
+    }
 }

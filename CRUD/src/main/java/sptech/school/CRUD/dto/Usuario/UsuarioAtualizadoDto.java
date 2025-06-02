@@ -10,6 +10,8 @@ import lombok.*;
 @NoArgsConstructor
 public class UsuarioAtualizadoDto {
 
+
+    private Integer id;
     @NotBlank
     private String nome;
     @NotBlank
