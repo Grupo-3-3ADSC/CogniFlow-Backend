@@ -32,4 +32,30 @@ public class EstoqueController {
         return ResponseEntity.status(201).body(novoEstoque);
 
     }
+    @PostMapping("/adicionar")
+    public ResponseEntity<EstoqueModel> adicionarEstoque(@RequestBody EstoqueModel request) {
+        try {
+            EstoqueModel estoque = estoqueService.atualizarEstoque(
+                    request.getTipoMaterial(),
+                    request.getQuantidadeAtual()
+            );
+            return ResponseEntity.ok(estoque);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    @PostMapping("/retirar")
+    public ResponseEntity<EstoqueModel> retirarEstoque(@RequestBody EstoqueModel request) {
+        try {
+            EstoqueModel estoque = estoqueService.retirarEstoque(
+                    request.getTipoMaterial(),
+                    request.getQuantidadeAtual()
+            );
+            return ResponseEntity.ok(estoque);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+
 }

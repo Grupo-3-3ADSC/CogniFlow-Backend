@@ -1,6 +1,7 @@
 package sptech.school.CRUD.dto.OrdemDeCompra;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -31,6 +32,11 @@ public class OrdemDeCompraCadastroDto {
     private Integer quantidade;
     @NotBlank
     private Double ipi;
-
+    @NotNull
+    private Integer fornecedorId;
+    @NotNull
+    private Integer estoqueId;
+    @NotNull
+    private Integer usuarioId;
 
 }
