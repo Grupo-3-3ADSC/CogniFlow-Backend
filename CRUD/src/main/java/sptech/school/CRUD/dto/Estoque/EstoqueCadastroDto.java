@@ -12,7 +12,7 @@ import lombok.*;
 public class EstoqueCadastroDto {
 
     @NotBlank
-    private String materiaPrima;
+    private String tipoMaterial;
 
     @NotNull
     private Integer quantidadeAtual;

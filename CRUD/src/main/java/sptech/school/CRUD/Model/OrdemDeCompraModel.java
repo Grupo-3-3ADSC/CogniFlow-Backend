@@ -25,9 +25,6 @@ public class OrdemDeCompraModel {
     private Integer quantidade;
     private Double ipi;
 
-//    @ManyToOne
-//    @JoinColumn(name = "materia_prima_id")
-//    private TipoMateriaPrimaModel materiaPrima;
     @ManyToOne
     @JoinColumn(name = "fornecedor_id")
     private FornecedorModel fornecedor;

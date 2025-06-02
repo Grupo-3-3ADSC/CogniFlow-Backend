@@ -8,6 +8,7 @@ import sptech.school.CRUD.Repository.EstoqueRepository;
 import sptech.school.CRUD.Repository.OrdemDeCompraRepository;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +33,25 @@ public class OrdemDeCompraService {
             estoqueRepository.save(estoque);
         }
         return ordemSalva;
+    }
+
+    private void atulizarEstoque(String tipoMaterial, Integer quantidade){
+        Optional<EstoqueModel> estoqueOpt = estoqueRepository.findByTipoMaterial(tipoMaterial);
+
+        EstoqueModel estoque;
+        if (estoqueOpt.isPresent()){
+
+            estoque = estoqueOpt.get();
+            estoque.setQuantidadeAtual(estoque.getQuantidadeAtual() + quantidade);
+            return;
+        }else {
+            estoque = new EstoqueModel();
+            estoque.setTipoMaterial(tipoMaterial);
+            estoque.setQuantidadeAtual(quantidade);
+        }
+        estoque.setUltimaMovimentacao(LocalDateTime.now());
+        estoqueRepository.save(estoque);
+
     }
 
 

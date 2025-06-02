@@ -27,7 +27,7 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        if(cargoRepository.count() == 0) {
+        if (cargoRepository.count() == 0) {
 
             CargoModel comum = new CargoModel();
             comum.setNome("comum");
@@ -39,7 +39,7 @@ public class DataInitializer implements CommandLineRunner {
         }
 
 
-        if(usuarioRepository.count() == 0) {
+        if (usuarioRepository.count() == 0) {
 
             UsuarioModel john = new UsuarioModel();
             john.setNome("John Doe");
@@ -64,7 +64,7 @@ public class DataInitializer implements CommandLineRunner {
 
         }
 
-        if(fornecedorRepository.count() == 0){
+        if (fornecedorRepository.count() == 0) {
             FornecedorModel fornecedor = new FornecedorModel();
             fornecedor.setCnpj("12345678901234");
             fornecedor.setNomeFantasia("teste");
@@ -97,7 +97,8 @@ public class DataInitializer implements CommandLineRunner {
 
     }
 
-
-
     }
+
+
+
 
