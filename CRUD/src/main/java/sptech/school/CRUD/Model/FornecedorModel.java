@@ -12,6 +12,7 @@ import lombok.Setter;
 @Entity
 public class FornecedorModel {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

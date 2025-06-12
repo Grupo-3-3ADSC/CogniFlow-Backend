@@ -44,18 +44,22 @@ public class EstoqueController {
             return ResponseEntity.badRequest().build();
         }
     }
-    @PostMapping("/retirar")
-    public ResponseEntity<EstoqueModel> retirarEstoque(@RequestBody EstoqueModel request) {
+    @PutMapping("/retirar/{tipoMaterial}/{quantidadeAtual}")
+    public ResponseEntity<EstoqueModel> retirarEstoque(
+            @PathVariable String tipoMaterial,
+            @PathVariable Integer quantidadeAtual) {
         try {
-            EstoqueModel estoque = estoqueService.retirarEstoque(
-                    request.getTipoMaterial(),
-                    request.getQuantidadeAtual()
-            );
-            return ResponseEntity.ok(estoque);
-        } catch (RuntimeException e) {
+            EstoqueModel estoqueAtualizado = estoqueService.retirarEstoque(tipoMaterial, quantidadeAtual);
+            return ResponseEntity.ok(estoqueAtualizado);
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.unprocessableEntity().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
+
 
 
 }

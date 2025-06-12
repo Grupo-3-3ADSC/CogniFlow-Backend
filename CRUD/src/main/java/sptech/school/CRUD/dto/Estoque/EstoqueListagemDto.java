@@ -18,4 +18,6 @@ public class EstoqueListagemDto {
     private Integer quantidadeMinima;
     @NotNull
     private Integer quantidadeMaxima;
+    @NotBlank
+    private String tipoTransferencia;
 }

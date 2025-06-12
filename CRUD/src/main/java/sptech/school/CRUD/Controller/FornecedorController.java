@@ -1,10 +1,10 @@
 package sptech.school.CRUD.Controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import sptech.school.CRUD.Model.EstoqueModel;
 import sptech.school.CRUD.Model.FornecedorModel;
+import sptech.school.CRUD.dto.Fornecedor.FornecedorCadastroDto;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorListagemDto;
 import sptech.school.CRUD.service.FornecedorService;
 
@@ -18,6 +18,15 @@ public class FornecedorController {
 
     public FornecedorController(FornecedorService fornecedorService) {
         this.fornecedorService = fornecedorService;
+    }
+
+    @PostMapping
+    public ResponseEntity cadastrarFornecedor(@RequestBody FornecedorCadastroDto fornecedor){
+
+        FornecedorModel novoFornecedor = fornecedorService.cadastroFornecedor(fornecedor);
+
+        return ResponseEntity.status(201).body(novoFornecedor);
+
     }
 
     @GetMapping

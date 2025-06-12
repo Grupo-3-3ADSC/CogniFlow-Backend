@@ -16,6 +16,7 @@ public class EstoqueMapper {
                 .quantidadeAtual(entity.getQuantidadeAtual())
                 .quantidadeMinima(entity.getQuantidadeMinima())
                 .quantidadeMaxima(entity.getQuantidadeMaxima())
+//                .tipoTransferencia(entity.getTipoTransferencia())
                 .build();
     }
     public static EstoqueModel toEntity(EstoqueCadastroDto dto) {
@@ -29,6 +30,7 @@ public class EstoqueMapper {
         entity.setQuantidadeMinima(dto.getQuantidadeMinima());
         entity.setQuantidadeMaxima(dto.getQuantidadeMaxima());
         entity.setUltimaMovimentacao(LocalDateTime.now());
+//        entity.setTipoTransferencia(dto.getTipoTransferencia());
 
         return entity;
     }

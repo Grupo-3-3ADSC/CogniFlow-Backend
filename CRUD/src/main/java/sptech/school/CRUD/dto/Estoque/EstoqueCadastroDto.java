@@ -22,4 +22,8 @@ public class EstoqueCadastroDto {
 
     @NotNull
     private Integer quantidadeMaxima;
+
+    @NotBlank
+    private String tipoTransferencia;
+
 }
