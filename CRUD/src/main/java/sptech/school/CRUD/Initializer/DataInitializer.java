@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import sptech.school.CRUD.Model.*;
 import sptech.school.CRUD.Repository.*;
 
+import java.time.LocalDateTime;
+
 @Configuration
 public class DataInitializer implements CommandLineRunner {
 
@@ -72,23 +74,31 @@ public class DataInitializer implements CommandLineRunner {
             fornecedorRepository.save(fornecedor);
         }
 
-
         if (estoqueRepository.count() == 0) {
             EstoqueModel model1 = new EstoqueModel();
 
             model1.setTipoMaterial("SAE 1020");
-            model1.setQuantidadeMinima(10);
-            model1.setQuantidadeMaxima(100000);
+            model1.setQuantidadeMinima(300);
+            model1.setQuantidadeMaxima(10000);
+            model1.setQuantidadeAtual(1800);
+            model1.setUltimaMovimentacao(LocalDateTime.now());
+            model1.setTipoTransferencia("Interna");
 
             EstoqueModel model2 = new EstoqueModel();
             model2.setTipoMaterial("SAE 1045");
-            model2.setQuantidadeMinima(10);
-            model2.setQuantidadeMaxima(100000);
+            model2.setQuantidadeMinima(400);
+            model2.setQuantidadeMaxima(10000);
+            model2.setQuantidadeAtual(200);
+            model2.setUltimaMovimentacao(LocalDateTime.now());
+            model2.setTipoTransferencia("Externa");
 
             EstoqueModel model3 = new EstoqueModel();
             model3.setTipoMaterial("HARDOX 450");
-            model3.setQuantidadeMinima(10);
-            model3.setQuantidadeMaxima(100000);
+            model3.setQuantidadeMinima(150);
+            model3.setQuantidadeMaxima(10000);
+            model3.setQuantidadeAtual(7500);
+            model3.setUltimaMovimentacao(LocalDateTime.now());
+            model3.setTipoTransferencia("Interna");
 
             estoqueRepository.save(model1);
             estoqueRepository.save(model2);
