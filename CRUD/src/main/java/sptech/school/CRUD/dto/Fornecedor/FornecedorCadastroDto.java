@@ -18,4 +18,14 @@ public class FornecedorCadastroDto {
     private String razaoSocial;
     @NotBlank
     private String nomeFantasia;
+    @NotBlank
+    private String cep;
+    @NotBlank
+    private String endereco;
+    @NotBlank
+    private String numero;
+    @NotBlank
+    private String telefone;
+    @NotBlank
+    private String email;
 }
