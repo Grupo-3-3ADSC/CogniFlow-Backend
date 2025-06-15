@@ -33,7 +33,8 @@ public class EstoqueService {
 
 
 
-        public EstoqueModel atualizarEstoque(String tipoMaterial, Integer quantidade) {
+        public EstoqueModel atualizarEstoque(String tipoMaterial, Integer quantidade
+        ) {
             // Validações
             if (tipoMaterial == null || tipoMaterial.trim().isEmpty()) {
                 throw new IllegalArgumentException("Tipo de material não pode ser nulo ou vazio");
@@ -56,19 +57,30 @@ public class EstoqueService {
                 estoque.setQuantidadeAtual(quantidade);
                 estoque.setQuantidadeMinima(10);
                 estoque.setQuantidadeMaxima(1000);
+                estoque.setInterno(0);
+                estoque.setExterno(0);
             }
+
 
             estoque.setUltimaMovimentacao(LocalDateTime.now());
             return estoqueRepository.save(estoque);
         }
 
 
-    public EstoqueModel retirarEstoque(String tipoMaterial, Integer quantidadeAtual) {
+    public EstoqueModel retirarEstoque(String tipoMaterial, Integer quantidadeAtual, String tipoTransferencia) {
+        System.out.println("=== DEBUG SERVICE ===");
+        System.out.println("tipoMaterial: " + tipoMaterial);
+        System.out.println("quantidadeAtual: " + quantidadeAtual);
+        System.out.println("tipoTransferencia: " + tipoTransferencia);
+
         if (tipoMaterial == null || tipoMaterial.trim().isEmpty()) {
             throw new IllegalArgumentException("Tipo de material não pode ser nulo ou vazio");
         }
         if (quantidadeAtual == null || quantidadeAtual <= 0) {
             throw new IllegalArgumentException("Quantidade deve ser positiva");
+        }
+        if (tipoTransferencia == null || tipoTransferencia.trim().isEmpty()) {
+            throw new IllegalArgumentException("Tipo de transferência não pode ser nulo ou vazio");
         }
 
         Optional<EstoqueModel> estoqueOpt = estoqueRepository.findByTipoMaterial(tipoMaterial);
@@ -84,9 +96,24 @@ public class EstoqueService {
                     estoque.getQuantidadeAtual() + ", Solicitado: " + quantidadeAtual);
         }
 
+        // Atualiza a quantidade atual
         estoque.setQuantidadeAtual(estoque.getQuantidadeAtual() - quantidadeAtual);
         estoque.setUltimaMovimentacao(LocalDateTime.now());
 
-        return estoqueRepository.save(estoque);
+        // Incrementa o contador baseado no tipo de transferência
+        if ("Externa".equalsIgnoreCase(tipoTransferencia)) {
+            estoque.setExterno(estoque.getExterno() != null ? estoque.getExterno() + 1 : 1);
+            System.out.println("Incrementando contador externo para: " + estoque.getExterno());
+        } else if ("Interna".equalsIgnoreCase(tipoTransferencia)) {
+            estoque.setInterno(estoque.getInterno() != null ? estoque.getInterno() + 1 : 1);
+            System.out.println("Incrementando contador interno para: " + estoque.getInterno());
+        } else {
+            throw new IllegalArgumentException("Tipo de transferência inválido: " + tipoTransferencia);
+        }
+
+        EstoqueModel estoqueAtualizado = estoqueRepository.save(estoque);
+        System.out.println("Estoque salvo com sucesso: " + estoqueAtualizado.getId());
+
+        return estoqueAtualizado;
     }
 }

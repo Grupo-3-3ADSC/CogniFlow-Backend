@@ -38,18 +38,20 @@ public class EstoqueController {
             EstoqueModel estoque = estoqueService.atualizarEstoque(
                     request.getTipoMaterial(),
                     request.getQuantidadeAtual()
+
             );
             return ResponseEntity.ok(estoque);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
     }
-    @PutMapping("/retirar/{tipoMaterial}/{quantidadeAtual}")
+    @PutMapping("/retirar/{tipoMaterial}/{quantidadeAtual}/{tipoTransferencia}")
     public ResponseEntity<EstoqueModel> retirarEstoque(
             @PathVariable String tipoMaterial,
-            @PathVariable Integer quantidadeAtual) {
+            @PathVariable Integer quantidadeAtual,
+            @PathVariable String tipoTransferencia) {
         try {
-            EstoqueModel estoqueAtualizado = estoqueService.retirarEstoque(tipoMaterial, quantidadeAtual);
+            EstoqueModel estoqueAtualizado = estoqueService.retirarEstoque(tipoMaterial, quantidadeAtual, tipoTransferencia);
             return ResponseEntity.ok(estoqueAtualizado);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();

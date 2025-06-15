@@ -82,7 +82,7 @@ public class DataInitializer implements CommandLineRunner {
             model1.setQuantidadeMaxima(10000);
             model1.setQuantidadeAtual(1800);
             model1.setUltimaMovimentacao(LocalDateTime.now());
-            model1.setTipoTransferencia("Interna");
+//            model1.setTipoTransferencia("Interna");
 
             EstoqueModel model2 = new EstoqueModel();
             model2.setTipoMaterial("SAE 1045");
@@ -90,7 +90,7 @@ public class DataInitializer implements CommandLineRunner {
             model2.setQuantidadeMaxima(10000);
             model2.setQuantidadeAtual(200);
             model2.setUltimaMovimentacao(LocalDateTime.now());
-            model2.setTipoTransferencia("Externa");
+//            model2.setTipoTransferencia("Externa");
 
             EstoqueModel model3 = new EstoqueModel();
             model3.setTipoMaterial("HARDOX 450");
@@ -98,7 +98,7 @@ public class DataInitializer implements CommandLineRunner {
             model3.setQuantidadeMaxima(10000);
             model3.setQuantidadeAtual(7500);
             model3.setUltimaMovimentacao(LocalDateTime.now());
-            model3.setTipoTransferencia("Interna");
+//            model3.setTipoTransferencia("Interna");
 
             estoqueRepository.save(model1);
             estoqueRepository.save(model2);
