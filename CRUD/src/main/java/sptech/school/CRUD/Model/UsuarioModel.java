@@ -31,6 +31,14 @@ public class UsuarioModel {
     @JoinColumn(name = "cargo_id")
     private CargoModel cargo;
 
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
     public UsuarioModel(@NotBlank String nome, @NotBlank String email, @NotBlank String password) {
     }
+
+
+
 }

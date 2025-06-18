@@ -8,7 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import sptech.school.CRUD.Model.CargoModel;
@@ -21,11 +20,8 @@ import sptech.school.CRUD.dto.Usuario.UsuarioPatchDto;
 import sptech.school.CRUD.dto.Usuario.UsuarioTokenDto;
 import sptech.school.CRUD.exception.EntidadeNaoEncontrado;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -166,6 +162,37 @@ public class UsuarioService {
         final String token = gerenciadorTokenJwt.generateToken(authentication);
 
         return UsuarioMapper.of(usuarioAutenticado, token);
+    }
+
+    public UsuarioModel atualizarSenha(Integer id, String password){
+        // Validação de entrada
+        if (password == null || password.trim().isEmpty()) {
+            throw new IllegalArgumentException("Senha não pode estar vazia");
+        }
+
+        // Buscar usuário
+        UsuarioModel usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontrado("Usuário não encontrado com ID: " + id));
+
+        // Verificar se usuário está ativo
+        if (!usuario.getAtivo()) {
+            throw new IllegalStateException("Não é possível atualizar senha de usuário inativo");
+        }
+
+        // Criptografar a senha (MUITO IMPORTANTE!)
+        String senhaCriptografada = passwordEncoder.encode(password);
+
+        // Atualizar senha e timestamp
+        usuario.setPassword(senhaCriptografada);
+        usuario.setUpdatedAt(LocalDateTime.now());
+
+        // Salvar no banco
+        return usuarioRepository.save(usuario);
+    }
+
+    public UsuarioModel buscarPorEmail(String email) {
+        return usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new EntidadeNaoEncontrado("Usuário não encontrado"));
     }
 
 }
