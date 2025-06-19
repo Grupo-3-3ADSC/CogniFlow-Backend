@@ -3,9 +3,11 @@ package sptech.school.CRUD.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import sptech.school.CRUD.Repository.CargoRepository;
 import sptech.school.CRUD.Repository.UsuarioRepository;
@@ -20,12 +22,10 @@ import static org.mockito.Mockito.*;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@ExtendWith(MockitoExtension.class)
 class UsuarioServiceTest {
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+
     @InjectMocks
     private UsuarioService usuarioService;
 
@@ -58,8 +58,7 @@ class UsuarioServiceTest {
 
         // Action /Assert
         // Simular findById do cargo
-        when(cargoRepository.findById(any())).thenReturn(Optional.of(cargo));
-
+        when(cargoRepository.findByNome("comum")).thenReturn(cargo);
         // Simular o usuário salvo no banco
         UsuarioModel usuarioSalvo = new UsuarioModel();
         usuarioSalvo.setId(1);
@@ -74,7 +73,7 @@ class UsuarioServiceTest {
         when(usuarioRepository.save(any())).thenReturn(usuarioSalvo);
 
         // Executar o método
-        UsuarioModel resultado = usuarioService.cadastrarUsuarioComum(usuario);
+            UsuarioModel resultado = usuarioService.cadastrarUsuarioComum(usuario);
 
         //Assert
         // Verificações
@@ -194,8 +193,7 @@ class UsuarioServiceTest {
                 .password("abcdefg")
                 .build();
 
-        when(cargoRepository.findByNome("funcionário")).thenReturn(null);
-
+        when(cargoRepository.findByNome("comum")).thenReturn(null);
         // Act
         UsuarioModel resultado = usuarioService.cadastrarUsuarioComum(usuario);
 
@@ -324,9 +322,9 @@ class UsuarioServiceTest {
         usuarioAtualizado.setEmail("matheussouza@email.com");
         usuarioAtualizado.setPassword("senhaNova");
 
-        when(usuarioRepository.existsById(1)).thenReturn(true);
-        when(usuarioRepository.findById(1)).thenReturn(Optional.of(usuarioExistente)); // 🔥 Adicione esta linha
-        when(usuarioRepository.save(any())).thenReturn(usuarioAtualizado);
+        lenient().when(usuarioRepository.existsById(1)).thenReturn(true);
+        lenient().when(usuarioRepository.findById(1)).thenReturn(Optional.of(usuarioExistente));
+        lenient().when(usuarioRepository.save(any())).thenReturn(usuarioAtualizado);
 
         // Act
         UsuarioModel resultado = usuarioService.put(usuarioAtualizado, 1);
@@ -348,11 +346,12 @@ class UsuarioServiceTest {
         usuarioExistente.setNome("Antigo Nome");
         usuarioExistente.setEmail("email@email.com");
 
-        when(usuarioRepository.existsById(1)).thenReturn(true);
-        when(usuarioRepository.findById(1)).thenReturn(Optional.of(usuarioExistente));
+        lenient().when(usuarioRepository.existsById(1)).thenReturn(true);
+        lenient().when(usuarioRepository.findById(1)).thenReturn(Optional.of(usuarioExistente));
 
         UsuarioModel usuarioAtualizado = new UsuarioModel();
         usuarioAtualizado.setNome("Novo Nome");
+        usuarioAtualizado.setEmail("emailnovo@email.com");
 
         when(usuarioRepository.save(any())).thenAnswer(invocation -> {
             UsuarioModel usuarioSalvo = invocation.getArgument(0);
@@ -367,6 +366,7 @@ class UsuarioServiceTest {
         assertEquals("Novo Nome", resultado.getNome());  // ✅ Agora garantimos que o nome foi atualizado
         verify(usuarioRepository).save(any());
     }
+
 
     @Test
     @DisplayName("Atualizar usuário - dados inválidos")

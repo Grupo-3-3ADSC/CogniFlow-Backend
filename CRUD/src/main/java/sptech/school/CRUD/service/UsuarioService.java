@@ -30,9 +30,7 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final CargoRepository cargoRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     private GerenciadorTokenJwt gerenciadorTokenJwt;
@@ -50,6 +48,15 @@ public class UsuarioService {
     }
 
     public UsuarioModel cadastrarUsuarioComum(UsuarioModel usuario) {
+
+        Optional<UsuarioModel> existente = usuarioRepository.findByEmail(usuario.getEmail());
+        if (existente.isPresent()) {
+            throw new RuntimeException("Email já cadastrado");
+        }
+        if (usuario.getPassword() == null || usuario.getPassword().length() < 6) {
+            throw new RuntimeException("Senha deve ter pelo menos 6 caracteres");
+        }
+
         CargoModel cargo = cargoRepository.findByNome("comum");
 
         String senhaCriptografada = passwordEncoder.encode(usuario.getPassword());
@@ -60,6 +67,14 @@ public class UsuarioService {
     }
 
     public UsuarioModel cadastrarUsuarioGestor(UsuarioModel usuario) {
+
+        Optional<UsuarioModel> existente = usuarioRepository.findByEmail(usuario.getEmail());
+        if (existente.isPresent()) {
+            throw new RuntimeException("Email já cadastrado");
+        }
+        if (usuario.getPassword() == null || usuario.getPassword().length() < 6) {
+            throw new RuntimeException("Senha deve ter pelo menos 6 caracteres");
+        }
 
         CargoModel cargo = cargoRepository.findByNome("gestor");
 
@@ -76,6 +91,18 @@ public class UsuarioService {
 
     public UsuarioModel put(UsuarioModel usuarioParaAtualizar, int id) {
         if (usuarioRepository.existsById(id)) {
+            // Validações de dados obrigatórios
+            boolean nomeVazio = usuarioParaAtualizar.getNome() == null || usuarioParaAtualizar.getNome().trim().isEmpty();
+            boolean emailVazio = usuarioParaAtualizar.getEmail() == null || usuarioParaAtualizar.getEmail().trim().isEmpty();
+
+            if (nomeVazio && emailVazio) {
+                throw new RuntimeException("Nome e email não podem estar vazios");
+            } else if (nomeVazio) {
+                throw new RuntimeException("Nome não pode estar vazio");
+            } else if (emailVazio) {
+                throw new RuntimeException("Email não pode estar vazio");
+            }
+
             usuarioParaAtualizar.setId(id);
             usuarioParaAtualizar.setUpdatedAt(LocalDateTime.now());
             UsuarioModel usuario = usuarioRepository.save(usuarioParaAtualizar);
@@ -111,6 +138,11 @@ public class UsuarioService {
 
     public Optional<UsuarioModel> delete(int id) {
         Optional<UsuarioModel> usuario = usuarioRepository.findById(id);
+
+        if (usuario.isEmpty()) {
+            return Optional.empty();
+        }
+
         usuario.get().setUpdatedAt(LocalDateTime.now());
         usuario.get().setAtivo(false);
         usuarioRepository.save(usuario.get());
