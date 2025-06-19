@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import sptech.school.CRUD.Model.EstoqueModel;
 import sptech.school.CRUD.Model.FornecedorModel;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorCadastroDto;
+import sptech.school.CRUD.dto.Fornecedor.FornecedorCompletoDTO;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorListagemDto;
 import sptech.school.CRUD.service.FornecedorService;
 
@@ -40,6 +41,12 @@ public class FornecedorController {
     public ResponseEntity<List<FornecedorModel>> getAll() {
 
         return ResponseEntity.ok().body(fornecedorService.getAll());
+    }
+
+    @GetMapping("/top5")
+    public ResponseEntity<List<FornecedorCompletoDTO>> getTop5Fornecedores() {
+        List<FornecedorCompletoDTO> fornecedores = fornecedorService.buscarTop5Fornecedores();
+        return ResponseEntity.ok(fornecedores);
     }
 
 }

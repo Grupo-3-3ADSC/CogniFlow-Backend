@@ -20,9 +20,6 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private FornecedorRepository fornecedorRepository;
 
-//    @Autowired
-//    private TipoMaterialPrimaRepository materialPrimaRepository;
-
     @Autowired
     private EstoqueRepository estoqueRepository;
 
@@ -50,20 +47,6 @@ public class DataInitializer implements CommandLineRunner {
             john.setCargo(cargoRepository.findByNome("gestor"));
             usuarioRepository.save(john);
 
-            UsuarioModel comum = new UsuarioModel();
-            comum.setNome("testeComum");
-            comum.setCargo(cargoRepository.findByNome("comum"));
-            comum.setEmail("comum@gmail.com");
-            comum.setPassword("123456");
-            usuarioRepository.save(comum);
-
-            UsuarioModel gestor = new UsuarioModel();
-            gestor.setNome("testeGestor");
-            gestor.setEmail("gestor@gmail.com");
-            gestor.setPassword("123456");
-            gestor.setCargo(cargoRepository.findByNome("gestor"));
-            usuarioRepository.save(gestor);
-
         }
 
         if (fornecedorRepository.count() == 0) {
@@ -82,7 +65,8 @@ public class DataInitializer implements CommandLineRunner {
             model1.setQuantidadeMaxima(10000);
             model1.setQuantidadeAtual(1800);
             model1.setUltimaMovimentacao(LocalDateTime.now());
-//            model1.setTipoTransferencia("Interna");
+            model1.setInterno(2);
+            model1.setExterno(5);
 
             EstoqueModel model2 = new EstoqueModel();
             model2.setTipoMaterial("SAE 1045");
@@ -90,7 +74,8 @@ public class DataInitializer implements CommandLineRunner {
             model2.setQuantidadeMaxima(10000);
             model2.setQuantidadeAtual(200);
             model2.setUltimaMovimentacao(LocalDateTime.now());
-//            model2.setTipoTransferencia("Externa");
+            model2.setExterno(8);
+            model2.setInterno(3);
 
             EstoqueModel model3 = new EstoqueModel();
             model3.setTipoMaterial("HARDOX 450");
@@ -98,13 +83,13 @@ public class DataInitializer implements CommandLineRunner {
             model3.setQuantidadeMaxima(10000);
             model3.setQuantidadeAtual(7500);
             model3.setUltimaMovimentacao(LocalDateTime.now());
-//            model3.setTipoTransferencia("Interna");
+            model3.setExterno(2);
+            model3.setInterno(7);
 
             estoqueRepository.save(model1);
             estoqueRepository.save(model2);
             estoqueRepository.save(model3);
         }
-
     }
 
     }
