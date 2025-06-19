@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -24,6 +25,7 @@ public class OrdemDeCompraModel {
     private Double valorUnitario;
     private Integer quantidade;
     private Double ipi;
+    private LocalDateTime dataDeEmissao;
     @Column(name = "fornecedor_id")
     private Integer fornecedorId;
 
