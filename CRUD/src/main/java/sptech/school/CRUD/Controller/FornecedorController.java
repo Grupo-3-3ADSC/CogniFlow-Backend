@@ -49,4 +49,10 @@ public class FornecedorController {
         return ResponseEntity.ok(fornecedores);
     }
 
+    @GetMapping("/listarFornecedorCompleto")
+    public ResponseEntity<List<FornecedorCompletoDTO>> getFornecedorCompleto() {
+        List<FornecedorCompletoDTO> fornecedores = fornecedorService.fornecedorCompleto();
+        return ResponseEntity.ok(fornecedores);
+    }
+
 }

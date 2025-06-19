@@ -32,4 +32,23 @@ public class FornecedorMapper {
 
         return entity;
     }
+    public static FornecedorCompletoDTO fornecedorCompleto(FornecedorCompletoDTO dto){
+        if (dto == null){
+            return null;
+        }
+
+        FornecedorCompletoDTO entity = new FornecedorCompletoDTO();
+        entity.setFornecedorId(dto.getFornecedorId());
+        entity.setCnpj(dto.getCnpj());
+        entity.setRazaoSocial(dto.getRazaoSocial());
+        entity.setNomeFantasia(dto.getNomeFantasia());
+        entity.setEnderecoId(dto.getEnderecoId());
+        entity.setCep(dto.getCep());
+        entity.setNumero(dto.getNumero());
+        entity.setComplemento(dto.getComplemento());
+        entity.setContatoId(dto.getContatoId());
+        entity.setTelefone(dto.getTelefone());
+        entity.setEmail(dto.getEmail());
+        return entity;
+    }
 }
