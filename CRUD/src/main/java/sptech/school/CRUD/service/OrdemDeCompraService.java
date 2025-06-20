@@ -14,6 +14,7 @@ import sptech.school.CRUD.dto.OrdemDeCompra.OrdemDeCompraCadastroDto;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -82,4 +83,6 @@ public class OrdemDeCompraService {
 
         return ordemSalva;
     }
+
+    public List<OrdemDeCompraModel> getAll(){return ordemDeCompraRepository.findAll();}
 }
