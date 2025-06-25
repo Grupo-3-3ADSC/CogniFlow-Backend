@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
@@ -53,14 +54,15 @@ public class UsuarioController {
                             schema = @Schema(implementation = ErrorResponse.class)))
     })
 
-    public ResponseEntity<UsuarioModel> getById(@PathVariable Integer id) {
-        try {
-            UsuarioModel usuario = usuarioService.getById(id);
-            return ResponseEntity.ok(usuario);
-        } catch (EntidadeNaoEncontrado ex) {
 
-            System.out.println("Erro ao buscar usuário: " + ex.getMessage());
-            throw ex;
+//    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<UsuarioModel> getById(@PathVariable Integer id) {
+        UsuarioModel usuario = usuarioService.getById(id);
+        if (usuario != null){
+
+            return ResponseEntity.ok(usuario);
+        } else {
+            throw new RuntimeException("usuario nao encontrado");
         }
     }
 
@@ -89,6 +91,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
+
     public ResponseEntity<UsuarioTokenDto> login(@RequestBody UsuarioLoginDto usuarioLoginDto){
 
         final UsuarioModel usuario = UsuarioMapper.of(usuarioLoginDto);
@@ -98,6 +101,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<UsuarioModel> atualizar(
             @PathVariable Integer id,
             @RequestBody UsuarioModel usuarioParaAtualizar
@@ -113,6 +117,7 @@ public class UsuarioController {
     }
 
     @PatchMapping("/{id}")
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<UsuarioModel> atualizarParcial(
             @PathVariable Integer id,
             @RequestBody UsuarioPatchDto campos
@@ -127,6 +132,7 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{id}")
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<UsuarioModel> deletar(
             @PathVariable Integer id
     ){
@@ -155,10 +161,17 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}/foto")
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<byte[]> getFoto(@PathVariable Integer id) {
         return usuarioService.buscarFoto(id)
-                .map(foto -> ResponseEntity.ok().body(foto))
+
+                .map(foto -> ResponseEntity.ok()
+                        .header(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate")
+                        .header(HttpHeaders.PRAGMA, "no-cache")
+                        .header(HttpHeaders.EXPIRES, "0")
+                        .body(foto))
                 .orElse(ResponseEntity.notFound().build());
+
     }
 
     @PutMapping("/{id}/senha") // Adicione o path completo
