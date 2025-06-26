@@ -10,6 +10,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EstoqueListagemDto {
+
+
     @NotBlank
     private String tipoMaterial;
     @NotNull
@@ -18,6 +20,8 @@ public class EstoqueListagemDto {
     private Integer quantidadeMinima;
     @NotNull
     private Integer quantidadeMaxima;
-    @NotBlank
-    private String tipoTransferencia;
+    @NotNull
+    private Integer interna;
+    @NotNull
+    private Integer externa;
 }

@@ -16,10 +16,11 @@ public class EstoqueMapper {
                 .quantidadeAtual(entity.getQuantidadeAtual())
                 .quantidadeMinima(entity.getQuantidadeMinima())
                 .quantidadeMaxima(entity.getQuantidadeMaxima())
-//                .tipoTransferencia(entity.getTipoTransferencia())
+                .externa(entity.getExterno())
+                .interna(entity.getInterno())
                 .build();
     }
-    public static EstoqueModel toEntity(EstoqueCadastroDto dto) {
+    public static EstoqueModel toCadastro(EstoqueCadastroDto dto) {
         if (dto == null) {
             return null;
         }
