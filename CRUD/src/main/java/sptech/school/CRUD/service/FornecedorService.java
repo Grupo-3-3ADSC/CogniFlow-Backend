@@ -10,7 +10,6 @@ import sptech.school.CRUD.Repository.EnderecoRepository;
 import sptech.school.CRUD.Repository.FornecedorRepository;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorCadastroDto;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorCompletoDTO;
-import sptech.school.CRUD.dto.Fornecedor.FornecedorListagemDto;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorMapper;
 
 import java.util.List;
@@ -67,14 +66,6 @@ public class FornecedorService {
 
     public List<FornecedorModel> getAll(){return fornecedorRepository.findAll();}
 
-    public  List<FornecedorListagemDto> listarFornecedoresDto(){
-
-        List<FornecedorModel> fornecedores = fornecedorRepository.findAll();
-
-        return fornecedores.stream()
-                .map(FornecedorMapper::toListagemDto)
-                .collect(Collectors.toList());
-    }
     public  List<FornecedorCompletoDTO> fornecedorCompleto(){
         List<FornecedorCompletoDTO> fornecedores = fornecedorRepository.findFornecedoresCompletos();
 

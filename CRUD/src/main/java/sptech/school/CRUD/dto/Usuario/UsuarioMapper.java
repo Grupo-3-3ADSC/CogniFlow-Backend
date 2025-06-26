@@ -14,8 +14,7 @@ public class UsuarioMapper {
         return new UsuarioListagemDto(
 
                 entity.getNome(),
-                entity.getEmail(),
-                entity.getPassword()
+                entity.getEmail()
         );
     }
 
