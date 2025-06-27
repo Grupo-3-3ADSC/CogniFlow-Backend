@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrdemDeCompraCadastroDto {
-    @NotNull
-    private LocalDateTime prazoEntrega;
+    @NotBlank
+    private String prazoEntrega;
     @NotBlank
     @Size(min = 12, max = 12)
     private String ie;
