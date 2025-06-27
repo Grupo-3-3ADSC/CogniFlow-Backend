@@ -43,7 +43,7 @@ public class FornecedorService {
 
         // Converter número para Integer
         try {
-            endereco.setNumero(Integer.parseInt(fornecedorDto.getNumero()));
+            endereco.setNumero((fornecedorDto.getNumero()));
         } catch (NumberFormatException e) {
             endereco.setNumero(null);
         }
