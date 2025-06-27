@@ -12,17 +12,17 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrdemDeCompraCadastroDto {
+    @NotNull
+    private LocalDateTime prazoEntrega;
     @NotBlank
-    private String prazoEntrega;
-    @NotBlank
-    @Size(max = 12)
+    @Size(min = 12, max = 12)
     private String ie;
     @NotBlank
     private String condPagamento;
     @NotNull
     private Double valorKg;
     @NotBlank
-    @Size(max = 16)
+    @Size(min = 16,max = 16)
     private String rastreabilidade;
     @NotNull
     private Double valorPeca;
