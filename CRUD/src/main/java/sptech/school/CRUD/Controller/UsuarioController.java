@@ -188,4 +188,16 @@ public class UsuarioController {
         UsuarioModel usuario = usuarioService.buscarPorEmail(email);
         return ResponseEntity.ok(usuario);
     }
+
+    @PatchMapping("/desativarUsuario/{id}")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<UsuarioAtivoDto> desativarUsuario(
+            @PathVariable Integer id,
+            @RequestBody UsuarioAtivoDto dto
+    ){
+
+        UsuarioAtivoDto usuario = usuarioService.desativarUsuario(id,dto);
+
+        return ResponseEntity.ok(usuario);
+    }
 }

@@ -1,5 +1,6 @@
 package sptech.school.CRUD.dto.Usuario;
 
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import sptech.school.CRUD.Model.UsuarioModel;
 
 import java.util.List;
@@ -14,7 +15,19 @@ public class UsuarioMapper {
         return new UsuarioListagemDto(
 
                 entity.getNome(),
-                entity.getEmail()
+                entity.getEmail(),
+                entity.getAtivo()
+        );
+    }
+
+    public static UsuarioAtivoDto toActiveDto(UsuarioModel entity){
+
+        if(entity == null){
+            throw new UsernameNotFoundException("Usuario não encontrado");
+        }
+
+        return new UsuarioAtivoDto(
+                entity.getAtivo()
         );
     }
 

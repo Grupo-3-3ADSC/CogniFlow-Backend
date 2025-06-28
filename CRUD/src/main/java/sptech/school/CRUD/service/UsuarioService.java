@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,9 +16,7 @@ import sptech.school.CRUD.Model.UsuarioModel;
 import sptech.school.CRUD.Repository.CargoRepository;
 import sptech.school.CRUD.Repository.UsuarioRepository;
 import sptech.school.CRUD.config.GerenciadorTokenJwt;
-import sptech.school.CRUD.dto.Usuario.UsuarioMapper;
-import sptech.school.CRUD.dto.Usuario.UsuarioPatchDto;
-import sptech.school.CRUD.dto.Usuario.UsuarioTokenDto;
+import sptech.school.CRUD.dto.Usuario.*;
 import sptech.school.CRUD.exception.EntidadeNaoEncontrado;
 
 import java.time.LocalDateTime;
@@ -225,6 +224,29 @@ public class UsuarioService {
     public UsuarioModel buscarPorEmail(String email) {
         return usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new EntidadeNaoEncontrado("Usuário não encontrado"));
+    }
+
+    public UsuarioAtivoDto desativarUsuario(Integer id, UsuarioAtivoDto dto){
+        Optional<UsuarioModel> usuarioOpt = usuarioRepository.findById(id);
+
+        if(usuarioOpt.isEmpty()){
+            throw new UsernameNotFoundException("Usuário não encontrado");
+        }
+
+        UsuarioModel usuario = usuarioOpt.get();
+
+        if (!usuario.getAtivo()){
+            throw new IllegalArgumentException("Usuário já está desativado");
+        }
+
+        if(dto.getAtivo() != null){
+            usuario.setAtivo(false);
+        }
+
+        UsuarioModel usuarioAtualizado = usuarioRepository.save(usuario);
+
+        return UsuarioMapper.toActiveDto(usuarioAtualizado);
+
     }
 
 }
