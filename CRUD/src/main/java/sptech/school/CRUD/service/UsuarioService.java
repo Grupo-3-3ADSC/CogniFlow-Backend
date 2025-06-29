@@ -49,6 +49,9 @@ public class UsuarioService {
 
     public UsuarioModel cadastrarUsuarioComum(UsuarioModel usuario) {
 
+        if (usuario.getNome().length() <= 3){
+            throw new RuntimeException("Senha deve ter pelo menos 3 caracteres");
+        }
         Optional<UsuarioModel> existente = usuarioRepository.findByEmail(usuario.getEmail());
         if (existente.isPresent()) {
             throw new RuntimeException("Email já cadastrado");
@@ -68,6 +71,9 @@ public class UsuarioService {
 
     public UsuarioModel cadastrarUsuarioGestor(UsuarioModel usuario) {
 
+        if (usuario.getNome().length() < 3){
+            throw new RuntimeException("Senha deve ter pelo menos 3 caracteres");
+        }
         Optional<UsuarioModel> existente = usuarioRepository.findByEmail(usuario.getEmail());
         if (existente.isPresent()) {
             throw new RuntimeException("Email já cadastrado");
@@ -92,14 +98,13 @@ public class UsuarioService {
     public UsuarioModel put(UsuarioModel usuarioParaAtualizar, int id) {
         if (usuarioRepository.existsById(id)) {
             // Validações de dados obrigatórios
-            boolean nomeVazio = usuarioParaAtualizar.getNome() == null || usuarioParaAtualizar.getNome().trim().isEmpty();
-            boolean emailVazio = usuarioParaAtualizar.getEmail() == null || usuarioParaAtualizar.getEmail().trim().isEmpty();
+//            boolean nomeVazio = usuarioParaAtualizar.getNome() == null || usuarioParaAtualizar.getNome().trim().isEmpty();
+//            boolean emailVazio = usuarioParaAtualizar.getEmail() == null || usuarioParaAtualizar.getEmail().trim().isEmpty();
 
-            if (nomeVazio && emailVazio) {
-                throw new RuntimeException("Nome e email não podem estar vazios");
-            } else if (nomeVazio) {
+            if (usuarioParaAtualizar.getNome() == null ) {
                 throw new RuntimeException("Nome não pode estar vazio");
-            } else if (emailVazio) {
+            }
+            if (usuarioParaAtualizar.getEmail() == null ){
                 throw new RuntimeException("Email não pode estar vazio");
             }
 

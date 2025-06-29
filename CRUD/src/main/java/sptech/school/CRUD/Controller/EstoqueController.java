@@ -1,5 +1,6 @@
 package sptech.school.CRUD.Controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,16 +25,14 @@ public class EstoqueController {
 
 
     @GetMapping
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<List<EstoqueListagemDto>> listarEstoque() {
-        List<EstoqueListagemDto> lista = estoqueService.buscarEstoque()
-                .stream()
-                .map(EstoqueMapper::toListagemDto)
-                .collect(Collectors.toList());
+            return ResponseEntity.ok(estoqueService.buscarEstoque());
 
-        return ResponseEntity.ok(lista);
     }
 
     @PostMapping
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<EstoqueListagemDto> cadastrarEstoque(@RequestBody EstoqueCadastroDto dto) {
         EstoqueModel model = EstoqueMapper.toCadastro(dto);
         EstoqueModel salvo = estoqueService.cadastroEstoque(model);
@@ -43,6 +42,7 @@ public class EstoqueController {
 
 
     @PostMapping("/adicionar")
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<EstoqueListagemDto> adicionarEstoque(@RequestBody AtualizarEstoqueDto dto) {
         EstoqueModel atualizado = estoqueService.atualizarEstoque(
                 dto.getTipoMaterial(),
@@ -51,6 +51,7 @@ public class EstoqueController {
         return ResponseEntity.ok(EstoqueMapper.toListagemDto(atualizado));
     }
     @PutMapping("/retirar/{tipoMaterial}/{quantidadeAtual}/{tipoTransferencia}")
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<EstoqueListagemDto> retirarEstoque(
             @PathVariable String tipoMaterial,
             @PathVariable Integer quantidadeAtual,

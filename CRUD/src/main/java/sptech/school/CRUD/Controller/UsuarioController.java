@@ -34,7 +34,7 @@ public class UsuarioController {
 
     @GetMapping
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<List<UsuarioModel>> listar() {
+    public ResponseEntity<List<UsuarioListagemDto>> listar() {
 
         List<UsuarioModel> usuariosAtivos = usuarioService.getAll();
 
@@ -42,7 +42,8 @@ public class UsuarioController {
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok().body(usuariosAtivos);
+        List<UsuarioListagemDto> lista = UsuarioMapper.toListagemDtos(usuariosAtivos);
+        return ResponseEntity.ok(lista);
     }
 
     @GetMapping("/{id}")
@@ -55,15 +56,16 @@ public class UsuarioController {
     })
 
 
-//    @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<UsuarioModel> getById(@PathVariable Integer id) {
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<UsuarioListagemDto> getById(@PathVariable Integer id) {
         UsuarioModel usuario = usuarioService.getById(id);
-        if (usuario != null){
 
-            return ResponseEntity.ok(usuario);
+        if (usuario != null){
+            return ResponseEntity.ok(UsuarioMapper.toListagemDto(usuario));
         } else {
             throw new RuntimeException("usuario nao encontrado");
         }
+
     }
 
     @PostMapping
@@ -102,12 +104,12 @@ public class UsuarioController {
 
     @PutMapping("/{id}")
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<UsuarioModel> atualizar(
+    public ResponseEntity<UsuarioAtualizadoDto> atualizar(
             @PathVariable Integer id,
-            @RequestBody UsuarioModel usuarioParaAtualizar
+            @RequestBody @Valid UsuarioAtualizadoDto usuarioParaAtualizar
     )
     {
-        UsuarioModel usuario = usuarioService.put(usuarioParaAtualizar, id);
+        UsuarioModel usuario = usuarioService.put(UsuarioMapper.toEntity(usuarioParaAtualizar, id), id);
 
         if(usuario == null) {
             return ResponseEntity.notFound().build();
@@ -146,7 +148,8 @@ public class UsuarioController {
     }
 
     @PostMapping("/{id}/upload-foto")
-    public ResponseEntity<UsuarioModel> postarFoto (
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<Void> postarFoto (
             @PathVariable Integer id,
             @RequestParam("foto")MultipartFile file
             ) {
@@ -174,7 +177,8 @@ public class UsuarioController {
 
     }
 
-    @PutMapping("/{id}/senha") // Adicione o path completo
+    @PutMapping("/{id}/senha")// Adicione o path completo
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<Void> atualizarSenha(
             @PathVariable Integer id, // Corrigido: Integer em vez de String
             @RequestBody @Valid UsuarioSenhaAtualizada request // DTO para receber a senha
@@ -184,8 +188,8 @@ public class UsuarioController {
     }
 
     @GetMapping("/buscar-por-email/{email}")
-    public ResponseEntity<UsuarioModel> buscarPorEmail(@PathVariable String email) {
+    public ResponseEntity<UsuarioListagemDto> buscarPorEmail(@PathVariable String email) {
         UsuarioModel usuario = usuarioService.buscarPorEmail(email);
-        return ResponseEntity.ok(usuario);
+        return ResponseEntity.ok(UsuarioMapper.toListagemDto(usuario));
     }
 }

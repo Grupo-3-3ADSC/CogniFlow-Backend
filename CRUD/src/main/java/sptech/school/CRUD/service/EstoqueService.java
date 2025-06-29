@@ -22,8 +22,10 @@ public class EstoqueService {
     private final EstoqueRepository estoqueRepository;
 
 
-    public List<EstoqueModel> buscarEstoque(){
-        return estoqueRepository.findAll();
+    public List<EstoqueListagemDto> buscarEstoque() {
+        return estoqueRepository.findAll().stream()
+                .map(EstoqueMapper::toListagemDto)
+                .collect(Collectors.toList());
     }
 
 

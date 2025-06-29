@@ -1,5 +1,6 @@
 package sptech.school.CRUD.dto.Usuario;
 
+import sptech.school.CRUD.Model.CargoModel;
 import sptech.school.CRUD.Model.UsuarioModel;
 
 import java.util.List;
@@ -72,9 +73,21 @@ public class UsuarioMapper {
         if (dto == null) {
             return null;
         }
-        UsuarioModel model = new UsuarioModel(dto.getNome(), dto.getEmail(), dto.getPassword());
-        model.setId(id);
-        return model;
+        UsuarioModel usuario = new UsuarioModel();
+        usuario.setId(id);
+        usuario.setNome(dto.getNome());
+        usuario.setEmail(dto.getEmail());
+        usuario.setPassword(dto.getPassword());
+
+        if (dto.getCargo() == null || dto.getCargo().getId() == null){
+            CargoModel cargoPadrao = new CargoModel();
+            cargoPadrao.setId(1); // Define o cargo padrão com id = 1
+            usuario.setCargo(cargoPadrao);
+        } else {
+            usuario.setCargo(dto.getCargo());
+        }
+
+        return usuario;
     }
 
 }

@@ -1,5 +1,6 @@
 package sptech.school.CRUD.Controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.CRUD.Model.EstoqueModel;
@@ -22,6 +23,7 @@ public class FornecedorController {
     }
 
     @PostMapping
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity cadastrarFornecedor(@RequestBody FornecedorCadastroDto fornecedor){
 
         FornecedorModel novoFornecedor = fornecedorService.cadastroFornecedor(fornecedor);
@@ -31,6 +33,7 @@ public class FornecedorController {
     }
 
     @GetMapping
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<List<FornecedorListagemDto>> listarFornecedores(){
         List<FornecedorListagemDto> dtos = fornecedorService.listarFornecedoresDto();
 
@@ -38,18 +41,21 @@ public class FornecedorController {
     }
 
     @GetMapping("/listarTudo")
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<List<FornecedorModel>> getAll() {
 
         return ResponseEntity.ok().body(fornecedorService.getAll());
     }
 
     @GetMapping("/top5")
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<List<FornecedorCompletoDTO>> getTop5Fornecedores() {
         List<FornecedorCompletoDTO> fornecedores = fornecedorService.buscarTop5Fornecedores();
         return ResponseEntity.ok(fornecedores);
     }
 
     @GetMapping("/listarFornecedorCompleto")
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<List<FornecedorCompletoDTO>> getFornecedorCompleto() {
         List<FornecedorCompletoDTO> fornecedores = fornecedorService.fornecedorCompleto();
         return ResponseEntity.ok(fornecedores);

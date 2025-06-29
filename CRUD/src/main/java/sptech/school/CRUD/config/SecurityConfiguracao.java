@@ -54,13 +54,13 @@ public class SecurityConfiguracao {
             new AntPathRequestMatcher("/h2-console/**"),
             new AntPathRequestMatcher("/h2-console/**/**"),
             new AntPathRequestMatcher("/error/**"),
-            new AntPathRequestMatcher("/fornecedores/**"),
-            new AntPathRequestMatcher("/cargos/**"),
-            new AntPathRequestMatcher("/usuarios/{id}/**"),
-            new AntPathRequestMatcher("/setores/**"),
-            new AntPathRequestMatcher("/usuarios/{id}/upload-foto/**"),
-            new AntPathRequestMatcher("/estoque/**"),
-            new AntPathRequestMatcher("/ordemDeCompra/**")
+//            new AntPathRequestMatcher("/fornecedores/**"),
+//            new AntPathRequestMatcher("/cargos/**"),
+//            new AntPathRequestMatcher("/usuarios/{id}/**"),
+////            new AntPathRequestMatcher("/setores/**"),
+//            new AntPathRequestMatcher("/usuarios/{id}/upload-foto/**"),
+//            new AntPathRequestMatcher("/estoque/**"),
+//            new AntPathRequestMatcher("/ordemDeCompra/**")
 
     };
 

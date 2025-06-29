@@ -78,6 +78,7 @@ public class FornecedorService {
     public  List<FornecedorCompletoDTO> fornecedorCompleto(){
         List<FornecedorCompletoDTO> fornecedores = fornecedorRepository.findFornecedoresCompletos();
 
+
         return fornecedores.stream()
                 .map(FornecedorMapper::fornecedorCompleto)
                 .collect(Collectors.toList());
