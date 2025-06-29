@@ -11,6 +11,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import sptech.school.CRUD.Model.CargoModel;
 import sptech.school.CRUD.Repository.CargoRepository;
+import sptech.school.CRUD.exception.BadRequestException;
+
 import java.util.List;
 
 
@@ -48,12 +50,12 @@ class CargoServiceTest {
     @Test
     @DisplayName("Cadastro de cargo - falha (cargo nulo)")
     void testePostCargoNulo() {
-        // Act
-        CargoModel resultado = cargoService.post(null);
+        // Act & Assert
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> {
+            cargoService.post(null);
+        });
 
-        // Assert
-        assertNull(resultado);
-        verify(cargoRepository, never()).save(any());
+        assertEquals("O corpo da requisição está vazio.", exception.getMessage());
     }
 
     @Test

@@ -8,6 +8,7 @@ import sptech.school.CRUD.Model.EstoqueModel;
 import sptech.school.CRUD.Repository.EstoqueRepository;
 import sptech.school.CRUD.dto.Estoque.EstoqueListagemDto;
 import sptech.school.CRUD.dto.Estoque.EstoqueMapper;
+import sptech.school.CRUD.exception.BadRequestException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +29,26 @@ public class EstoqueService {
 
 
     public EstoqueModel cadastroEstoque(EstoqueModel estoque){
+
+        if (estoque == null) {
+            throw new BadRequestException("O corpo da requisição está vazio.");
+        }
+
+        if (estoque.getTipoMaterial() == null || estoque.getTipoMaterial().trim().isEmpty()) {
+            throw new BadRequestException("Tipo de Material não pode ser nulo ou vazio");
+        }
+
+
+
+        if (estoque.getQuantidadeMaxima()<= estoque.getQuantidadeMinima()) {
+            throw new BadRequestException("Quantidade Máxima deve ser maior que a Quantidade Mínima");
+        }
+
+        if (estoque.getExterno() == null &&  estoque.getInterno() == null) {
+            throw new BadRequestException("Uma opção do Tipo de Tranferência deve ser selecionada");
+        }
+        
+
         return estoqueRepository.save(estoque);
     }
 

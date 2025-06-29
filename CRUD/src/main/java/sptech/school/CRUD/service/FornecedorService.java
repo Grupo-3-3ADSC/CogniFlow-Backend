@@ -12,6 +12,7 @@ import sptech.school.CRUD.dto.Fornecedor.FornecedorCadastroDto;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorCompletoDTO;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorListagemDto;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorMapper;
+import sptech.school.CRUD.exception.BadRequestException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +33,15 @@ public class FornecedorService {
         this.fornecedorRepository = fornecedorRepository;
     }
     public FornecedorModel cadastroFornecedor(FornecedorCadastroDto fornecedorDto) {
+
+        if (fornecedorDto.getCnpj() == null) {
+            throw new BadRequestException("Quantidade Atual não pode ser nula");
+        }
+        if (fornecedorDto.getCnpj().length() < 14 || fornecedorDto.getCnpj().length() > 14) {
+            throw new BadRequestException("O CNPJ deve possuir 14 dígitos.");
+        }
+
+
         // Converte DTO para Model usando o mapper
         FornecedorModel fornecedor = FornecedorMapper.toCadastroModel(fornecedorDto);
 
@@ -48,6 +58,11 @@ public class FornecedorService {
         } catch (NumberFormatException e) {
             endereco.setNumero(null);
         }
+
+
+
+
+
 
         FornecedorModel fornecedorSalvo = fornecedorRepository.save(fornecedor);
 
