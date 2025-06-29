@@ -32,17 +32,30 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    @GetMapping
+    @GetMapping("/listarAtivos")
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<List<UsuarioModel>> listar() {
+    public ResponseEntity<List<UsuarioModel>> listarAtivos() {
 
-        List<UsuarioModel> usuariosAtivos = usuarioService.getAll();
+        List<UsuarioModel> usuariosAtivos = usuarioService.getAllByAtivo();
 
         if(usuariosAtivos.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
         return ResponseEntity.ok().body(usuariosAtivos);
+    }
+
+    @GetMapping("/listarTodos")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<List<UsuarioFullDto>> listarTodos() {
+
+        List<UsuarioFullDto> usuarios = usuarioService.getAll();
+
+        if(usuarios.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok().body(usuarios);
     }
 
     @GetMapping("/{id}")

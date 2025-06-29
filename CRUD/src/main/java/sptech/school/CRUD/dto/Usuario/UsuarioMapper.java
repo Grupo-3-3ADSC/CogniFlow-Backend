@@ -47,6 +47,35 @@ public class UsuarioMapper {
         return usuarioTokenDto;
     }
 
+    public static UsuarioFullDto toListagemFullDto(UsuarioModel usuario) {
+
+        if(usuario == null){
+            throw new UsernameNotFoundException("Usuário não encontrado");
+        }
+
+        return UsuarioFullDto.builder()
+                .id(usuario.getId())
+                .nome(usuario.getNome())
+                .email(usuario.getEmail())
+                .ativo(usuario.getAtivo())
+                .foto(usuario.getFoto())
+                .createdAt(usuario.getCreatedAt())
+                .updatedAt(usuario.getUpdatedAt())
+                .cargo(usuario.getCargo())
+                .build();
+    }
+
+
+    public static List<UsuarioFullDto> toListagemFullDto(List<UsuarioModel> entities){
+        if(entities == null){
+            throw new UsernameNotFoundException("Usuário não encontrado");
+        }
+
+        return entities.stream()
+                .map(UsuarioMapper::toListagemFullDto)
+                .toList();
+    }
+
     public static UsuarioModel of(UsuarioCadastroDto usuarioParaCadastro) {
         UsuarioModel usuario = new UsuarioModel();
 

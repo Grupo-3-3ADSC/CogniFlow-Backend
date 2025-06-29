@@ -37,8 +37,15 @@ public class UsuarioService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public List<UsuarioModel> getAll() {
+    public List<UsuarioModel> getAllByAtivo() {
         return usuarioRepository.findByAtivoTrue();
+    }
+
+    public List<UsuarioFullDto> getAll() {
+
+        List<UsuarioModel> usuarios = usuarioRepository.findAll();
+
+        return UsuarioMapper.toListagemFullDto(usuarios);
     }
 
     public UsuarioModel getById(int id) {
@@ -239,8 +246,11 @@ public class UsuarioService {
             throw new IllegalArgumentException("Usuário já está desativado");
         }
 
-        if(dto.getAtivo() != null){
+        if(dto.getAtivo() != null && dto.getAtivo()){
             usuario.setAtivo(false);
+        }
+        else {
+            usuario.setAtivo(true);
         }
 
         UsuarioModel usuarioAtualizado = usuarioRepository.save(usuario);
