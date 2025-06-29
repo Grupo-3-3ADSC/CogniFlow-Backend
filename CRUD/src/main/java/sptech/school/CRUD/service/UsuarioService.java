@@ -195,6 +195,11 @@ public class UsuarioService {
                                 () -> new ResponseStatusException(404, "Email do usuário não cadastrado", null)
                         );
 
+                if(!usuarioAutenticado.getAtivo()){
+                    throw new UsernameNotFoundException("Usuário inativo, por favor contatar " +
+                            "um gestor para liberar acesso.");
+                }
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         final String token = gerenciadorTokenJwt.generateToken(authentication);
