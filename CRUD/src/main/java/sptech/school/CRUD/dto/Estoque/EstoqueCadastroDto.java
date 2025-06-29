@@ -27,12 +27,9 @@ public class EstoqueCadastroDto {
     @Min(value = 1, message = "Quantidade Máxima deve ser positiva")
     private Integer quantidadeMaxima;
 
-    @NotBlank
+    @NotNull
     private Integer externo;
 
-    @NotBlank
+    @NotNull
     private Integer interno;
-
-    @NotBlank
-    private String tipoTransferencia;
 }
