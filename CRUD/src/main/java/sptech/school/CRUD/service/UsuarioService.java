@@ -242,11 +242,7 @@ public class UsuarioService {
 
         UsuarioModel usuario = usuarioOpt.get();
 
-        if (!usuario.getAtivo()){
-            throw new IllegalArgumentException("Usuário já está desativado");
-        }
-
-        if(dto.getAtivo() != null && dto.getAtivo()){
+        if(dto.getAtivo() != null && !dto.getAtivo()){
             usuario.setAtivo(false);
         }
         else {
