@@ -53,7 +53,7 @@ public class UsuarioService {
         if (existente.isPresent()) {
             throw new RuntimeException("Email já cadastrado");
         }
-        if (usuario.getPassword() == null || usuario.getPassword().length() < 6) {
+        if (usuario.getPassword().length() < 6) {
             throw new RuntimeException("Senha deve ter pelo menos 6 caracteres");
         }
 

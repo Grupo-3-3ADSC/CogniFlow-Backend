@@ -34,17 +34,18 @@ public class EstoqueService {
             throw new BadRequestException("O corpo da requisição está vazio.");
         }
 
-        if (estoque.getTipoMaterial() == null || estoque.getTipoMaterial().trim().isEmpty()) {
-            throw new BadRequestException("Tipo de Material não pode ser nulo ou vazio");
-        }
-
-
-
-        if (estoque.getQuantidadeMaxima()<= estoque.getQuantidadeMinima()) {
+        if (estoque.getQuantidadeMaxima()< estoque.getQuantidadeMinima()) {
             throw new BadRequestException("Quantidade Máxima deve ser maior que a Quantidade Mínima");
         }
 
-        if (estoque.getExterno() == null &&  estoque.getInterno() == null) {
+        if (estoque.getQuantidadeAtual()>estoque.getQuantidadeMaxima()) {
+            throw new BadRequestException("Quantidade Atual deve ser menor que a Quantidade Máxima");
+        }
+        if (estoque.getQuantidadeAtual()< estoque.getQuantidadeMinima()) {
+            throw new BadRequestException("Quantidade Atual deve ser maior que a Quantidade Mínima");
+        }
+
+        if (estoque.getExterno() ==0 && estoque.getInterno() ==0) {
             throw new BadRequestException("Uma opção do Tipo de Tranferência deve ser selecionada");
         }
         
