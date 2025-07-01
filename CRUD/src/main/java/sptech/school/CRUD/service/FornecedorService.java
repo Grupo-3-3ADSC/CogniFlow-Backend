@@ -10,7 +10,6 @@ import sptech.school.CRUD.Repository.EnderecoRepository;
 import sptech.school.CRUD.Repository.FornecedorRepository;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorCadastroDto;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorCompletoDTO;
-import sptech.school.CRUD.dto.Fornecedor.FornecedorListagemDto;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorMapper;
 
 import java.util.List;
@@ -45,7 +44,7 @@ public class FornecedorService {
 
         // Converter número para Integer
         try {
-            endereco.setNumero(Integer.parseInt(fornecedorDto.getNumero()));
+            endereco.setNumero((fornecedorDto.getNumero()));
         } catch (NumberFormatException e) {
             endereco.setNumero(null);
         }
@@ -65,6 +64,8 @@ public class FornecedorService {
 
         return fornecedorSalvo;
     }
+
+
 
     public  List<FornecedorCompletoDTO> fornecedorCompleto(){
         List<FornecedorCompletoDTO> fornecedores = fornecedorRepository.findFornecedoresCompletos();

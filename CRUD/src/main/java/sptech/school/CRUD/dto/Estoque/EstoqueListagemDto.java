@@ -13,16 +13,12 @@ import lombok.*;
 public class EstoqueListagemDto {
 
 
-    @NotBlank
+
     private String tipoMaterial;
-    @NotNull
     private Integer quantidadeAtual;
-    @NotNull
     private Integer quantidadeMinima;
-    @NotNull
     private Integer quantidadeMaxima;
-    @NotNull
     private Integer interna;
-    @NotNull
     private Integer externa;
+    private String tipoTransferencia;
 }

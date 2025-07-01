@@ -2,6 +2,7 @@ package sptech.school.CRUD.dto.OrdemDeCompra;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -11,16 +12,17 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrdemDeCompraCadastroDto {
-
     @NotBlank
     private String prazoEntrega;
     @NotBlank
+    @Size(min = 12, max = 12)
     private String ie;
     @NotBlank
     private String condPagamento;
     @NotNull
     private Double valorKg;
     @NotBlank
+    @Size(min = 16,max = 16)
     private String rastreabilidade;
     @NotNull
     private Double valorPeca;
@@ -38,5 +40,4 @@ public class OrdemDeCompraCadastroDto {
     private Integer estoqueId;
     @NotNull
     private Integer usuarioId;
-
 }

@@ -6,19 +6,6 @@ import sptech.school.CRUD.Model.FornecedorModel;
 import java.time.LocalDateTime;
 
 public class FornecedorMapper {
-
-    public static FornecedorListagemDto toListagemDto(FornecedorModel entity){
-
-        if(entity == null){
-            return null;
-        }
-
-        return new FornecedorListagemDto(
-                entity.getNomeFantasia(),
-                entity.getCnpj()
-        );
-
-    }
     public static FornecedorModel toCadastroModel(FornecedorCadastroDto dto) {
         if (dto == null) {
             return null;

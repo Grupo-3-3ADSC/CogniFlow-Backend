@@ -12,8 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UsuarioSenhaAtualizada {
-
     @NotBlank
+    @Size(min = 6)
     private String password;
-
 }

@@ -1,5 +1,6 @@
 package sptech.school.CRUD.dto.Usuario;
 
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import sptech.school.CRUD.Model.CargoModel;
 import sptech.school.CRUD.Model.UsuarioModel;
 
@@ -16,7 +17,18 @@ public class UsuarioMapper {
 
                 entity.getNome(),
                 entity.getEmail(),
-                entity.getPassword()
+                entity.getAtivo()
+        );
+    }
+
+    public static UsuarioAtivoDto toActiveDto(UsuarioModel entity){
+
+        if(entity == null){
+            throw new UsernameNotFoundException("Usuario não encontrado");
+        }
+
+        return new UsuarioAtivoDto(
+                entity.getAtivo()
         );
     }
 
@@ -34,6 +46,35 @@ public class UsuarioMapper {
         usuarioTokenDto.setCargo(usuario.getCargo());
 
         return usuarioTokenDto;
+    }
+
+    public static UsuarioFullDto toListagemFullDto(UsuarioModel usuario) {
+
+        if(usuario == null){
+            throw new UsernameNotFoundException("Usuário não encontrado");
+        }
+
+        return UsuarioFullDto.builder()
+                .id(usuario.getId())
+                .nome(usuario.getNome())
+                .email(usuario.getEmail())
+                .ativo(usuario.getAtivo())
+                .foto(usuario.getFoto())
+                .createdAt(usuario.getCreatedAt())
+                .updatedAt(usuario.getUpdatedAt())
+                .cargo(usuario.getCargo())
+                .build();
+    }
+
+
+    public static List<UsuarioFullDto> toListagemFullDto(List<UsuarioModel> entities){
+        if(entities == null){
+            throw new UsernameNotFoundException("Usuário não encontrado");
+        }
+
+        return entities.stream()
+                .map(UsuarioMapper::toListagemFullDto)
+                .toList();
     }
 
     public static UsuarioModel of(UsuarioCadastroDto usuarioParaCadastro) {

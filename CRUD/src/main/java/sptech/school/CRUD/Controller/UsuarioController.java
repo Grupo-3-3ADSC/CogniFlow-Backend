@@ -32,11 +32,11 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    @GetMapping
+    @GetMapping("/listarAtivos")
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<List<UsuarioListagemDto>> listar() {
+    public ResponseEntity<List<UsuarioListagemDto>> listarAtivos() {
 
-        List<UsuarioModel> usuariosAtivos = usuarioService.getAll();
+        List<UsuarioModel> usuariosAtivos = usuarioService.getAllByAtivo();
 
         if(usuariosAtivos.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -44,6 +44,19 @@ public class UsuarioController {
 
         List<UsuarioListagemDto> lista = UsuarioMapper.toListagemDtos(usuariosAtivos);
         return ResponseEntity.ok(lista);
+    }
+
+    @GetMapping("/listarTodos")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<List<UsuarioFullDto>> listarTodos() {
+
+        List<UsuarioFullDto> usuarios = usuarioService.getAll();
+
+        if(usuarios.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok().body(usuarios);
     }
 
     @GetMapping("/{id}")
@@ -191,5 +204,18 @@ public class UsuarioController {
     public ResponseEntity<UsuarioListagemDto> buscarPorEmail(@PathVariable String email) {
         UsuarioModel usuario = usuarioService.buscarPorEmail(email);
         return ResponseEntity.ok(UsuarioMapper.toListagemDto(usuario));
+
+    }
+
+    @PatchMapping("/desativarUsuario/{id}")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<UsuarioAtivoDto> desativarUsuario(
+            @PathVariable Integer id,
+            @RequestBody UsuarioAtivoDto dto
+    ){
+
+        UsuarioAtivoDto usuario = usuarioService.desativarUsuario(id,dto);
+
+        return ResponseEntity.ok(usuario);
     }
 }

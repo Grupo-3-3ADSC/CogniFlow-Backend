@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,9 +16,7 @@ import sptech.school.CRUD.Model.UsuarioModel;
 import sptech.school.CRUD.Repository.CargoRepository;
 import sptech.school.CRUD.Repository.UsuarioRepository;
 import sptech.school.CRUD.config.GerenciadorTokenJwt;
-import sptech.school.CRUD.dto.Usuario.UsuarioMapper;
-import sptech.school.CRUD.dto.Usuario.UsuarioPatchDto;
-import sptech.school.CRUD.dto.Usuario.UsuarioTokenDto;
+import sptech.school.CRUD.dto.Usuario.*;
 import sptech.school.CRUD.exception.EntidadeNaoEncontrado;
 
 import java.time.LocalDateTime;
@@ -38,8 +37,15 @@ public class UsuarioService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public List<UsuarioModel> getAll() {
+    public List<UsuarioModel> getAllByAtivo() {
         return usuarioRepository.findByAtivoTrue();
+    }
+
+    public List<UsuarioFullDto> getAll() {
+
+        List<UsuarioModel> usuarios = usuarioRepository.findAll();
+
+        return UsuarioMapper.toListagemFullDto(usuarios);
     }
 
     public UsuarioModel getById(int id) {
@@ -194,6 +200,11 @@ public class UsuarioService {
                                 () -> new ResponseStatusException(404, "Email do usuário não cadastrado", null)
                         );
 
+                if(!usuarioAutenticado.getAtivo()){
+                    throw new UsernameNotFoundException("Usuário inativo, por favor contatar " +
+                            "um gestor para liberar acesso.");
+                }
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         final String token = gerenciadorTokenJwt.generateToken(authentication);
@@ -230,6 +241,28 @@ public class UsuarioService {
     public UsuarioModel buscarPorEmail(String email) {
         return usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new EntidadeNaoEncontrado("Usuário não encontrado"));
+    }
+
+    public UsuarioAtivoDto desativarUsuario(Integer id, UsuarioAtivoDto dto){
+        Optional<UsuarioModel> usuarioOpt = usuarioRepository.findById(id);
+
+        if(usuarioOpt.isEmpty()){
+            throw new UsernameNotFoundException("Usuário não encontrado");
+        }
+
+        UsuarioModel usuario = usuarioOpt.get();
+
+        if(dto.getAtivo() != null && !dto.getAtivo()){
+            usuario.setAtivo(false);
+        }
+        else {
+            usuario.setAtivo(true);
+        }
+
+        UsuarioModel usuarioAtualizado = usuarioRepository.save(usuario);
+
+        return UsuarioMapper.toActiveDto(usuarioAtualizado);
+
     }
 
 }
