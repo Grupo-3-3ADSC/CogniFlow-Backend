@@ -8,6 +8,8 @@ import sptech.school.CRUD.dto.Cargo.CargoCadastraDto;
 import sptech.school.CRUD.dto.Cargo.CargoListagemDto;
 import sptech.school.CRUD.dto.Cargo.CargoMapper;
 
+import sptech.school.CRUD.exception.BadRequestException;
+import sptech.school.CRUD.exception.EntidadeNaoEncontrado;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,8 +29,12 @@ public class CargoService {
     }
 
     public CargoListagemDto  post(CargoCadastraDto cargo) {
-        if(cargo == null) {
-            return null;
+        if (cargo == null) {
+            throw new BadRequestException("O corpo da requisição está vazio.");
+        }
+
+        if (cargo.getNome() == null || cargo.getNome().trim().isEmpty()) {
+            throw new BadRequestException("O nome do cargo é obrigatório.");
         }
 
         CargoModel entity = CargoMapper.toCadastro(cargo);

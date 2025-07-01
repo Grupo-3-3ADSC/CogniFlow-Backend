@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sptech.school.CRUD.Model.EstoqueModel;
 import sptech.school.CRUD.Repository.EstoqueRepository;
-import sptech.school.CRUD.dto.Estoque.*;
+import sptech.school.CRUD.dto.Estoque.AtualizarEstoqueDto;
+import sptech.school.CRUD.dto.Estoque.EstoqueListagemDto;
+import sptech.school.CRUD.dto.Estoque.EstoqueMapper;
+import sptech.school.CRUD.dto.Estoque.RetirarEstoqueDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -82,13 +85,17 @@ public class EstoqueService {
                     estoque.getQuantidadeAtual() + ", Solicitado: " + quantidadeAtual);
         }
 
+        // Atualiza a quantidade atual
         estoque.setQuantidadeAtual(estoque.getQuantidadeAtual() - quantidadeAtual);
         estoque.setUltimaMovimentacao(LocalDateTime.now());
 
+        // Incrementa o contador baseado no tipo de transferência
         if ("Externa".equalsIgnoreCase(tipoTransferencia)) {
             estoque.setExterno(estoque.getExterno() != null ? estoque.getExterno() + 1 : 1);
+            System.out.println("Incrementando contador externo para: " + estoque.getExterno());
         } else if ("Interna".equalsIgnoreCase(tipoTransferencia)) {
             estoque.setInterno(estoque.getInterno() != null ? estoque.getInterno() + 1 : 1);
+            System.out.println("Incrementando contador interno para: " + estoque.getInterno());
         } else {
             throw new IllegalArgumentException("Tipo de transferência inválido: " + tipoTransferencia);
         }

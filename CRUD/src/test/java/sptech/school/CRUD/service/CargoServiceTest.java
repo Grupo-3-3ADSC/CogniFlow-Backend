@@ -14,6 +14,8 @@ import sptech.school.CRUD.Repository.CargoRepository;
 import sptech.school.CRUD.dto.Cargo.CargoCadastraDto;
 import sptech.school.CRUD.dto.Cargo.CargoListagemDto;
 
+import sptech.school.CRUD.exception.BadRequestException;
+
 import java.util.List;
 
 
@@ -56,10 +58,12 @@ class CargoServiceTest {
     void testePostCargoNulo() {
         // Act
         CargoListagemDto resultado = cargoService.post(null);
+        // Act & Assert
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> {
+            cargoService.post(null);
+        });
 
-        // Assert
-        assertNull(resultado);
-        verify(cargoRepository, never()).save(any());
+        assertEquals("O corpo da requisição está vazio.", exception.getMessage());
     }
 
     @Test
@@ -77,7 +81,7 @@ class CargoServiceTest {
         when(cargoRepository.findAll()).thenReturn(listaCargos);
 
         // Act
-        List<CargoModel> resultado = cargoService.getAll();
+        List<CargoListagemDto> resultado = cargoService.getAll();
 
         // Assert
         assertNotNull(resultado);

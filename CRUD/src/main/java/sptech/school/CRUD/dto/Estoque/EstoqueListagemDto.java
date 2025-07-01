@@ -16,6 +16,7 @@ public class EstoqueListagemDto {
 
     private String tipoMaterial;
     private Integer quantidadeAtual;
+
     private Integer quantidadeMinima;
     private Integer quantidadeMaxima;
     private Integer interna;

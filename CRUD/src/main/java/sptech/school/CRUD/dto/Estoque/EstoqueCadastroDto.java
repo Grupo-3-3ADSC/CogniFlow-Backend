@@ -1,5 +1,6 @@
 package sptech.school.CRUD.dto.Estoque;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -11,16 +12,19 @@ import lombok.*;
 @NoArgsConstructor
 public class EstoqueCadastroDto {
 
-    @NotBlank
+    @NotBlank(message = "Tipo de Material não pode ser nulo ou vazio")
     private String tipoMaterial;
 
-    @NotNull
+    @NotNull(message = "Quantidade Atual não pode ser nula")
+    @Min(value = 1, message = "Quantidade Atual deve ser positiva")
     private Integer quantidadeAtual;
 
-    @NotNull
+    @NotNull(message = "Quantidade Mínima não pode ser nula")
+    @Min(value = 1, message = "Quantidade Mínima deve ser positiva")
     private Integer quantidadeMinima;
 
-    @NotNull
+    @NotNull(message = "Quantidade Máxima não pode ser nula")
+    @Min(value = 1, message = "Quantidade Máxima deve ser positiva")
     private Integer quantidadeMaxima;
 
     @NotNull
