@@ -31,6 +31,7 @@ public class FornecedorService {
     public FornecedorService(FornecedorRepository fornecedorRepository) {
         this.fornecedorRepository = fornecedorRepository;
     }
+
     public FornecedorModel cadastroFornecedor(FornecedorCadastroDto fornecedorDto) {
         // Converte DTO para Model usando o mapper
         FornecedorModel fornecedor = FornecedorMapper.toCadastroModel(fornecedorDto);
@@ -65,16 +66,6 @@ public class FornecedorService {
         return fornecedorSalvo;
     }
 
-    public List<FornecedorModel> getAll(){return fornecedorRepository.findAll();}
-
-    public  List<FornecedorListagemDto> listarFornecedoresDto(){
-
-        List<FornecedorModel> fornecedores = fornecedorRepository.findAll();
-
-        return fornecedores.stream()
-                .map(FornecedorMapper::toListagemDto)
-                .collect(Collectors.toList());
-    }
     public  List<FornecedorCompletoDTO> fornecedorCompleto(){
         List<FornecedorCompletoDTO> fornecedores = fornecedorRepository.findFornecedoresCompletos();
 

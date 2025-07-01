@@ -4,8 +4,12 @@ package sptech.school.CRUD.service;
 import org.springframework.stereotype.Service;
 import sptech.school.CRUD.Model.CargoModel;
 import sptech.school.CRUD.Repository.CargoRepository;
+import sptech.school.CRUD.dto.Cargo.CargoCadastraDto;
+import sptech.school.CRUD.dto.Cargo.CargoListagemDto;
+import sptech.school.CRUD.dto.Cargo.CargoMapper;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CargoService {
@@ -16,18 +20,20 @@ public class CargoService {
         this.cargoRepository = cargoRepository;
     }
 
-    public List<CargoModel> getAll() {
-        return cargoRepository.findAll();
+    public List<CargoListagemDto> getAll() {
+        return cargoRepository.findAll().stream()
+                .map(CargoMapper::toListagemDto)
+                .collect(Collectors.toList());
     }
 
-    public CargoModel post(CargoModel cargo) {
-
-
+    public CargoListagemDto  post(CargoCadastraDto cargo) {
         if(cargo == null) {
             return null;
         }
 
-        return cargoRepository.save(cargo);
+        CargoModel entity = CargoMapper.toCadastro(cargo);
+        CargoModel saved = cargoRepository.save(entity);
+        return CargoMapper.toListagemDto(saved);
     }
 
 

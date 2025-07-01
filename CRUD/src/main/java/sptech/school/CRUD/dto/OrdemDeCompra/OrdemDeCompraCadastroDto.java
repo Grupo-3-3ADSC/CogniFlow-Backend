@@ -18,19 +18,19 @@ public class OrdemDeCompraCadastroDto {
     private String ie;
     @NotBlank
     private String condPagamento;
-    @NotBlank
+    @NotNull
     private Double valorKg;
     @NotBlank
     private String rastreabilidade;
-    @NotBlank
+    @NotNull
     private Double valorPeca;
     @NotBlank
     private String descricaoMaterial;
-    @NotBlank
+    @NotNull
     private Double valorUnitario;
-    @NotBlank
+    @NotNull
     private Integer quantidade;
-    @NotBlank
+    @NotNull
     private Double ipi;
     @NotNull
     private Integer fornecedorId;

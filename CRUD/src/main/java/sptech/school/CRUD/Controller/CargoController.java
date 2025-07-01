@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.CRUD.Model.CargoModel;
+import sptech.school.CRUD.dto.Cargo.CargoCadastraDto;
+import sptech.school.CRUD.dto.Cargo.CargoListagemDto;
 import sptech.school.CRUD.service.CargoService;
 
 import java.util.List;
@@ -20,15 +22,15 @@ public class CargoController {
 
     @GetMapping
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<List<CargoModel>> getAll() {
+    public ResponseEntity<List<CargoListagemDto>> getAll() {
         return ResponseEntity.ok().body(cargoService.getAll());
     }
 
     @PostMapping
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<CargoModel> post(@RequestBody CargoModel cargo) {
+    public ResponseEntity<CargoListagemDto> post(@RequestBody CargoCadastraDto cargo) {
 
-        CargoModel cargoPost = cargoService.post(cargo);
+        CargoListagemDto cargoPost = cargoService.post(cargo);
 
         if(cargoPost == null) {
             return ResponseEntity.badRequest().build();

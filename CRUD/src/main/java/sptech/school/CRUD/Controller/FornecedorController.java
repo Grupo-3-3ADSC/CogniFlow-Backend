@@ -32,21 +32,6 @@ public class FornecedorController {
 
     }
 
-    @GetMapping
-    @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<List<FornecedorListagemDto>> listarFornecedores(){
-        List<FornecedorListagemDto> dtos = fornecedorService.listarFornecedoresDto();
-
-        return ResponseEntity.ok().body(dtos);
-    }
-
-    @GetMapping("/listarTudo")
-    @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<List<FornecedorModel>> getAll() {
-
-        return ResponseEntity.ok().body(fornecedorService.getAll());
-    }
-
     @GetMapping("/top5")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<List<FornecedorCompletoDTO>> getTop5Fornecedores() {

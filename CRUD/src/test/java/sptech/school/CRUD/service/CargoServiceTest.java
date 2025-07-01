@@ -11,6 +11,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import sptech.school.CRUD.Model.CargoModel;
 import sptech.school.CRUD.Repository.CargoRepository;
+import sptech.school.CRUD.dto.Cargo.CargoCadastraDto;
+import sptech.school.CRUD.dto.Cargo.CargoListagemDto;
+
 import java.util.List;
 
 
@@ -31,25 +34,28 @@ class CargoServiceTest {
     @DisplayName("Cadastro de cargo - sucesso")
     void testePostCargoSucesso() {
         // Arrange
-        CargoModel cargo = new CargoModel();
-        cargo.setNome("Desenvolvedor");
+        CargoCadastraDto dto = new CargoCadastraDto();
+        dto.setNome("Desenvolvedor");
 
-        when(cargoRepository.save(any(CargoModel.class))).thenReturn(cargo);
+        CargoModel salvo = new CargoModel();
+        salvo.setNome("Desenvolvedor");
+
+        when(cargoRepository.save(any(CargoModel.class))).thenReturn(salvo);
 
         // Act
-        CargoModel resultado = cargoService.post(cargo);
+        CargoListagemDto resultado = cargoService.post(dto);
 
         // Assert
         assertNotNull(resultado);
         assertEquals("Desenvolvedor", resultado.getNome());
-        verify(cargoRepository).save(cargo);
+        verify(cargoRepository).save(any(CargoModel.class));
     }
 
     @Test
     @DisplayName("Cadastro de cargo - falha (cargo nulo)")
     void testePostCargoNulo() {
         // Act
-        CargoModel resultado = cargoService.post(null);
+        CargoListagemDto resultado = cargoService.post(null);
 
         // Assert
         assertNull(resultado);
