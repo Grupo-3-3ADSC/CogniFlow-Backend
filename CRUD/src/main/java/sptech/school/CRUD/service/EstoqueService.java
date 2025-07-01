@@ -10,6 +10,7 @@ import sptech.school.CRUD.dto.Estoque.AtualizarEstoqueDto;
 import sptech.school.CRUD.dto.Estoque.EstoqueListagemDto;
 import sptech.school.CRUD.dto.Estoque.EstoqueMapper;
 import sptech.school.CRUD.dto.Estoque.RetirarEstoqueDto;
+import sptech.school.CRUD.exception.BadRequestException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,32 +35,38 @@ public class EstoqueService {
         String tipoMaterial = dto.getTipoMaterial();
         Integer quantidade = dto.getQuantidadeAtual();
 
-        if (tipoMaterial == null || tipoMaterial.trim().isEmpty()) {
-            throw new IllegalArgumentException("Tipo de material não pode ser nulo ou vazio");
+        EstoqueModel estoque = estoqueRepository.findByTipoMaterial(tipoMaterial)
+                .orElseGet(() -> {
+                    EstoqueModel novo = new EstoqueModel();
+                    novo.setTipoMaterial(tipoMaterial);
+                    novo.setQuantidadeAtual(0);
+                    novo.setQuantidadeMinima(10);
+                    novo.setQuantidadeMaxima(1000);
+                    novo.setInterno(0);
+                    novo.setExterno(0);
+                    return novo;
+                });
+
+        Integer novaQuantidade = estoque.getQuantidadeAtual() + quantidade;
+        Integer max = estoque.getQuantidadeMaxima();
+        Integer min = estoque.getQuantidadeMinima();
+
+        if (max != null && novaQuantidade > max) {
+            throw new BadRequestException("Quantidade Atual excede a Quantidade Máxima permitida");
         }
-        if (quantidade == null || quantidade <= 0) {
-            throw new IllegalArgumentException("Quantidade deve ser positiva");
+        if (min != null && novaQuantidade < min) {
+            throw new BadRequestException("Quantidade Atual está abaixo da Quantidade Mínima permitida");
         }
 
-        Optional<EstoqueModel> estoqueOpt = estoqueRepository.findByTipoMaterial(tipoMaterial);
-
-        EstoqueModel estoque = estoqueOpt.orElseGet(() -> {
-            EstoqueModel novo = new EstoqueModel();
-            novo.setTipoMaterial(tipoMaterial);
-            novo.setQuantidadeAtual(0); // começa do zero, vai somar abaixo
-            novo.setQuantidadeMinima(10);
-            novo.setQuantidadeMaxima(1000);
-            novo.setInterno(0);
-            novo.setExterno(0);
-            return novo;
-        });
-
-        estoque.setQuantidadeAtual(estoque.getQuantidadeAtual() + quantidade);
+        estoque.setQuantidadeAtual(novaQuantidade);
         estoque.setUltimaMovimentacao(LocalDateTime.now());
 
         EstoqueModel salvo = estoqueRepository.save(estoque);
+
+        // Aqui sim é onde o padrão Adapter está sendo aplicado:
         return EstoqueMapper.toListagemDto(salvo);
     }
+
 
 
     public EstoqueListagemDto retirarEstoque(RetirarEstoqueDto dto) {

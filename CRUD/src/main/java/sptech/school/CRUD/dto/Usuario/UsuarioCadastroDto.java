@@ -14,12 +14,13 @@ import sptech.school.CRUD.Model.CargoModel;
 @NoArgsConstructor
 public class UsuarioCadastroDto {
 
-    @NotBlank
+    @NotBlank(message = "Nome não pode ser nulo ou vazio.")
     @Size(min = 3, message = "Quantidade no mínimo de 3 carácter")
     private String nome;
-    @NotBlank
+    @NotBlank(message = "E-mail não pode ser nulo ou vazio.")
+    @Email(message = "O e-mail deve conter um '@' e um domínio válido.")
     private String email;
-    @NotBlank
+    @NotBlank(message = "Senha não pode ser nulo ou vazio.")
     @Size(min = 6)
     private String password;
     @NotNull
