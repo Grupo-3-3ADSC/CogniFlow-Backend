@@ -17,6 +17,8 @@ import sptech.school.CRUD.Repository.CargoRepository;
 import sptech.school.CRUD.Repository.UsuarioRepository;
 import sptech.school.CRUD.config.GerenciadorTokenJwt;
 import sptech.school.CRUD.dto.Usuario.*;
+import sptech.school.CRUD.exception.BadRequestException;
+import sptech.school.CRUD.exception.ConflictException;
 import sptech.school.CRUD.exception.EntidadeNaoEncontrado;
 
 import java.time.LocalDateTime;
@@ -55,15 +57,22 @@ public class UsuarioService {
 
     public UsuarioModel cadastrarUsuarioComum(UsuarioModel usuario) {
 
+        if (usuario == null) {
+            throw new BadRequestException("O corpo da requisição está vazio.");
+        }
+
         if (usuario.getNome().length() <= 3){
-            throw new RuntimeException("Senha deve ter pelo menos 3 caracteres");
+            throw new BadRequestException("Senha deve ter pelo menos 3 caracteres");
         }
-        Optional<UsuarioModel> existente = usuarioRepository.findByEmail(usuario.getEmail());
-        if (existente.isPresent()) {
-            throw new RuntimeException("Email já cadastrado");
+        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
+            throw new ConflictException("Email já cadastrado.");
         }
-        if (usuario.getPassword() == null || usuario.getPassword().length() < 6) {
-            throw new RuntimeException("Senha deve ter pelo menos 6 caracteres");
+
+        if (usuario.getPassword() == null || usuario.getPassword().isBlank()) {
+            throw new BadRequestException("Senha não pode ser nulo ou vazio.");
+        }
+        if (usuario.getPassword().length() < 6) {
+            throw new BadRequestException("Senha deve ter pelo menos 6 caracteres.");
         }
 
         CargoModel cargo = cargoRepository.findByNome("comum");
@@ -77,15 +86,24 @@ public class UsuarioService {
 
     public UsuarioModel cadastrarUsuarioGestor(UsuarioModel usuario) {
 
-        if (usuario.getNome().length() < 3){
-            throw new RuntimeException("Senha deve ter pelo menos 3 caracteres");
+
+        if (usuario == null) {
+            throw new BadRequestException("O corpo da requisição está vazio.");
         }
-        Optional<UsuarioModel> existente = usuarioRepository.findByEmail(usuario.getEmail());
-        if (existente.isPresent()) {
-            throw new RuntimeException("Email já cadastrado");
+
+        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
+            throw new ConflictException("Email já cadastrado.");
         }
-        if (usuario.getPassword() == null || usuario.getPassword().length() < 6) {
-            throw new RuntimeException("Senha deve ter pelo menos 6 caracteres");
+        if (usuario.getNome().length() <= 3){
+            throw new BadRequestException("O nome deve ter pelo menos 3 caracteres");
+        }
+
+        if (usuario.getPassword() == null || usuario.getPassword().isBlank()) {
+            throw new BadRequestException("Senha não pode ser nulo ou vazio.");
+        }
+
+        if (usuario.getPassword().length() < 6) {
+            throw new BadRequestException("Senha deve ter pelo menos 6 caracteres.");
         }
 
         CargoModel cargo = cargoRepository.findByNome("gestor");
@@ -107,12 +125,31 @@ public class UsuarioService {
 //            boolean nomeVazio = usuarioParaAtualizar.getNome() == null || usuarioParaAtualizar.getNome().trim().isEmpty();
 //            boolean emailVazio = usuarioParaAtualizar.getEmail() == null || usuarioParaAtualizar.getEmail().trim().isEmpty();
 
-            if (usuarioParaAtualizar.getNome() == null ) {
-                throw new RuntimeException("Nome não pode estar vazio");
+            if (usuarioParaAtualizar == null) {
+                throw new BadRequestException("O corpo da requisição está vazio.");
             }
-            if (usuarioParaAtualizar.getEmail() == null ){
-                throw new RuntimeException("Email não pode estar vazio");
+
+
+
+            if (usuarioParaAtualizar.getNome() == null || usuarioParaAtualizar.getNome().trim().isEmpty()) {
+                throw new BadRequestException("Nome não pode estar vazio");
             }
+            if (usuarioParaAtualizar.getEmail() == null || usuarioParaAtualizar.getEmail().trim().isEmpty()) {
+                throw new BadRequestException("Email não pode estar vazio");
+            }
+
+            if (usuarioRepository.existsByEmail(usuarioParaAtualizar.getEmail())) {
+                throw new ConflictException("Email já cadastrado.");
+            }
+            if (usuarioParaAtualizar.getPassword() != null) {
+                if (usuarioParaAtualizar.getPassword().isBlank()) {
+                    throw new BadRequestException("Senha não pode ser nulo ou vazio.");
+                }
+                if (usuarioParaAtualizar.getPassword().length() < 6) {
+                    throw new BadRequestException("Senha deve ter pelo menos 6 caracteres.");
+                }
+            }
+
 
             usuarioParaAtualizar.setId(id);
             usuarioParaAtualizar.setUpdatedAt(LocalDateTime.now());

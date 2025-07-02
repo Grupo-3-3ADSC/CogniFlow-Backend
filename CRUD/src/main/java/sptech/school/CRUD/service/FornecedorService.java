@@ -35,16 +35,12 @@ public class FornecedorService {
 
     public FornecedorModel cadastroFornecedor(FornecedorCadastroDto fornecedorDto) {
 
-        if (fornecedorDto.getCnpj() == null) {
-            throw new BadRequestException("Quantidade Atual não pode ser nula");
-        }
-        if (fornecedorDto.getCnpj().length() < 14 || fornecedorDto.getCnpj().length() > 14) {
-            throw new BadRequestException("O CNPJ deve possuir 14 dígitos.");
-        }if (fornecedorRepository.findByCnpj(fornecedorDto.getCnpj()).isPresent()) {
-
-
+        if (fornecedorRepository.findByCnpj(fornecedorDto.getCnpj()).isPresent()) {
             throw new ConflictException("Já existe um fornecedor cadastrado com esse CNPJ.");
+        }
 
+        if (contatoRepository.existsByEmail(fornecedorDto.getEmail())) {
+            throw new ConflictException("Já existe um fornecedor cadastrado com esse e-mail.");
         }
 
 
@@ -60,7 +56,7 @@ public class FornecedorService {
 
         // Converter número para Integer
         try {
-            endereco.setNumero((fornecedorDto.getNumero()));
+            endereco.setNumero(Integer.valueOf((fornecedorDto.getNumero())));
         } catch (NumberFormatException e) {
             endereco.setNumero(null);
         }

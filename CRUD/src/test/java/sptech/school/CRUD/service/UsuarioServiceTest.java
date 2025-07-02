@@ -13,6 +13,8 @@ import sptech.school.CRUD.Repository.CargoRepository;
 import sptech.school.CRUD.Repository.UsuarioRepository;
 import sptech.school.CRUD.Model.CargoModel;
 import sptech.school.CRUD.Model.UsuarioModel;
+import sptech.school.CRUD.exception.BadRequestException;
+import sptech.school.CRUD.exception.ConflictException;
 import sptech.school.CRUD.exception.EntidadeNaoEncontrado;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -73,7 +75,7 @@ class UsuarioServiceTest {
         when(usuarioRepository.save(any())).thenReturn(usuarioSalvo);
 
         // Executar o método
-            UsuarioModel resultado = usuarioService.cadastrarUsuarioComum(usuario);
+        UsuarioModel resultado = usuarioService.cadastrarUsuarioComum(usuario);
 
         //Assert
         // Verificações
@@ -90,33 +92,40 @@ class UsuarioServiceTest {
     @DisplayName("Cadastro de usuário - e-mail já existente")
     void testeCadastroUsuarioEmailDuplicado() {
         // Arrange
-        UsuarioModel usuarioExistente = new UsuarioModel();
-        usuarioExistente.setEmail("usuario@email.com");
+        String email = "usuario@email.com";
 
-        when(usuarioRepository.findByEmail("usuario@email.com")).thenReturn(Optional.of(usuarioExistente));
+        when(usuarioRepository.existsByEmail(email))
+                .thenReturn(true);
 
         UsuarioModel novoUsuario = new UsuarioModel();
-        novoUsuario.setEmail("usuario@email.com");
+        novoUsuario.setEmail(email);
+        novoUsuario.setNome("Usuário Novo");
+        novoUsuario.setPassword("senhaValida123");
 
         // Act & Assert
-        Exception exception = assertThrows(RuntimeException.class, () -> usuarioService.cadastrarUsuarioComum(novoUsuario));
+        ConflictException exception = assertThrows(
+                ConflictException.class,
+                () -> usuarioService.cadastrarUsuarioComum(novoUsuario)
+        );
 
-        assertEquals("Email já cadastrado", exception.getMessage());
-        verify(usuarioRepository, never()).save(any());
+        verify(usuarioRepository, times(1)).existsByEmail(email);
+        assertEquals("Email já cadastrado.", exception.getMessage());
     }
+
 
     @Test
     @DisplayName("Cadastro de usuário - senha muito curta")
     void testeCadastroUsuarioSenhaCurta() {
         // Arrange
         UsuarioModel usuario = new UsuarioModel();
+        usuario.setNome("Usuário");
         usuario.setEmail("usuario@email.com");
         usuario.setPassword("123");
 
         // Act & Assert
-        Exception exception = assertThrows(RuntimeException.class, () -> usuarioService.cadastrarUsuarioComum(usuario));
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> usuarioService.cadastrarUsuarioGestor(usuario));
 
-        assertEquals("Senha deve ter pelo menos 6 caracteres", exception.getMessage());
+        assertEquals("Senha deve ter pelo menos 6 caracteres.", exception.getMessage());
     }
 
     @Test
@@ -124,13 +133,16 @@ class UsuarioServiceTest {
     void testeCadastroUsuarioSenhaNula() {
         // Arrange
         UsuarioModel usuario = new UsuarioModel();
-        usuario.setEmail("usuario@email.com");
+        usuario.setNome("Bianca");
+        usuario.setEmail("bia@email.com");
         usuario.setPassword(null); // Simulamos um usuário sem senha
 
         // Act & Assert
-        Exception exception = assertThrows(RuntimeException.class, () -> usuarioService.cadastrarUsuarioComum(usuario));
-
-        assertEquals("Senha deve ter pelo menos 6 caracteres", exception.getMessage());
+        BadRequestException exception = assertThrows(
+                BadRequestException.class,
+                () -> usuarioService.cadastrarUsuarioGestor(usuario)
+        );
+        assertEquals("Senha não pode ser nulo ou vazio.", exception.getMessage());
     }
 
 
@@ -164,7 +176,7 @@ class UsuarioServiceTest {
         when(usuarioRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         // Act & Assert
-        Exception exception = assertThrows(EntidadeNaoEncontrado.class, () -> usuarioService.getById(99));
+        EntidadeNaoEncontrado exception = assertThrows(EntidadeNaoEncontrado.class, () -> usuarioService.getById(99));
 
         assertEquals("Usuario de id 99 não encontrado", exception.getMessage());
         verify(usuarioRepository).findById(99);
@@ -177,7 +189,7 @@ class UsuarioServiceTest {
         when(usuarioRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         // Act & Assert
-        Exception exception = assertThrows(EntidadeNaoEncontrado.class, () -> usuarioService.getById(-1));
+        EntidadeNaoEncontrado exception = assertThrows(EntidadeNaoEncontrado.class, () -> usuarioService.getById(-1));
 
         assertEquals("Usuario de id -1 não encontrado", exception.getMessage());
         verify(usuarioRepository).findById(-1);
@@ -243,19 +255,24 @@ class UsuarioServiceTest {
     @DisplayName("Cadastro de usuário gestor - e-mail já existente")
     void testeCadastroUsuarioGestorEmailDuplicado() {
         // Arrange
-        UsuarioModel usuarioExistente = new UsuarioModel();
-        usuarioExistente.setEmail("usuario@email.com");
+        String email = "diego@email.com";
 
-        when(usuarioRepository.findByEmail("usuario@email.com")).thenReturn(Optional.of(usuarioExistente));
+        when(usuarioRepository.existsByEmail(email))
+                .thenReturn(true);
 
         UsuarioModel novoUsuario = new UsuarioModel();
-        novoUsuario.setEmail("usuario@email.com");
+        novoUsuario.setEmail(email);
+        novoUsuario.setNome("Usuário Novo");
+        novoUsuario.setPassword("senhaVali123");
 
         // Act & Assert
-        Exception exception = assertThrows(RuntimeException.class, () -> usuarioService.cadastrarUsuarioGestor(novoUsuario));
+        ConflictException exception = assertThrows(
+                ConflictException.class,
+                () -> usuarioService.cadastrarUsuarioComum(novoUsuario)
+        );
 
-        assertEquals("Email já cadastrado", exception.getMessage());
-        verify(usuarioRepository, never()).save(any());
+        verify(usuarioRepository, times(1)).existsByEmail(email);
+        assertEquals("Email já cadastrado.", exception.getMessage());
     }
 
     @Test
@@ -263,13 +280,14 @@ class UsuarioServiceTest {
     void testeCadastroUsuarioGestorSenhaCurta() {
         // Arrange
         UsuarioModel usuario = new UsuarioModel();
+        usuario.setNome("Usuário");
         usuario.setEmail("usuario@email.com");
         usuario.setPassword("123");
 
         // Act & Assert
-        Exception exception = assertThrows(RuntimeException.class, () -> usuarioService.cadastrarUsuarioGestor(usuario));
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> usuarioService.cadastrarUsuarioGestor(usuario));
 
-        assertEquals("Senha deve ter pelo menos 6 caracteres", exception.getMessage());
+        assertEquals("Senha deve ter pelo menos 6 caracteres.", exception.getMessage());
     }
 
     @Test
@@ -277,13 +295,17 @@ class UsuarioServiceTest {
     void testeCadastroUsuarioGestorSenhaNula() {
         // Arrange
         UsuarioModel usuario = new UsuarioModel();
+        usuario.setNome("Usuário");
         usuario.setEmail("usuario@email.com");
-        usuario.setPassword(null); // Simulamos um usuário sem senha
+        usuario.setPassword(null);
 
         // Act & Assert
-        Exception exception = assertThrows(RuntimeException.class, () -> usuarioService.cadastrarUsuarioGestor(usuario));
+        BadRequestException exception = assertThrows(
+                BadRequestException.class,
+                () -> usuarioService.cadastrarUsuarioGestor(usuario)
+        );
+        assertEquals("Senha não pode ser nulo ou vazio.", exception.getMessage());
 
-        assertEquals("Senha deve ter pelo menos 6 caracteres", exception.getMessage());
     }
 
 
@@ -345,6 +367,7 @@ class UsuarioServiceTest {
         usuarioExistente.setId(1);
         usuarioExistente.setNome("Antigo Nome");
         usuarioExistente.setEmail("email@email.com");
+        usuarioExistente.setPassword("senha@2025");
 
         lenient().when(usuarioRepository.existsById(1)).thenReturn(true);
         lenient().when(usuarioRepository.findById(1)).thenReturn(Optional.of(usuarioExistente));
@@ -363,7 +386,7 @@ class UsuarioServiceTest {
 
         // Assert
         assertNotNull(resultado);
-        assertEquals("Novo Nome", resultado.getNome());  // ✅ Agora garantimos que o nome foi atualizado
+        assertEquals("Novo Nome", resultado.getNome());
         verify(usuarioRepository).save(any());
     }
 
@@ -373,15 +396,16 @@ class UsuarioServiceTest {
     void testePutDadosInvalidos() {
         // Arrange
         UsuarioModel usuarioAtualizado = new UsuarioModel();
-        usuarioAtualizado.setNome(""); // Nome inválido
-        usuarioAtualizado.setEmail(""); // Email inválido
+        usuarioAtualizado.setNome("");
+        usuarioAtualizado.setEmail("");
+        usuarioAtualizado.setPassword("senhaVali123");
 
         when(usuarioRepository.existsById(1)).thenReturn(true);
 
         // Act & Assert
-        Exception exception = assertThrows(RuntimeException.class, () -> usuarioService.put(usuarioAtualizado, 1));
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> usuarioService.put(usuarioAtualizado, 1));
 
-        System.out.println("Mensagem de erro retornada: " + exception.getMessage()); // 🔥 Depuração
+        System.out.println("Mensagem de erro retornada: " + exception.getMessage());
 
         assertTrue(
                 exception.getMessage().equals("Nome e email não podem estar vazios") ||
@@ -402,7 +426,7 @@ class UsuarioServiceTest {
         when(usuarioRepository.existsById(anyInt())).thenReturn(false);
 
         // Act & Assert
-        Exception exception = assertThrows(EntidadeNaoEncontrado.class, () -> usuarioService.put(usuarioAtualizado, 99));
+        EntidadeNaoEncontrado exception = assertThrows(EntidadeNaoEncontrado.class, () -> usuarioService.put(usuarioAtualizado, 99));
 
         assertEquals("Usuario de id 99 não encontrado", exception.getMessage());
         verify(usuarioRepository, never()).save(any());
