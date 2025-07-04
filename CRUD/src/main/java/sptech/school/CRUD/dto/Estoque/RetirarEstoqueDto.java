@@ -17,6 +17,8 @@ public class RetirarEstoqueDto {
 
     @NotNull(message = "Quantidade Atual não pode ser nula")
     @Min(value = 1, message = "Quantidade Atual deve ser positiva")
+    @NotNull(message = "Quantidade Atual não pode ser nula")
+    @Min(value = 1, message = "Quantidade Atual deve ser positiva")
     private Integer quantidadeAtual;
 
     @NotBlank(message = "valor não pode ser vazio, tem que ser interna ou externa")

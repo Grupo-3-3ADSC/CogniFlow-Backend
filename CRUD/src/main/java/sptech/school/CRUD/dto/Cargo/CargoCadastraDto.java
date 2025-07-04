@@ -10,6 +10,6 @@ import lombok.*;
 @NoArgsConstructor
 public class CargoCadastraDto {
 
-    @NotBlank
+    @NotBlank(message = "Nome não pode ser nulo ou vazio")
     private String nome;
 }

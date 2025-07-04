@@ -11,8 +11,8 @@ import sptech.school.CRUD.Model.CargoModel;
 public class UsuarioPatchDto {
     @NotBlank(message = "Nome não pode ser nulo ou vazio.")
     private String nome;
-    @NotBlank(message = "Email não pode ser nulo ou vazio.")
-    @Email
+    @NotBlank(message = "E-mail não pode ser nulo ou vazio.")
+    @Email(message = "O e-mail deve conter um '@' e um domínio válido.")
     private String email;
     @NotBlank(message = "Cargo não pode ser nulo ou vazio.")
     private CargoModel cargo;

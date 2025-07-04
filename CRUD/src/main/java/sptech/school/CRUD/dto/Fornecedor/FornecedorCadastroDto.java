@@ -15,7 +15,6 @@ import org.hibernate.validator.constraints.br.CNPJ;
 public class FornecedorCadastroDto {
 
     @NotBlank(message = "CNPJ não pode ser nulo ou vazio.")
-    @Size(min = 14, max = 14, message = "CNPJ deve ter 14 dígitos.")
     @CNPJ
     private String cnpj;
 

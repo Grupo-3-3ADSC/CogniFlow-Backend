@@ -14,6 +14,8 @@ import sptech.school.CRUD.dto.OrdemDeCompra.ListagemOrdemDeCompra;
 import sptech.school.CRUD.dto.OrdemDeCompra.OrdemDeCompraCadastroDto;
 import sptech.school.CRUD.dto.OrdemDeCompra.OrdemDeCompraMapper;
 import sptech.school.CRUD.exception.BadRequestException;
+import sptech.school.CRUD.exception.ConflictException;
+import sptech.school.CRUD.exception.EntidadeNaoEncontrado;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -36,18 +38,20 @@ public class OrdemDeCompraService {
 
         // Busca e seta as entidades relacionadas
         FornecedorModel fornecedor = fornecedorRepository.findById(dto.getFornecedorId())
-                .orElseThrow(() -> new RuntimeException("Fornecedor não encontrado"));
+                .orElseThrow(() -> new EntidadeNaoEncontrado("Fornecedor não encontrado"));
         ordemDeCompra.setFornecedor(fornecedor);
 
         EstoqueModel estoque = estoqueRepository.findById(dto.getEstoqueId())
-                .orElseThrow(() -> new RuntimeException("Estoque não encontrado"));
+                .orElseThrow(() -> new EntidadeNaoEncontrado("Estoque não encontrado"));
         ordemDeCompra.setEstoque(estoque);
 
         UsuarioModel usuario = usuarioRepository.findById(dto.getUsuarioId())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new EntidadeNaoEncontrado("Usuário não encontrado"));
         ordemDeCompra.setUsuario(usuario);
 
-
+        if (ordemDeCompraRepository.existsByRastreabilidadeAndEstoqueId(dto.getRastreabilidade(), dto.getEstoqueId())) {
+            throw new ConflictException("Rastreabilidade já cadastrada para este estoque");
+        }
 
         // Salva a ordem de compra
         OrdemDeCompraModel ordemSalva = ordemDeCompraRepository.save(ordemDeCompra);

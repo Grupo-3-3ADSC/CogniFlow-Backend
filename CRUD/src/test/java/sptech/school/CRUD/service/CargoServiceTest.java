@@ -56,15 +56,14 @@ class CargoServiceTest {
     @Test
     @DisplayName("Cadastro de cargo - falha (cargo nulo)")
     void testePostCargoNulo() {
-        // Act
-        CargoListagemDto resultado = cargoService.post(null);
         // Act & Assert
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {
             cargoService.post(null);
         });
 
-        assertEquals("O corpo da requisição está vazio.", exception.getMessage());
+        assertEquals("O nome do cargo é obrigatório.x", exception.getMessage());
     }
+
 
     @Test
     @DisplayName("Listagem de cargos - sucesso")
