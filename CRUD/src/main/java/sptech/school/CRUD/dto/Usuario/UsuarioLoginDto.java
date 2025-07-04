@@ -8,8 +8,8 @@ import sptech.school.CRUD.Model.CargoModel;
 @Getter
 @Setter
 public class UsuarioLoginDto {
-    @NotBlank
+    @NotBlank(message = "Email não pode ser nulo ou vazio.")
     private String email;
-    @NotBlank
+    @NotBlank(message = "Senha não pode ser nulo ou vazio.")
     private String password;
 }

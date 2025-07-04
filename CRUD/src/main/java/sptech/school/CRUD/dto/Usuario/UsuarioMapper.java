@@ -130,5 +130,11 @@ public class UsuarioMapper {
 
         return usuario;
     }
-
+    public static UsuarioDeleteDto toDeleteDto(UsuarioModel model) {
+        UsuarioDeleteDto dto = new UsuarioDeleteDto();
+        dto.setId(model.getId());
+        dto.setNome(model.getNome());
+        dto.setEmail(model.getEmail());
+        return dto;
+    }
 }

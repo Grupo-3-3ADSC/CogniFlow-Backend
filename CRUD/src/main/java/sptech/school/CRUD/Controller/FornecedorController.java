@@ -23,11 +23,8 @@ public class FornecedorController {
     @PostMapping
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity cadastrarFornecedor(@RequestBody FornecedorCadastroDto fornecedor){
-
         FornecedorModel novoFornecedor = fornecedorService.cadastroFornecedor(fornecedor);
-
         return ResponseEntity.status(201).body(novoFornecedor);
-
     }
 
 

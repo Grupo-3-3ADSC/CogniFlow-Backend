@@ -13,6 +13,7 @@ import sptech.school.CRUD.Repository.CargoRepository;
 import sptech.school.CRUD.Repository.UsuarioRepository;
 import sptech.school.CRUD.Model.CargoModel;
 import sptech.school.CRUD.Model.UsuarioModel;
+import sptech.school.CRUD.dto.Usuario.UsuarioDeleteDto;
 import sptech.school.CRUD.exception.EntidadeNaoEncontrado;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -423,11 +424,12 @@ class UsuarioServiceTest {
         when(usuarioRepository.save(any())).thenReturn(usuario);
 
         // Act
-        Optional<UsuarioModel> resultado = usuarioService.delete(1);
+        Optional<UsuarioDeleteDto> resultado = usuarioService.delete(1);
 
         // Assert
         assertTrue(resultado.isPresent());
-        assertFalse(resultado.get().getAtivo());
+        assertEquals("Bruna", resultado.get().getNome());
+        assertEquals("bruna@email.com", resultado.get().getEmail());
         verify(usuarioRepository).save(any());
     }
 
@@ -438,13 +440,12 @@ class UsuarioServiceTest {
         when(usuarioRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         // Act
-        Optional<UsuarioModel> resultado = usuarioService.delete(99);
+        Optional<UsuarioDeleteDto> resultado = usuarioService.delete(99);
 
         // Assert
         assertTrue(resultado.isEmpty());
         verify(usuarioRepository, never()).save(any());
     }
-
 
 }
 

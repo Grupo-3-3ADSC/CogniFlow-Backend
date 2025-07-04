@@ -147,7 +147,7 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    public Optional<UsuarioModel> delete(int id) {
+    public Optional<UsuarioDeleteDto> delete(int id) {
         Optional<UsuarioModel> usuario = usuarioRepository.findById(id);
 
         if (usuario.isEmpty()) {
@@ -157,8 +157,10 @@ public class UsuarioService {
         usuario.get().setUpdatedAt(LocalDateTime.now());
         usuario.get().setAtivo(false);
         usuarioRepository.save(usuario.get());
-        return usuario;
+
+        return Optional.of(UsuarioMapper.toDeleteDto(usuario.get()));
     }
+
 
     public Boolean uploadFoto(Integer id, MultipartFile file){
         if(file == null || file.isEmpty()){

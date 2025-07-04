@@ -9,6 +9,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UsuarioAtivoDto {
-    @NotNull
+    @NotNull(message = "não pode ser nulo ou vazio.")
     private Boolean ativo;
 }

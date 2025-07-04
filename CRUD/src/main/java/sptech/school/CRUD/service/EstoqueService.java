@@ -11,6 +11,7 @@ import sptech.school.CRUD.dto.Estoque.EstoqueListagemDto;
 import sptech.school.CRUD.dto.Estoque.EstoqueMapper;
 import sptech.school.CRUD.dto.Estoque.RetirarEstoqueDto;
 import sptech.school.CRUD.exception.BadRequestException;
+import sptech.school.CRUD.exception.EntidadeNaoEncontrado;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,17 +36,11 @@ public class EstoqueService {
         String tipoMaterial = dto.getTipoMaterial();
         Integer quantidade = dto.getQuantidadeAtual();
 
+        // Validação: garantir que o tipoMaterial seja um dos pré-cadastrados
         EstoqueModel estoque = estoqueRepository.findByTipoMaterial(tipoMaterial)
-                .orElseGet(() -> {
-                    EstoqueModel novo = new EstoqueModel();
-                    novo.setTipoMaterial(tipoMaterial);
-                    novo.setQuantidadeAtual(0);
-                    novo.setQuantidadeMinima(10);
-                    novo.setQuantidadeMaxima(1000);
-                    novo.setInterno(0);
-                    novo.setExterno(0);
-                    return novo;
-                });
+                .orElseThrow(() -> new EntidadeNaoEncontrado(
+                        "Tipo de material não encontrado: " + tipoMaterial
+                ));
 
         Integer novaQuantidade = estoque.getQuantidadeAtual() + quantidade;
         Integer max = estoque.getQuantidadeMaxima();
@@ -62,11 +57,8 @@ public class EstoqueService {
         estoque.setUltimaMovimentacao(LocalDateTime.now());
 
         EstoqueModel salvo = estoqueRepository.save(estoque);
-
-        // Aqui sim é onde o padrão Adapter está sendo aplicado:
         return EstoqueMapper.toListagemDto(salvo);
     }
-
 
 
     public EstoqueListagemDto retirarEstoque(RetirarEstoqueDto dto) {

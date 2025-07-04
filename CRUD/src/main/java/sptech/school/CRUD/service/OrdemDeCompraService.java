@@ -13,6 +13,7 @@ import sptech.school.CRUD.Repository.UsuarioRepository;
 import sptech.school.CRUD.dto.OrdemDeCompra.ListagemOrdemDeCompra;
 import sptech.school.CRUD.dto.OrdemDeCompra.OrdemDeCompraCadastroDto;
 import sptech.school.CRUD.dto.OrdemDeCompra.OrdemDeCompraMapper;
+import sptech.school.CRUD.exception.BadRequestException;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -54,6 +55,9 @@ public class OrdemDeCompraService {
         // Atualiza a quantidade no estoque
         Integer novaQuantidade = (estoque.getQuantidadeAtual() != null ? estoque.getQuantidadeAtual() : 0)
                 + ordemSalva.getQuantidade();
+        if (estoque.getQuantidadeMaxima() != null && novaQuantidade > estoque.getQuantidadeMaxima()) {
+            throw new BadRequestException("A quantidade comprada ultrapassa o limite máximo de estoque permitido.");
+        }
         estoque.setQuantidadeAtual(novaQuantidade);
         estoque.setUltimaMovimentacao(LocalDateTime.now());
         estoqueRepository.save(estoque);

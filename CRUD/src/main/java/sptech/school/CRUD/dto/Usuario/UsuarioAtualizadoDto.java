@@ -15,19 +15,16 @@ import sptech.school.CRUD.Model.CargoModel;
 @NoArgsConstructor
 public class UsuarioAtualizadoDto {
 
-
-
     @NotNull
     private Integer id;
-    @NotBlank
+    @NotBlank(message = "Nome não pode ser nulo ou vazio.")
     private String nome;
-    @NotBlank
+    @NotBlank(message = "Email não pode ser nulo ou vazio.")
     private String email;
-    @NotBlank
-    @Size(min = 6)
+    @NotBlank(message = "Senha não pode ser nulo ou vazio.")
+    @Size(min = 6, message = "precisa ter mais de 5 caracter")
     private String password;
-    @NotNull
-
+    @NotNull(message = "Cargo não pode ser nulo ou vazio.")
     private CargoModel cargo;
 
 

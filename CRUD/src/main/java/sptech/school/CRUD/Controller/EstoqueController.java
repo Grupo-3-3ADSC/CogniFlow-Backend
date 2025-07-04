@@ -12,6 +12,8 @@ import sptech.school.CRUD.service.EstoqueService;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static sptech.school.CRUD.dto.Estoque.EstoqueMapper.toListagemDto;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/estoque")
@@ -31,6 +33,7 @@ public class EstoqueController {
     @PostMapping("/adicionar")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<EstoqueListagemDto> adicionarEstoque(@RequestBody AtualizarEstoqueDto dto) {
+
         EstoqueListagemDto resposta = estoqueService.atualizarEstoque(dto);
         return ResponseEntity.ok(resposta);
     }

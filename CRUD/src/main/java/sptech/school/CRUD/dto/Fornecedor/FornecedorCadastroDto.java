@@ -1,6 +1,8 @@
 package sptech.school.CRUD.dto.Fornecedor;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.validator.constraints.br.CNPJ;
@@ -10,26 +12,34 @@ import org.hibernate.validator.constraints.br.CNPJ;
 @Setter
 @Builder
 @NoArgsConstructor
-
 public class FornecedorCadastroDto {
-    @NotBlank
-    @Size(min = 14, max = 14)
+
+    @NotBlank(message = "CNPJ não pode ser nulo ou vazio.")
+    @Size(min = 14, max = 14, message = "CNPJ deve ter 14 dígitos.")
     @CNPJ
     private String cnpj;
-    @NotBlank
+
+    @NotBlank(message = "Razão Social não pode ser nulo ou vazio.")
     private String razaoSocial;
-    @NotBlank
+
+    @NotBlank(message = "Nome Fantasia não pode ser nulo ou vazio.")
     private String nomeFantasia;
-    @NotBlank
-    @Size(min = 8, max = 8)
+
+    @NotBlank(message = "CEP não pode ser nulo ou vazio.")
+    @Size(min = 8, max = 8, message = "CEP deve ter 8 dígitos.")
     private String cep;
-    @NotBlank
+
+    @NotBlank(message = "Endereço não pode ser nulo ou vazio.")
     private String endereco;
-    @NotBlank
+
+    @NotNull(message = "Número não pode ser nulo.")
     private Integer numero;
-    @NotBlank
-    @Size(min = 11, max = 11)
+
+    @NotBlank(message = "Telefone não pode ser nulo ou vazio.")
+    @Size(min = 10, max = 11, message = "Telefone deve ter entre 10 e 11 dígitos.")
     private String telefone;
-    @NotBlank
+
+    @NotBlank(message = "Email não pode ser nulo ou vazio.")
+    @Email(message = "O e-mail deve conter um '@' e um domínio válido.")
     private String email;
 }

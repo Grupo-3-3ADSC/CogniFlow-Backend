@@ -27,9 +27,9 @@ public class EstoqueCadastroDto {
     @Min(value = 1, message = "Quantidade Máxima deve ser positiva")
     private Integer quantidadeMaxima;
 
-    @NotNull
+    @NotNull(message = "valor externo não pode ser nula")
     private Integer externo;
 
-    @NotNull
+    @NotNull(message = "valor interno não pode ser nula")
     private Integer interno;
 }

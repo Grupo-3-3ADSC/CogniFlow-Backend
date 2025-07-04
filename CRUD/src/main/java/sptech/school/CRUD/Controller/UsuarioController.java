@@ -133,7 +133,7 @@ public class UsuarioController {
 
     @PatchMapping("/{id}")
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<UsuarioModel> atualizarParcial(
+    public ResponseEntity<Void> atualizarParcial(
             @PathVariable Integer id,
             @RequestBody UsuarioPatchDto campos
             ){
@@ -148,16 +148,14 @@ public class UsuarioController {
 
     @DeleteMapping("/{id}")
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<UsuarioModel> deletar(
-            @PathVariable Integer id
-    ){
-        Optional<UsuarioModel> usuario = usuarioService.delete(id);
+    public ResponseEntity<UsuarioDeleteDto> deletar(@PathVariable Integer id) {
+        Optional<UsuarioDeleteDto> usuario = usuarioService.delete(id);
 
-        if (usuario.isEmpty()){
+        if (usuario.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.noContent().build();
 
+        return ResponseEntity.ok(usuario.get());
     }
 
     @PostMapping("/{id}/upload-foto")
