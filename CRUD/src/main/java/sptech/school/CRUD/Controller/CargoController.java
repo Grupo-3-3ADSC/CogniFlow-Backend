@@ -1,6 +1,10 @@
 package sptech.school.CRUD.Controller;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.CRUD.Model.CargoModel;
@@ -9,9 +13,15 @@ import sptech.school.CRUD.dto.Cargo.CargoListagemDto;
 import sptech.school.CRUD.service.CargoService;
 
 import java.util.List;
-
+@Tag(name = "Cargo", description = "Endpoints de Cargo")
 @RestController
 @RequestMapping("/cargos")
+@ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Requisição inválida"),
+        @ApiResponse(responseCode = "404", description = "Entidade relacionada não encontrada"),
+        @ApiResponse(responseCode = "409", description = "Conflito de dados (ex: rastreabilidade duplicada)")
+})
 public class CargoController {
 
     private final CargoService cargoService;
@@ -28,7 +38,7 @@ public class CargoController {
 
     @PostMapping
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<CargoListagemDto> post(@RequestBody CargoCadastraDto cargo) {
+    public ResponseEntity<CargoListagemDto> post(@RequestBody @Valid CargoCadastraDto cargo) {
 
         CargoListagemDto cargoPost = cargoService.post(cargo);
 

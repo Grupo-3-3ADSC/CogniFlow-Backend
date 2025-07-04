@@ -1,4 +1,4 @@
-package com.example.exception;
+package sptech.school.CRUD.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,6 +63,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
+    @ExceptionHandler(EntidadeNaoEncontrado.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(EntidadeNaoEncontrado ex, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                "Not Found",
+                ex.getMessage(),
+                request.getDescription(false).replace("uri=", "")
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<ErrorResponse> handleResponseStatusException(ResponseStatusException ex, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(
@@ -73,6 +85,17 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(ex.getStatusCode()).body(errorResponse);
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ErrorResponse> handleConflict(ConflictException ex, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                "Conflict",
+                ex.getMessage(),
+                request.getDescription(false).replace("uri=", "")
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
     @ExceptionHandler(Exception.class)
@@ -105,22 +128,6 @@ public class GlobalExceptionHandler {
 
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-
-
-    }
-    @ExceptionHandler(ConflictException.class)
-
-
-    public ResponseEntity<String> handleConflict(ConflictException ex) {
-
-
-        return ResponseEntity
-
-
-                .status(HttpStatus.CONFLICT) // 409
-
-
-                .body(ex.getMessage());
 
 
     }

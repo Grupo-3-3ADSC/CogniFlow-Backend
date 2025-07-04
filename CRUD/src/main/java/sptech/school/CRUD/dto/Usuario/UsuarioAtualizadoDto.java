@@ -1,9 +1,7 @@
 package sptech.school.CRUD.dto.Usuario;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import sptech.school.CRUD.Model.CargoModel;
@@ -17,17 +15,18 @@ public class UsuarioAtualizadoDto {
 
 
 
-    @NotNull
+    @NotNull(message = "ID  não pode ser nulo ou vazio.")
     private Integer id;
-    @NotBlank
+    @NotBlank(message = "Nome não pode ser nulo ou vazio.")
+    @Size(min = 3, message = "Quantidade no mínimo de 3 carácter")
     private String nome;
-    @NotBlank
+    @NotBlank(message = "E-mail não pode ser nulo ou vazio.")
+    @Email(message = "Insira um e-mail válido")
     private String email;
-    @NotBlank
+    @NotBlank(message = "Senha não pode ser nulo ou vazio.")
     @Size(min = 6)
     private String password;
-    @NotNull
-
+    @NotNull(message = "Cargo não pode ser nulo ou vazio")
     private CargoModel cargo;
 
 

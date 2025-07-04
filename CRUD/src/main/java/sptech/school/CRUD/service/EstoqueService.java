@@ -11,6 +11,7 @@ import sptech.school.CRUD.dto.Estoque.EstoqueListagemDto;
 import sptech.school.CRUD.dto.Estoque.EstoqueMapper;
 import sptech.school.CRUD.dto.Estoque.RetirarEstoqueDto;
 import sptech.school.CRUD.exception.BadRequestException;
+import sptech.school.CRUD.exception.EntidadeNaoEncontrado;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -74,21 +75,12 @@ public class EstoqueService {
         Integer quantidadeAtual = dto.getQuantidadeAtual();
         String tipoTransferencia = dto.getTipoTransferencia();
 
-        if (tipoMaterial == null || tipoMaterial.trim().isEmpty()) {
-            throw new IllegalArgumentException("Tipo de material não pode ser nulo ou vazio");
-        }
-        if (quantidadeAtual == null || quantidadeAtual <= 0) {
-            throw new IllegalArgumentException("Quantidade deve ser positiva");
-        }
-        if (tipoTransferencia == null || tipoTransferencia.trim().isEmpty()) {
-            throw new IllegalArgumentException("Tipo de transferência não pode ser nulo ou vazio");
-        }
 
         EstoqueModel estoque = estoqueRepository.findByTipoMaterial(tipoMaterial)
-                .orElseThrow(() -> new RuntimeException("Material não encontrado no estoque: " + tipoMaterial));
+                .orElseThrow(() -> new EntidadeNaoEncontrado("Material não encontrado no estoque: " + tipoMaterial));
 
         if (estoque.getQuantidadeAtual() < quantidadeAtual) {
-            throw new RuntimeException("Quantidade insuficiente no estoque. Disponível: " +
+            throw new BadRequestException("Quantidade insuficiente no estoque. Disponível: " +
                     estoque.getQuantidadeAtual() + ", Solicitado: " + quantidadeAtual);
         }
 

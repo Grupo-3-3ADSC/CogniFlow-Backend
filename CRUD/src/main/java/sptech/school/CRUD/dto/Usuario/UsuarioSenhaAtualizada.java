@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UsuarioSenhaAtualizada {
-    @NotBlank
+    @NotBlank(message = "Senha não pode ser nulo ou vazio.")
     @Size(min = 6)
     private String password;
 }

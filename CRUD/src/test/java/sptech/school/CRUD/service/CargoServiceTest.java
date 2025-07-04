@@ -61,7 +61,7 @@ class CargoServiceTest {
             cargoService.post(null);
         });
 
-        assertEquals("O corpo da requisição está vazio.", exception.getMessage());
+        assertEquals("O nome do cargo é obrigatório.x", exception.getMessage());
     }
 
 

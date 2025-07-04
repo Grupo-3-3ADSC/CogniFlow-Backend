@@ -1,6 +1,7 @@
 package sptech.school.CRUD.Controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,9 +22,15 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
+@Tag(name = "Usuario", description = "Endpoints de Usuario")
 @RestController
 @RequestMapping("/usuarios")
+@ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Requisição inválida"),
+        @ApiResponse(responseCode = "404", description = "Entidade relacionada não encontrada"),
+        @ApiResponse(responseCode = "409", description = "Conflito de dados (ex: rastreabilidade duplicada)")
+})
 public class UsuarioController {
 
     private final UsuarioService usuarioService;

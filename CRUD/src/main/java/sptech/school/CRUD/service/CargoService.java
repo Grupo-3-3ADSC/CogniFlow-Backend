@@ -29,13 +29,15 @@ public class CargoService {
     }
 
     public CargoListagemDto  post(CargoCadastraDto cargo) {
-        if (cargo == null) {
-            throw new BadRequestException("O corpo da requisição está vazio.");
-        }
 
-        if (cargo.getNome() == null || cargo.getNome().trim().isEmpty()) {
+        if (cargo == null) {
             throw new BadRequestException("O nome do cargo é obrigatório.");
         }
+
+        if (cargo.getNome() == null || cargo.getNome().isBlank()) {
+            throw new BadRequestException("O nome do cargo é obrigatório.");
+        }
+
 
         CargoModel entity = CargoMapper.toCadastro(cargo);
         CargoModel saved = cargoRepository.save(entity);
