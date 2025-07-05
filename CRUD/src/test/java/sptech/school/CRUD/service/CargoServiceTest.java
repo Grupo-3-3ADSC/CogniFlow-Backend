@@ -33,7 +33,7 @@ class CargoServiceTest {
     }
 
     @Test
-    @DisplayName("Cadastro de cargo - sucesso")
+    @DisplayName("Cadastro de cargo - Sucesso")
     void testePostCargoSucesso() {
         // Arrange
         CargoCadastraDto dto = new CargoCadastraDto();
@@ -54,19 +54,19 @@ class CargoServiceTest {
     }
 
     @Test
-    @DisplayName("Cadastro de cargo - falha (cargo nulo)")
+    @DisplayName("Cadastro de cargo - Falha (cargo nulo)")
     void testePostCargoNulo() {
         // Act & Assert
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {
             cargoService.post(null);
         });
 
-        assertEquals("O nome do cargo é obrigatório.x", exception.getMessage());
+        assertEquals("O nome do cargo é obrigatório.", exception.getMessage());
     }
 
 
     @Test
-    @DisplayName("Listagem de cargos - sucesso")
+    @DisplayName("Listagem de cargos - Sucesso")
     void testeGetAllCargos() {
         // Arrange
         CargoModel cargo1 = new CargoModel();

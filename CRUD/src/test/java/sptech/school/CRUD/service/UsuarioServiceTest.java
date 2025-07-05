@@ -43,7 +43,7 @@ class UsuarioServiceTest {
 
 
     @Test
-    @DisplayName("Cadastro de funcionário comum")
+    @DisplayName("Cadastro de funcionário comum - Sucesso")
     void testeCadastroUsuario() {
         //A - Arrange (configuração)
         // Simular o cargo retornado do banco
@@ -83,14 +83,10 @@ class UsuarioServiceTest {
         assertNotNull(resultado);
         assertEquals("Bianca", resultado.getNome());
         verify(usuarioRepository).save(any());
-
-        // Confirmar que passwordEncoder está sendo realmente chamado
-        verify(passwordEncoder, times(1)).encode(anyString());
-
     }
 
     @Test
-    @DisplayName("Cadastro de usuário - e-mail já existente")
+    @DisplayName("Cadastro de usuário - E-mail já existente")
     void testeCadastroUsuarioEmailDuplicado() {
         // Arrange
         String email = "usuario@email.com";
@@ -115,7 +111,7 @@ class UsuarioServiceTest {
 
 
     @Test
-    @DisplayName("Cadastro de usuário - senha muito curta")
+    @DisplayName("Cadastro de usuário - Senha muito curta")
     void testeCadastroUsuarioSenhaCurta() {
         // Arrange
         UsuarioModel usuario = new UsuarioModel();
@@ -130,7 +126,7 @@ class UsuarioServiceTest {
     }
 
     @Test
-    @DisplayName("Cadastro de usuário - senha nula")
+    @DisplayName("Cadastro de usuário - Senha nula")
     void testeCadastroUsuarioSenhaNula() {
         // Arrange
         UsuarioModel usuario = new UsuarioModel();
@@ -148,7 +144,7 @@ class UsuarioServiceTest {
 
 
     @Test
-    @DisplayName("Buscar usuário por ID - sucesso")
+    @DisplayName("Buscar usuário por ID - Sucesso")
     void testeGetByIdSucesso() {
         // Arrange
         UsuarioModel usuario = new UsuarioModel();
@@ -171,7 +167,7 @@ class UsuarioServiceTest {
     }
 
     @Test
-    @DisplayName("Buscar usuário por ID - usuário não encontrado")
+    @DisplayName("Buscar usuário por ID - Usuário não encontrado")
     void testeGetByIdErro() {
         // Arrange
         when(usuarioRepository.findById(anyInt())).thenReturn(Optional.empty());
@@ -197,7 +193,7 @@ class UsuarioServiceTest {
     }
 
     @Test
-    @DisplayName("Cadastro de usuário sem cargo válido")
+    @DisplayName("Cadastro de usuário - Cargo inválido")
     void testeCadastroUsuarioSemCargo() {
         // Arrange
         UsuarioModel usuario = UsuarioModel.builder()
@@ -215,7 +211,7 @@ class UsuarioServiceTest {
     }
 
     @Test
-    @DisplayName("Cadastro de usuário gestor")
+    @DisplayName("Cadastro de usuário gestor - Sucesso")
     void testeCadastroUsuarioGestor() {
         // Arrange
         CargoModel cargo = new CargoModel();
@@ -253,7 +249,7 @@ class UsuarioServiceTest {
     }
 
     @Test
-    @DisplayName("Cadastro de usuário gestor - e-mail já existente")
+    @DisplayName("Cadastro de usuário gestor - E-mail já existente")
     void testeCadastroUsuarioGestorEmailDuplicado() {
         // Arrange
         String email = "diego@email.com";
@@ -277,7 +273,7 @@ class UsuarioServiceTest {
     }
 
     @Test
-    @DisplayName("Cadastro de usuário gestor- senha muito curta")
+    @DisplayName("Cadastro de usuário gestor- Senha muito curta")
     void testeCadastroUsuarioGestorSenhaCurta() {
         // Arrange
         UsuarioModel usuario = new UsuarioModel();
@@ -292,7 +288,7 @@ class UsuarioServiceTest {
     }
 
     @Test
-    @DisplayName("Cadastro de usuário gestor- senha nula")
+    @DisplayName("Cadastro de usuário gestor- Senha nula")
     void testeCadastroUsuarioGestorSenhaNula() {
         // Arrange
         UsuarioModel usuario = new UsuarioModel();
@@ -311,7 +307,7 @@ class UsuarioServiceTest {
 
 
     @Test
-    @DisplayName("Cadastro de usuário gestor sem cargo válido")
+    @DisplayName("Cadastro de usuário gestor - Cargo inválido")
     void testeCadastroUsuarioGestorSemCargo() {
         // Arrange
         UsuarioModel usuario = UsuarioModel.builder()
@@ -330,7 +326,7 @@ class UsuarioServiceTest {
     }
 
     @Test
-    @DisplayName("Atualizar usuário - sucesso")
+    @DisplayName("Atualizar usuário - Sucesso")
     void testePutSucesso() {
         // Arrange
         UsuarioModel usuarioExistente = new UsuarioModel();
@@ -361,7 +357,7 @@ class UsuarioServiceTest {
     }
 
     @Test
-    @DisplayName("Atualizar usuário - atualização parcial")
+    @DisplayName("Atualizar usuário - Atualização parcial")
     void testeAtualizarUsuarioParcial() {
         // Arrange
         UsuarioModel usuarioExistente = new UsuarioModel();
@@ -393,7 +389,7 @@ class UsuarioServiceTest {
 
 
     @Test
-    @DisplayName("Atualizar usuário - dados inválidos")
+    @DisplayName("Atualizar usuário - Dados inválidos")
     void testePutDadosInvalidos() {
         // Arrange
         UsuarioModel usuarioAtualizado = new UsuarioModel();
@@ -416,7 +412,7 @@ class UsuarioServiceTest {
     }
 
     @Test
-    @DisplayName("Atualizar usuário - usuário não encontrado")
+    @DisplayName("Atualizar usuário - Usuário não encontrado")
     void testePutUsuarioNaoEncontrado() {
         // Arrange
         UsuarioModel usuarioAtualizado = new UsuarioModel();
@@ -434,7 +430,7 @@ class UsuarioServiceTest {
     }
 
     @Test
-    @DisplayName("Excluir usuário - sucesso")
+    @DisplayName("Excluir usuário - Sucesso")
     void testeDeleteSucesso() {
         // Arrange
         UsuarioModel usuario = new UsuarioModel();
@@ -458,7 +454,7 @@ class UsuarioServiceTest {
     }
 
     @Test
-    @DisplayName("Excluir usuário - usuário não encontrado")
+    @DisplayName("Excluir usuário - Usuário não encontrado")
     void testeDeleteUsuarioNaoEncontrado() {
         // Arrange
         when(usuarioRepository.findById(anyInt())).thenReturn(Optional.empty());

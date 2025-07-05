@@ -30,7 +30,7 @@ class EstoqueServiceTest {
     private EstoqueService estoqueService;
 
     @Test
-    @DisplayName("Ao atualizar o estoque de material inexistente")
+    @DisplayName("Entrada de Estoque - Material não encontrado")
     void testAtualizarEstoqueMaterialInexistente() {
         // Arrange
         AtualizarEstoqueDto dto = new AtualizarEstoqueDto("Cabo", 50);
@@ -45,7 +45,7 @@ class EstoqueServiceTest {
     }
 
     @Test
-    @DisplayName("ao tentar adicionar uma quantidade que ultrapassa o máximo permitido no estoque")
+    @DisplayName("Entrada de Estoque - Quantidade máxima ultrapassada")
     void testAtualizarEstoqueExcedeMaximoDoEstoque() {
         // Arrange
         EstoqueModel estoque = new EstoqueModel();
@@ -63,7 +63,7 @@ class EstoqueServiceTest {
     }
 
     @Test
-    @DisplayName("Ao retira do estoque o tipo material na tranferencia interna")
+    @DisplayName("Retirada de material interna - Sucesso")
     void testRetirarEstoqueSucessoInterna() {
         // Arrange
         EstoqueModel estoque = new EstoqueModel();
@@ -87,7 +87,7 @@ class EstoqueServiceTest {
     }
 
     @Test
-    @DisplayName("quando a quantidade solicitada é maior do que a quantidade atual no estoque.")
+    @DisplayName("Retirada de estoque - Quantidade Insuficiente")
     void testRetirarEstoqueQuantidadeInsuficiente() {
         // Arrange
         EstoqueModel estoque = new EstoqueModel();
@@ -106,7 +106,7 @@ class EstoqueServiceTest {
 
 
     @Test
-    @DisplayName("Quando o tipo de material estiver vazio")
+    @DisplayName("Retirada de estoque - Tipo de material nulo")
     void testRetirarEstoqueTipoMaterialVazio() {
         RetirarEstoqueDto dto = new RetirarEstoqueDto("", 10, "Interna");
 
@@ -115,7 +115,7 @@ class EstoqueServiceTest {
     }
 
     @Test
-    @DisplayName("Quando a quantidade Atual do estoque de material estiver vazio")
+    @DisplayName("Retirada de estoque - Quantidade Atual nula")
     void testRetirarEstoqueQuantidadeNegativa() {
         RetirarEstoqueDto dto = new RetirarEstoqueDto("SAE 1020", -5, "Externa");
 

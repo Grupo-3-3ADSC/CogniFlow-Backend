@@ -37,7 +37,7 @@ class FornecedorServiceTest {
     private FornecedorService fornecedorService;
 
     @Test
-    @DisplayName("teste de sucesso de cadastro de fornecedor")
+    @DisplayName("Cadastro de Fornecedor - Sucesso")
     void testCadastroFornecedorSucesso() {
         // Arrange
         FornecedorCadastroDto dto = new FornecedorCadastroDto();
@@ -70,7 +70,7 @@ class FornecedorServiceTest {
     }
 
     @Test
-    @DisplayName("quando cnpj é null")
+    @DisplayName("Cadastro de Fornecedor - CNPJ nulo")
     void testCadastroFornecedorCnpjNulo() {
         // Arrange
         FornecedorCadastroDto dto = new FornecedorCadastroDto();
@@ -81,7 +81,7 @@ class FornecedorServiceTest {
     }
 
     @Test
-    @DisplayName("cadastro de fornecedor com o cnpj invalido")
+    @DisplayName("Cadastro de Fornecedor - CNPJ inválido")
     void testCadastroFornecedorCnpjInvalido() {
         // Arrange
         FornecedorCadastroDto dto = new FornecedorCadastroDto();
@@ -92,7 +92,7 @@ class FornecedorServiceTest {
     }
 
     @Test
-    @DisplayName("tentativa de cadastro de Cnpj repetido")
+    @DisplayName("Cadastro de Fornecedor - Cnpj duplicado")
     void testCadastroFornecedorCnpjDuplicado() {
         // Arrange
         FornecedorCadastroDto dto = new FornecedorCadastroDto();
