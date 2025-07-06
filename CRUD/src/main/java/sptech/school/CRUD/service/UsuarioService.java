@@ -43,6 +43,10 @@ public class UsuarioService {
         return usuarioRepository.findByAtivoTrueComCargo();
     }
 
+    public List<UsuarioModel> getAllByInativo() {
+        return usuarioRepository.findByAtivoFalseComCargo();
+    }
+
     public List<UsuarioFullDto> getAll() {
 
         List<UsuarioModel> usuarios = usuarioRepository.findAll();

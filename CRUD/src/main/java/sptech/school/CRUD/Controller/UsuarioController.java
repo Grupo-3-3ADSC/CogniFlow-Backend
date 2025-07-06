@@ -53,7 +53,16 @@ public class UsuarioController {
         return ResponseEntity.ok(lista);
     }
 
-
+    @GetMapping("/listarInativos")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<List<UsuarioListagemDto>> listarInativos() {
+        List<UsuarioModel> usuarios = usuarioService.getAllByInativo();
+        if (usuarios.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        List<UsuarioListagemDto> dtos = UsuarioMapper.toListagemDtos(usuarios);
+        return ResponseEntity.ok(dtos);
+    }
 
     @GetMapping("/listarTodos")
     @SecurityRequirement(name = "Bearer")

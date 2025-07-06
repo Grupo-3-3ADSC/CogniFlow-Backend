@@ -12,10 +12,14 @@ import java.util.Optional;
 @Repository
 public interface UsuarioRepository extends JpaRepository<UsuarioModel, Integer> {
     @Query("SELECT u FROM UsuarioModel u JOIN FETCH u.cargo WHERE u.ativo = true")
-    List<UsuarioModel> findByAtivoTrueComCargo();;
+    List<UsuarioModel> findByAtivoTrueComCargo();
+
+    @Query("SELECT u FROM UsuarioModel u JOIN FETCH u.cargo WHERE u.ativo = false")
+    List<UsuarioModel> findByAtivoFalseComCargo();
 
     Optional<UsuarioModel> findByEmail(String email);
 
     boolean existsByEmail(String email);
+
 }
     
