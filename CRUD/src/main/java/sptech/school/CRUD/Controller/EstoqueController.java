@@ -46,7 +46,7 @@ public class EstoqueController {
         return ResponseEntity.ok(resposta);
     }
 
-    @PutMapping("/retirar/{tipoMaterial}/{quantidadeAtual}/{tipoTransferencia}")
+    @PutMapping("/retirar")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<EstoqueListagemDto> retirarEstoque(@RequestBody @Valid RetirarEstoqueDto dto) {
         EstoqueListagemDto resposta = estoqueService.retirarEstoque(dto);
