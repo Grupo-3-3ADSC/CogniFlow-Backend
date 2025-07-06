@@ -177,8 +177,10 @@ public class UsuarioService {
             usuario.setEmail(dto.getEmail());
         }
 
-        if(dto.getCargo() != null){
-            usuario.setCargo(dto.getCargo());
+        if(dto.getCargo() != null && dto.getCargo().getId() != null){
+            CargoModel cargo = cargoRepository.findById(dto.getCargo().getId())
+                    .orElseThrow(() -> new RuntimeException("Cargo não encontrado"));
+            usuario.setCargo(cargo);
         }
 
         return usuarioRepository.save(usuario);
