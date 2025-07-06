@@ -3,22 +3,25 @@ package sptech.school.CRUD.dto.Usuario;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import sptech.school.CRUD.Model.CargoModel;
 import sptech.school.CRUD.Model.UsuarioModel;
+import sptech.school.CRUD.dto.Cargo.CargoListagemDto;
 
 import java.util.List;
 
 public class UsuarioMapper {
 
     public static UsuarioListagemDto toListagemDto(UsuarioModel entity){
-
-        if (entity == null){
-            return null;
+        UsuarioListagemDto dto = new UsuarioListagemDto();
+        dto.setId(entity.getId());
+        dto.setNome(entity.getNome());
+        dto.setEmail(entity.getEmail());
+        dto.setAtivo(entity.getAtivo());
+        if (entity.getCargo() != null) {
+            CargoListagemDto cargoDto = new CargoListagemDto();
+            cargoDto.setId(entity.getCargo().getId());
+            cargoDto.setNome(entity.getCargo().getNome());
+            dto.setCargo(cargoDto);
         }
-        return new UsuarioListagemDto(
-
-                entity.getNome(),
-                entity.getEmail(),
-                entity.getAtivo()
-        );
+        return dto;
     }
 
     public static UsuarioAtivoDto toActiveDto(UsuarioModel entity){

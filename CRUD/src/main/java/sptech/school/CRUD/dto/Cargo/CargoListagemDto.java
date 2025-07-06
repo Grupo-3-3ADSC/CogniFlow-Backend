@@ -9,5 +9,6 @@ import lombok.*;
 @NoArgsConstructor
 public class CargoListagemDto {
 
+    private Integer id;
     private String nome;
 }

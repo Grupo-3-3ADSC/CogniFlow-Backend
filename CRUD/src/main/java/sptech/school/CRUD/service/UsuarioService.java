@@ -40,7 +40,7 @@ public class UsuarioService {
     private AuthenticationManager authenticationManager;
 
     public List<UsuarioModel> getAllByAtivo() {
-        return usuarioRepository.findByAtivoTrue();
+        return usuarioRepository.findByAtivoTrueComCargo();
     }
 
     public List<UsuarioFullDto> getAll() {

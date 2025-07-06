@@ -53,6 +53,8 @@ public class UsuarioController {
         return ResponseEntity.ok(lista);
     }
 
+
+
     @GetMapping("/listarTodos")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<List<UsuarioFullDto>> listarTodos() {
