@@ -7,4 +7,6 @@ import sptech.school.CRUD.Model.CargoModel;
 @Repository
 public interface CargoRepository extends JpaRepository<CargoModel, Integer> {
     CargoModel findByNome(String nome);
+
+    boolean existsByNomeIgnoreCase(String nome);
 }

@@ -190,19 +190,19 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    public Optional<UsuarioDeleteDto> delete(int id) {
-        Optional<UsuarioModel> usuario = usuarioRepository.findById(id);
-
-        if (usuario.isEmpty()) {
-            return Optional.empty();
-        }
-
-        usuario.get().setUpdatedAt(LocalDateTime.now());
-        usuario.get().setAtivo(false);
-        usuarioRepository.save(usuario.get());
-
-        return Optional.of(UsuarioMapper.toDeleteDto(usuario.get()));
-    }
+//    public Optional<UsuarioDeleteDto> delete(int id) {
+//        Optional<UsuarioModel> usuario = usuarioRepository.findById(id);
+//
+//        if (usuario.isEmpty()) {
+//            return Optional.empty();
+//        }
+//
+//        usuario.get().setUpdatedAt(LocalDateTime.now());
+//        usuario.get().setAtivo(false);
+//        usuarioRepository.save(usuario.get());
+//
+//        return Optional.of(UsuarioMapper.toDeleteDto(usuario.get()));
+//    }
 
 
     public Boolean uploadFoto(Integer id, MultipartFile file){
@@ -309,5 +309,28 @@ public class UsuarioService {
         return UsuarioMapper.toActiveDto(usuarioAtualizado);
 
     }
+
+    public Optional<UsuarioDeleteDto> deletarUsuarios(Integer id) {
+        Optional<UsuarioModel> usuarioOpt = usuarioRepository.findById(id);
+
+        if (usuarioOpt.isEmpty()) {
+            return Optional.empty();
+        }
+
+        UsuarioModel usuario = usuarioOpt.get();
+
+        usuarioRepository.delete(usuario);
+
+        UsuarioDeleteDto dto = UsuarioDeleteDto.builder()
+                .id(usuario.getId())
+                .nome(usuario.getNome())
+                .email(usuario.getEmail())
+                .password(null)
+                .build();
+
+        return Optional.of(dto);
+    }
+
+
 
 }
