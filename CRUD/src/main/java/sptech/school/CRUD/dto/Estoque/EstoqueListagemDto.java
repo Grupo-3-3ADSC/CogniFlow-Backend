@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Builder
@@ -19,5 +21,5 @@ public class EstoqueListagemDto {
     private Integer interna;
     private Integer externa;
     private String tipoTransferencia;
-
+    private LocalDateTime ultimaMovimentacao;
 }
