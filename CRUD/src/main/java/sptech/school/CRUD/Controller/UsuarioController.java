@@ -164,17 +164,17 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{id}")
-    @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<UsuarioDeleteDto> deletar(@PathVariable Integer id) {
-        Optional<UsuarioDeleteDto> usuario = usuarioService.delete(id);
-
-        if (usuario.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        return ResponseEntity.ok(usuario.get());
-    }
+//    @DeleteMapping("/{id}")
+//    @SecurityRequirement(name = "Bearer")
+//    public ResponseEntity<UsuarioDeleteDto> deletar(@PathVariable Integer id) {
+//        Optional<UsuarioDeleteDto> usuario = usuarioService.delete(id);
+//
+//        if (usuario.isEmpty()) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//
+//        return ResponseEntity.ok(usuario.get());
+//    }
 
     @PostMapping("/{id}/upload-foto")
     @SecurityRequirement(name = "Bearer")
@@ -234,4 +234,17 @@ public class UsuarioController {
 
         return ResponseEntity.ok(usuario);
     }
+
+    @DeleteMapping("/{id}")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<UsuarioDeleteDto> deletarUsuario(@PathVariable Integer id) {
+        Optional<UsuarioDeleteDto> dto = usuarioService.deletarUsuarios(id);
+
+        if (dto.isPresent()) {
+            return ResponseEntity.ok(dto.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

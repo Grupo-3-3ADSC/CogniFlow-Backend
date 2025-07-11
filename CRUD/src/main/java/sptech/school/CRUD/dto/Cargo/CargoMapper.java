@@ -11,6 +11,7 @@ public class CargoMapper {
             return null;
         }
         return CargoListagemDto.builder()
+                .id(entity.getId())
                 .nome(entity.getNome())
                 .build();
 
