@@ -87,7 +87,7 @@ public class EstoqueService {
             estoque.setInterno(estoque.getInterno() != null ? estoque.getInterno() + 1 : 1);
             System.out.println("Incrementando contador interno para: " + estoque.getInterno());
         } else {
-            throw new IllegalArgumentException("Tipo de transferência inválido: " + tipoTransferencia);
+            throw new IllegalArgumentException("Transferência deve ser do tipo 'INTERNA' ou 'EXTERNA'. Valor recebido: " + tipoTransferencia);
         }
 
         EstoqueModel atualizado = estoqueRepository.save(estoque);
