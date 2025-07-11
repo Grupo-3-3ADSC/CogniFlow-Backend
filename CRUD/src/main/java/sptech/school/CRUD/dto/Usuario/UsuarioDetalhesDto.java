@@ -12,9 +12,11 @@ import java.util.Collection;
 @AllArgsConstructor
 public class UsuarioDetalhesDto implements UserDetails {
 
-        private final String nome;
-        private final String email;
-        private final String password;
+
+    private final Long id;
+    private final String nome;
+    private final String email;
+    private final String password;
 
     @Override
     public String getUsername(){return  email;}

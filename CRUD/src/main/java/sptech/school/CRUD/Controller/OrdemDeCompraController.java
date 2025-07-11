@@ -43,4 +43,12 @@ public class OrdemDeCompraController {
     public ResponseEntity<List<ListagemOrdemDeCompra>> listarOrdemDeCompra() {
         return ResponseEntity.ok(ordemDeCompraService.getAll());
     }
+
+    @GetMapping("/{id}")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<ListagemOrdemDeCompra> buscarPorId(@PathVariable Long id) {
+        OrdemDeCompraModel ordem = ordemDeCompraService.getById(id);
+        return ResponseEntity.ok(OrdemDeCompraMapper.toListagemDto(ordem));
+    }
+
 }

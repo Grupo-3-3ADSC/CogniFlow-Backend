@@ -35,6 +35,8 @@ public class OrdemDeCompraModel {
     @Column(name = "usuario_id")
     private Integer usuarioId;
 
+
+
     @ManyToOne
     @JoinColumn(name = "fornecedor_id", insertable = false, updatable = false)
     private FornecedorModel fornecedor;
