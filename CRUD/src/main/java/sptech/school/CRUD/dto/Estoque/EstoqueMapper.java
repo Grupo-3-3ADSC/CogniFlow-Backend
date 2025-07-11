@@ -18,6 +18,7 @@ public class EstoqueMapper {
                 .quantidadeMaxima(entity.getQuantidadeMaxima())
                 .externa(entity.getExterno())
                 .interna(entity.getInterno())
+                .ultimaMovimentacao(entity.getUltimaMovimentacao())
                 .build();
     }
     public static EstoqueModel toCadastro(EstoqueCadastroDto dto) {
