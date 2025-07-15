@@ -29,59 +29,55 @@ public class FornecedorService {
     @Autowired
     private ContatoRepository contatoRepository;
 
+    @Autowired
+    private ViaCepService viaCepService;
+
     public FornecedorService(FornecedorRepository fornecedorRepository) {
         this.fornecedorRepository = fornecedorRepository;
     }
 
-    public FornecedorModel cadastroFornecedor(FornecedorCadastroDto fornecedorDto) {
+    public FornecedorCadastroDto cadastroFornecedor(FornecedorCadastroDto fornecedorDto) {
 
+        // Verificar se já existe fornecedor com o CNPJ
         if (fornecedorRepository.findByCnpj(fornecedorDto.getCnpj()).isPresent()) {
             throw new ConflictException("Já existe um fornecedor cadastrado com esse CNPJ.");
         }
-
         if (contatoRepository.existsByEmail(fornecedorDto.getEmail())) {
             throw new ConflictException("Já existe um fornecedor cadastrado com esse e-mail.");
-        }
+       }
 
+        try {
+            viaCepService.buscarEnderecoPorCep(fornecedorDto.getCep());
+        } catch (IllegalArgumentException ex) {
+            throw new BadRequestException("CEP inválido ou não encontrado.");
+        }
 
         // Converte DTO para Model usando o mapper
         FornecedorModel fornecedor = FornecedorMapper.toCadastroModel(fornecedorDto);
 
-        // Salva no banco
+        // Salva o fornecedor primeiro
+        FornecedorModel fornecedorSalvo = fornecedorRepository.save(fornecedor);
 
-
+        // Cria e salva o endereço
         EnderecoModel endereco = new EnderecoModel();
         endereco.setCep(fornecedorDto.getCep());
         endereco.setComplemento(fornecedorDto.getEndereco());
-
-        // Converter número para Integer
-        try {
-            endereco.setNumero(Integer.valueOf((fornecedorDto.getNumero())));
-        } catch (NumberFormatException e) {
-            endereco.setNumero(null);
-        }
-
-
-
-
-
-
-        FornecedorModel fornecedorSalvo = fornecedorRepository.save(fornecedor);
-
+        endereco.setNumero(fornecedorDto.getNumero());
         endereco.setFornecedor(fornecedorSalvo);
+
         EnderecoModel enderecoSalvo = enderecoRepository.save(endereco);
 
+        // Cria e salva o contato
         ContatoModel contato = new ContatoModel();
         contato.setTelefone(fornecedorDto.getTelefone());
         contato.setEmail(fornecedorDto.getEmail());
-
-
         contato.setFornecedor(fornecedorSalvo);
+
         ContatoModel contatoSalvo = contatoRepository.save(contato);
 
-        return fornecedorSalvo;
+        // Retorna o DTO original com os dados salvos
+        return fornecedorDto;
     }
-
 
 
     public  List<FornecedorCompletoDTO> fornecedorCompleto(){

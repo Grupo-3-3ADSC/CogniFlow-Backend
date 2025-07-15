@@ -41,4 +41,6 @@ public class FornecedorCadastroDto {
     @NotBlank(message = "Email não pode ser nulo ou vazio.")
     @Email(message = "O e-mail deve conter um '@' e um domínio válido.")
     private String email;
+
+
 }

@@ -5,11 +5,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.CRUD.Model.FornecedorModel;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorCadastroDto;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorCompletoDTO;
+import sptech.school.CRUD.dto.Fornecedor.FornecedorMapper;
 import sptech.school.CRUD.service.FornecedorService;
 
 import java.util.List;
@@ -32,10 +34,13 @@ public class FornecedorController {
 
     @PostMapping
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity cadastrarFornecedor(@RequestBody @Valid FornecedorCadastroDto fornecedor){
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<FornecedorCadastroDto> cadastrarFornecedor(@RequestBody @Valid FornecedorCadastroDto fornecedorDto) {
 
-        FornecedorModel novoFornecedor = fornecedorService.cadastroFornecedor(fornecedor);
-        return ResponseEntity.status(201).body(novoFornecedor);
+        // Chama o service passando o DTO diretamente
+        FornecedorCadastroDto novoFornecedor = fornecedorService.cadastroFornecedor(fornecedorDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoFornecedor);
     }
 
 

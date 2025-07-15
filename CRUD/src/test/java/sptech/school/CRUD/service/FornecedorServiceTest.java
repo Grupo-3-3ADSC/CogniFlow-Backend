@@ -60,7 +60,6 @@ class FornecedorServiceTest {
 
         // Act
         FornecedorModel resultado = fornecedorService.cadastroFornecedor(dto);
-
         // Assert
         assertNotNull(resultado);
         assertEquals(1, resultado.getId());
