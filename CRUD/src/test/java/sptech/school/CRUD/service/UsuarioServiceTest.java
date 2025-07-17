@@ -441,16 +441,17 @@ class UsuarioServiceTest {
         usuario.setAtivo(true);
 
         when(usuarioRepository.findById(1)).thenReturn(Optional.of(usuario));
-        when(usuarioRepository.save(any())).thenReturn(usuario);
 
         // Act
-        Optional<UsuarioDeleteDto> resultado = usuarioService.delete(1);
+        Optional<UsuarioDeleteDto> resultado = usuarioService.deletarUsuarios(1);
 
         // Assert
         assertTrue(resultado.isPresent());
         assertEquals("Bruna", resultado.get().getNome());
         assertEquals("bruna@email.com", resultado.get().getEmail());
-        verify(usuarioRepository).save(any());
+
+        verify(usuarioRepository).delete(usuario);
+        verify(usuarioRepository, never()).save(any());
     }
 
     @Test
@@ -460,7 +461,7 @@ class UsuarioServiceTest {
         when(usuarioRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         // Act
-        Optional<UsuarioDeleteDto> resultado = usuarioService.delete(99);
+        Optional<UsuarioDeleteDto> resultado = usuarioService.deletarUsuarios(99);
 
         // Assert
         assertTrue(resultado.isEmpty());

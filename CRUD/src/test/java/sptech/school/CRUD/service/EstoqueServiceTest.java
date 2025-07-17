@@ -10,7 +10,6 @@ import sptech.school.CRUD.dto.Estoque.AtualizarEstoqueDto;
 import sptech.school.CRUD.dto.Estoque.EstoqueListagemDto;
 import sptech.school.CRUD.dto.Estoque.RetirarEstoqueDto;
 import sptech.school.CRUD.exception.BadRequestException;
-import sptech.school.CRUD.dto.Estoque.EstoqueMapper;
 
 import java.util.Optional;
 
@@ -63,6 +62,98 @@ class EstoqueServiceTest {
     }
 
     @Test
+    @DisplayName("Entrada de estoque - Quantidade válida")
+    void testEntradaQuantidadeValida() {
+        // Arrange
+        EstoqueModel estoqueModel = new EstoqueModel();
+        estoqueModel.setTipoMaterial("SAE 1020");
+        estoqueModel.setQuantidadeAtual(200);
+        estoqueModel.setQuantidadeMinima(100);
+        estoqueModel.setQuantidadeMaxima(10000);
+
+        AtualizarEstoqueDto dto = new AtualizarEstoqueDto("SAE 1020", 100);
+
+        when(estoqueRepository.findByTipoMaterial("SAE 1020"))
+                .thenReturn(Optional.of(estoqueModel));
+        when(estoqueRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
+        EstoqueListagemDto resultado = estoqueService.atualizarEstoque(dto);
+
+        // Assert
+        assertNotNull(resultado);
+        assertEquals("SAE 1020", resultado.getTipoMaterial());
+        assertEquals(300, resultado.getQuantidadeAtual());
+    }
+
+    @Test
+    @DisplayName("Entrada de estoque - Entrada mínima válida")
+    void testEntradaMinimaValida() {
+        EstoqueModel estoque = new EstoqueModel();
+        estoque.setTipoMaterial("SAE 1045");
+        estoque.setQuantidadeAtual(9999);
+        estoque.setQuantidadeMaxima(10000);
+        estoque.setQuantidadeMinima(100);
+
+        AtualizarEstoqueDto dto = new AtualizarEstoqueDto("SAE 1045", 1);
+
+        when(estoqueRepository.findByTipoMaterial("SAE 1045")).thenReturn(Optional.of(estoque));
+        when(estoqueRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        EstoqueListagemDto resultado = estoqueService.atualizarEstoque(dto);
+
+        assertNotNull(resultado);
+        assertEquals(10000, resultado.getQuantidadeAtual());
+    }
+
+
+    @Test
+    @DisplayName("Entrada de estoque - Exatamente até o limite máximo permitido")
+    void testEntradaAteLimiteMaximo() {
+        EstoqueModel estoque = new EstoqueModel();
+        estoque.setTipoMaterial("HARDOX 450");
+        estoque.setQuantidadeAtual(9500);
+        estoque.setQuantidadeMaxima(10000);
+        estoque.setQuantidadeMinima(100);
+
+        AtualizarEstoqueDto dto = new AtualizarEstoqueDto("HARDOX 450", 500);
+
+        when(estoqueRepository.findByTipoMaterial("HARDOX 450")).thenReturn(Optional.of(estoque));
+        when(estoqueRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        EstoqueListagemDto resultado = estoqueService.atualizarEstoque(dto);
+
+        assertNotNull(resultado);
+        assertEquals(10000, resultado.getQuantidadeAtual());
+    }
+
+
+    @Test
+    @DisplayName("Entrada de estoque - Nome do material case insensitive (SAE 1045)")
+    void testEntradaCaseInsensitive() {
+        // Arrange
+        EstoqueModel estoque = new EstoqueModel();
+        estoque.setTipoMaterial("SAE 1045"); // nome armazenado
+        estoque.setQuantidadeAtual(400);
+        estoque.setQuantidadeMaxima(1000);
+        estoque.setQuantidadeMinima(100);
+
+        AtualizarEstoqueDto dto = new AtualizarEstoqueDto("sae 1045", 100); // nome com letras minúsculas
+
+        when(estoqueRepository.findByTipoMaterial("sae 1045")).thenReturn(Optional.of(estoque));
+        when(estoqueRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        // Act
+        EstoqueListagemDto resultado = estoqueService.atualizarEstoque(dto);
+
+        // Assert
+        assertNotNull(resultado);
+        assertEquals(500, resultado.getQuantidadeAtual());
+        assertEquals("SAE 1045", resultado.getTipoMaterial()); // opcional, para garantir que o nome original seja mantido
+    }
+
+
+    @Test
     @DisplayName("Retirada de material interna - Sucesso")
     void testRetirarEstoqueSucessoInterna() {
         // Arrange
@@ -111,7 +202,7 @@ class EstoqueServiceTest {
         RetirarEstoqueDto dto = new RetirarEstoqueDto("", 10, "Interna");
 
         // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> estoqueService.retirarEstoque(dto));
+        assertThrows(BadRequestException.class, () -> estoqueService.retirarEstoque(dto));
     }
 
     @Test
@@ -120,6 +211,6 @@ class EstoqueServiceTest {
         RetirarEstoqueDto dto = new RetirarEstoqueDto("SAE 1020", -5, "Externa");
 
         // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> estoqueService.retirarEstoque(dto));
+        assertThrows(BadRequestException.class, () -> estoqueService.retirarEstoque(dto));
     }
 }

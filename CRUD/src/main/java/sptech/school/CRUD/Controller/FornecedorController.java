@@ -38,9 +38,10 @@ public class FornecedorController {
     public ResponseEntity<FornecedorCadastroDto> cadastrarFornecedor(@RequestBody @Valid FornecedorCadastroDto fornecedorDto) {
 
         // Chama o service passando o DTO diretamente
-        FornecedorCadastroDto novoFornecedor = fornecedorService.cadastroFornecedor(fornecedorDto);
+        FornecedorModel fornecedorSalvo = fornecedorService.cadastroFornecedor(fornecedorDto);
+        FornecedorCadastroDto responseDto = FornecedorMapper.toDto(fornecedorSalvo);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoFornecedor);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
 

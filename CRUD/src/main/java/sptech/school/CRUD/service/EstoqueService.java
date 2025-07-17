@@ -15,7 +15,6 @@ import sptech.school.CRUD.exception.EntidadeNaoEncontrado;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
@@ -66,6 +65,13 @@ public class EstoqueService {
         Integer quantidadeAtual = dto.getQuantidadeAtual();
         String tipoTransferencia = dto.getTipoTransferencia();
 
+        if (dto.getTipoMaterial() == null || dto.getTipoMaterial().isBlank()){
+            throw new BadRequestException("O tipo do material não pode ser nulo ou vazio.");
+        }
+
+        if (quantidadeAtual == null || quantidadeAtual <= 0) {
+            throw new BadRequestException("A quantidade a ser retirada deve ser maior que zero.");
+        }
 
         EstoqueModel estoque = estoqueRepository.findByTipoMaterial(tipoMaterial)
                 .orElseThrow(() -> new EntidadeNaoEncontrado("Material não encontrado no estoque: " + tipoMaterial));

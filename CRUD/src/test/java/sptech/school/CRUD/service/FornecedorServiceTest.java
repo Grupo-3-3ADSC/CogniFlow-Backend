@@ -33,6 +33,9 @@ class FornecedorServiceTest {
     @Mock
     private ContatoRepository contatoRepository;
 
+    @Mock
+    private ViaCepService viaCepService;
+
     @InjectMocks
     private FornecedorService fornecedorService;
 

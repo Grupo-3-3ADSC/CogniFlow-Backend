@@ -1,6 +1,6 @@
 package sptech.school.CRUD.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sptech.school.CRUD.Model.ContatoModel;
 import sptech.school.CRUD.Model.EnderecoModel;
@@ -18,25 +18,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class FornecedorService {
 
-    @Autowired
     private final FornecedorRepository fornecedorRepository;
+    private final EnderecoRepository enderecoRepository;
+    private final ContatoRepository contatoRepository;
+    private final ViaCepService viaCepService;
 
-    @Autowired
-    private EnderecoRepository enderecoRepository;
-
-    @Autowired
-    private ContatoRepository contatoRepository;
-
-    @Autowired
-    private ViaCepService viaCepService;
-
-    public FornecedorService(FornecedorRepository fornecedorRepository) {
-        this.fornecedorRepository = fornecedorRepository;
-    }
-
-    public FornecedorCadastroDto cadastroFornecedor(FornecedorCadastroDto fornecedorDto) {
+    public FornecedorModel cadastroFornecedor(FornecedorCadastroDto fornecedorDto) {
 
         // Verificar se já existe fornecedor com o CNPJ
         if (fornecedorRepository.findByCnpj(fornecedorDto.getCnpj()).isPresent()) {
@@ -45,6 +35,12 @@ public class FornecedorService {
         if (contatoRepository.existsByEmail(fornecedorDto.getEmail())) {
             throw new ConflictException("Já existe um fornecedor cadastrado com esse e-mail.");
        }
+        if (fornecedorDto.getCnpj() == null || fornecedorDto.getCnpj().isBlank()){
+            throw new BadRequestException("CNPJ não pode ser vazio nem nulo");
+        }
+        if (fornecedorDto.getCnpj().length() < 14){
+            throw new BadRequestException("CNPJ deve conter pelo menos 14 dígitos");
+        }
 
         try {
             viaCepService.buscarEnderecoPorCep(fornecedorDto.getCep());
@@ -76,7 +72,7 @@ public class FornecedorService {
         ContatoModel contatoSalvo = contatoRepository.save(contato);
 
         // Retorna o DTO original com os dados salvos
-        return fornecedorDto;
+        return fornecedorSalvo;
     }
 
 
