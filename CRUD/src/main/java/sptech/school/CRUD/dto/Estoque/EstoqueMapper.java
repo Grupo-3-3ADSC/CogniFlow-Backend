@@ -12,6 +12,7 @@ public class EstoqueMapper {
         }
 
         return EstoqueListagemDto.builder()
+                .id(entity.getId())
                 .tipoMaterial(entity.getTipoMaterial())
                 .quantidadeAtual(entity.getQuantidadeAtual())
                 .quantidadeMinima(entity.getQuantidadeMinima())
