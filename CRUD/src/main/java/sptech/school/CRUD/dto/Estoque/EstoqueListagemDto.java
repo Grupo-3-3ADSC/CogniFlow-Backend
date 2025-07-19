@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class EstoqueListagemDto {
 
+    private Integer id;
     private String tipoMaterial;
     private Integer quantidadeAtual;
     private Integer quantidadeMinima;
