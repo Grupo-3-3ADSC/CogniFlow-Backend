@@ -13,9 +13,9 @@ import sptech.school.CRUD.Repository.UsuarioRepository;
 import sptech.school.CRUD.dto.OrdemDeCompra.ListagemOrdemDeCompra;
 import sptech.school.CRUD.dto.OrdemDeCompra.OrdemDeCompraCadastroDto;
 import sptech.school.CRUD.dto.OrdemDeCompra.OrdemDeCompraMapper;
-import sptech.school.CRUD.exception.BadRequestException;
-import sptech.school.CRUD.exception.ConflictException;
-import sptech.school.CRUD.exception.EntidadeNaoEncontrado;
+import sptech.school.CRUD.exception.RecursoNaoEncontradoException;
+import sptech.school.CRUD.exception.RequisicaoConflitanteException;
+import sptech.school.CRUD.exception.RequisicaoInvalidaException;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -38,19 +38,19 @@ public class OrdemDeCompraService {
 
         // Busca e seta as entidades relacionadas
         FornecedorModel fornecedor = fornecedorRepository.findById(dto.getFornecedorId())
-                .orElseThrow(() -> new EntidadeNaoEncontrado("Fornecedor não encontrado"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Fornecedor não encontrado"));
         ordemDeCompra.setFornecedor(fornecedor);
 
         EstoqueModel estoque = estoqueRepository.findById(dto.getEstoqueId())
-                .orElseThrow(() -> new EntidadeNaoEncontrado("Estoque não encontrado"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Estoque não encontrado"));
         ordemDeCompra.setEstoque(estoque);
 
         UsuarioModel usuario = usuarioRepository.findById(dto.getUsuarioId())
-                .orElseThrow(() -> new EntidadeNaoEncontrado("Usuário não encontrado"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
         ordemDeCompra.setUsuario(usuario);
 
         if (ordemDeCompraRepository.existsByRastreabilidadeAndEstoqueId(dto.getRastreabilidade(), dto.getEstoqueId())) {
-            throw new ConflictException("Rastreabilidade já cadastrada para este estoque");
+            throw new RequisicaoConflitanteException("Rastreabilidade já cadastrada para este estoque");
         }
 
         // Salva a ordem de compra
@@ -60,7 +60,7 @@ public class OrdemDeCompraService {
         Integer novaQuantidade = (estoque.getQuantidadeAtual() != null ? estoque.getQuantidadeAtual() : 0)
                 + ordemSalva.getQuantidade();
         if (estoque.getQuantidadeMaxima() != null && novaQuantidade > estoque.getQuantidadeMaxima()) {
-            throw new BadRequestException("A quantidade comprada ultrapassa o limite máximo de estoque permitido.");
+            throw new RequisicaoInvalidaException("A quantidade comprada ultrapassa o limite máximo de estoque permitido.");
         }
         estoque.setQuantidadeAtual(novaQuantidade);
         estoque.setUltimaMovimentacao(LocalDateTime.now());

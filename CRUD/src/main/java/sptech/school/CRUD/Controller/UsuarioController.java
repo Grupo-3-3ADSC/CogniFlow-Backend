@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sptech.school.CRUD.Model.UsuarioModel;
 import sptech.school.CRUD.dto.Usuario.*;
-import sptech.school.CRUD.exception.EntidadeNaoEncontrado;
+import sptech.school.CRUD.exception.RecursoNaoEncontradoException;
 import sptech.school.CRUD.service.UsuarioService;
 
 import java.io.IOException;
@@ -163,18 +163,6 @@ public class UsuarioController {
 
         return ResponseEntity.noContent().build();
     }
-
-//    @DeleteMapping("/{id}")
-//    @SecurityRequirement(name = "Bearer")
-//    public ResponseEntity<UsuarioDeleteDto> deletar(@PathVariable Integer id) {
-//        Optional<UsuarioDeleteDto> usuario = usuarioService.delete(id);
-//
-//        if (usuario.isEmpty()) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//
-//        return ResponseEntity.ok(usuario.get());
-//    }
 
     @PostMapping("/{id}/upload-foto")
     @SecurityRequirement(name = "Bearer")

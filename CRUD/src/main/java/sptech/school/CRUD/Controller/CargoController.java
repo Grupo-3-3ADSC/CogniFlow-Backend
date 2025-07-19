@@ -49,4 +49,11 @@ public class CargoController {
         return ResponseEntity.status(201).body(cargoPost);
     }
 
+    @GetMapping("/{id}")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<CargoListagemDto> getById(@PathVariable Integer id) {
+        CargoListagemDto dto = cargoService.buscarPorId(id);
+        return ResponseEntity.ok(dto);
+    }
+
 }

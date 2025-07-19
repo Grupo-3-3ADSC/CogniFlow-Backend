@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(code = HttpStatus.CONFLICT)
-public class CargoJaExistenteException extends RuntimeException {
-    public CargoJaExistenteException(String message) {
+public class RequisicaoConflitanteException extends RuntimeException{
+    public RequisicaoConflitanteException(String message) {
         super(message);
     }
 }

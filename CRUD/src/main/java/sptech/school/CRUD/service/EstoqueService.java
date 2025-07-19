@@ -10,12 +10,11 @@ import sptech.school.CRUD.dto.Estoque.AtualizarEstoqueDto;
 import sptech.school.CRUD.dto.Estoque.EstoqueListagemDto;
 import sptech.school.CRUD.dto.Estoque.EstoqueMapper;
 import sptech.school.CRUD.dto.Estoque.RetirarEstoqueDto;
-import sptech.school.CRUD.exception.BadRequestException;
-import sptech.school.CRUD.exception.EntidadeNaoEncontrado;
+import sptech.school.CRUD.exception.RecursoNaoEncontradoException;
+import sptech.school.CRUD.exception.RequisicaoInvalidaException;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
@@ -38,7 +37,7 @@ public class EstoqueService {
 
         // Validação: garantir que o tipoMaterial seja um dos pré-cadastrados
         EstoqueModel estoque = estoqueRepository.findByTipoMaterial(tipoMaterial)
-                .orElseThrow(() -> new EntidadeNaoEncontrado(
+                .orElseThrow(() -> new RecursoNaoEncontradoException(
                         "Tipo de material não encontrado: " + tipoMaterial
                 ));
 
@@ -47,10 +46,10 @@ public class EstoqueService {
         Integer min = estoque.getQuantidadeMinima();
 
         if (max != null && novaQuantidade > max) {
-            throw new BadRequestException("Quantidade Atual excede a Quantidade Máxima permitida");
+            throw new RequisicaoInvalidaException("Quantidade Atual excede a Quantidade Máxima permitida");
         }
         if (min != null && novaQuantidade < min) {
-            throw new BadRequestException("Quantidade Atual está abaixo da Quantidade Mínima permitida");
+            throw new RequisicaoInvalidaException("Quantidade Atual está abaixo da Quantidade Mínima permitida");
         }
 
         estoque.setQuantidadeAtual(novaQuantidade);
@@ -66,12 +65,19 @@ public class EstoqueService {
         Integer quantidadeAtual = dto.getQuantidadeAtual();
         String tipoTransferencia = dto.getTipoTransferencia();
 
+        if (dto.getTipoMaterial() == null || dto.getTipoMaterial().isBlank()){
+            throw new RequisicaoInvalidaException("O tipo do material não pode ser nulo ou vazio.");
+        }
+
+        if (quantidadeAtual == null || quantidadeAtual <= 0) {
+            throw new RequisicaoInvalidaException("A quantidade a ser retirada deve ser maior que zero.");
+        }
 
         EstoqueModel estoque = estoqueRepository.findByTipoMaterial(tipoMaterial)
-                .orElseThrow(() -> new EntidadeNaoEncontrado("Material não encontrado no estoque: " + tipoMaterial));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Material não encontrado no estoque: " + tipoMaterial));
 
         if (estoque.getQuantidadeAtual() < quantidadeAtual) {
-            throw new BadRequestException("Quantidade insuficiente no estoque. Disponível: " +
+            throw new RequisicaoInvalidaException("Quantidade insuficiente no estoque. Disponível: " +
                     estoque.getQuantidadeAtual() + ", Solicitado: " + quantidadeAtual);
         }
 

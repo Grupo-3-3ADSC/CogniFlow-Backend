@@ -11,8 +11,8 @@ import sptech.school.CRUD.Repository.ContatoRepository;
 import sptech.school.CRUD.Repository.EnderecoRepository;
 import sptech.school.CRUD.Repository.FornecedorRepository;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorCadastroDto;
-import sptech.school.CRUD.exception.BadRequestException;
-import sptech.school.CRUD.exception.ConflictException;
+import sptech.school.CRUD.exception.RequisicaoInvalidaException;
+import sptech.school.CRUD.exception.RequisicaoConflitanteException;
 
 import java.util.Optional;
 
@@ -32,6 +32,9 @@ class FornecedorServiceTest {
 
     @Mock
     private ContatoRepository contatoRepository;
+
+    @Mock
+    private ViaCepService viaCepService;
 
     @InjectMocks
     private FornecedorService fornecedorService;
@@ -76,7 +79,7 @@ class FornecedorServiceTest {
         dto.setCnpj(null);
 
         // Act & Assert
-        assertThrows(BadRequestException.class, () -> fornecedorService.cadastroFornecedor(dto));
+        assertThrows(RequisicaoInvalidaException.class, () -> fornecedorService.cadastroFornecedor(dto));
     }
 
     @Test
@@ -87,7 +90,7 @@ class FornecedorServiceTest {
         dto.setCnpj("123");
 
         // Act & Assert
-        assertThrows(BadRequestException.class, () -> fornecedorService.cadastroFornecedor(dto));
+        assertThrows(RequisicaoInvalidaException.class, () -> fornecedorService.cadastroFornecedor(dto));
     }
 
     @Test
@@ -101,6 +104,6 @@ class FornecedorServiceTest {
                 .thenReturn(Optional.of(new FornecedorModel()));
 
         // Act & Assert
-        assertThrows(ConflictException.class, () -> fornecedorService.cadastroFornecedor(dto));
+        assertThrows(RequisicaoConflitanteException.class, () -> fornecedorService.cadastroFornecedor(dto));
     }
 }

@@ -7,10 +7,10 @@ import sptech.school.CRUD.Repository.CargoRepository;
 import sptech.school.CRUD.dto.Cargo.CargoCadastraDto;
 import sptech.school.CRUD.dto.Cargo.CargoListagemDto;
 import sptech.school.CRUD.dto.Cargo.CargoMapper;
+import sptech.school.CRUD.exception.RequisicaoConflitanteException;
+import sptech.school.CRUD.exception.RecursoNaoEncontradoException;
+import sptech.school.CRUD.exception.RequisicaoInvalidaException;
 
-import sptech.school.CRUD.exception.BadRequestException;
-import sptech.school.CRUD.exception.CargoJaExistenteException;
-import sptech.school.CRUD.exception.EntidadeNaoEncontrado;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +31,7 @@ public class CargoService {
 
     public CargoListagemDto post(CargoCadastraDto cargo) {
         if (cargo == null || cargo.getNome() == null || cargo.getNome().isBlank()) {
-            throw new BadRequestException("O nome do cargo é obrigatório.");
+            throw new RequisicaoInvalidaException("O nome do cargo é obrigatório.");
         }
 
         CargoModel entity = CargoMapper.toCadastro(cargo);
@@ -43,11 +43,16 @@ public class CargoService {
 
     public CargoModel cadastrar(CargoModel cargo) {
         if (cargoRepository.existsByNomeIgnoreCase(cargo.getNome())) {
-            throw new CargoJaExistenteException("Já existe um cargo com esse nome.");
+            throw new RequisicaoConflitanteException("Já existe um cargo com o nome:" + cargo.getNome());
         }
 
         return cargoRepository.save(cargo);
     }
 
+    public CargoListagemDto buscarPorId(Integer id) {
+        CargoModel cargo = cargoRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Cargo não encontrado com id " + id));
+        return CargoMapper.toListagemDto(cargo);
+    }
 
 }

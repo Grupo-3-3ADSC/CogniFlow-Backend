@@ -1,6 +1,6 @@
 package sptech.school.CRUD.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sptech.school.CRUD.Model.ContatoModel;
 import sptech.school.CRUD.Model.EnderecoModel;
@@ -11,45 +11,41 @@ import sptech.school.CRUD.Repository.FornecedorRepository;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorCadastroDto;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorCompletoDTO;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorMapper;
-import sptech.school.CRUD.exception.BadRequestException;
-import sptech.school.CRUD.exception.ConflictException;
+import sptech.school.CRUD.exception.RequisicaoConflitanteException;
+import sptech.school.CRUD.exception.RequisicaoInvalidaException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class FornecedorService {
 
-    @Autowired
     private final FornecedorRepository fornecedorRepository;
+    private final EnderecoRepository enderecoRepository;
+    private final ContatoRepository contatoRepository;
+    private final ViaCepService viaCepService;
 
-    @Autowired
-    private EnderecoRepository enderecoRepository;
-
-    @Autowired
-    private ContatoRepository contatoRepository;
-
-    @Autowired
-    private ViaCepService viaCepService;
-
-    public FornecedorService(FornecedorRepository fornecedorRepository) {
-        this.fornecedorRepository = fornecedorRepository;
-    }
-
-    public FornecedorCadastroDto cadastroFornecedor(FornecedorCadastroDto fornecedorDto) {
+    public FornecedorModel cadastroFornecedor(FornecedorCadastroDto fornecedorDto) {
 
         // Verificar se já existe fornecedor com o CNPJ
         if (fornecedorRepository.findByCnpj(fornecedorDto.getCnpj()).isPresent()) {
-            throw new ConflictException("Já existe um fornecedor cadastrado com esse CNPJ.");
+            throw new RequisicaoConflitanteException("Já existe um fornecedor cadastrado com esse CNPJ.");
         }
         if (contatoRepository.existsByEmail(fornecedorDto.getEmail())) {
-            throw new ConflictException("Já existe um fornecedor cadastrado com esse e-mail.");
+            throw new RequisicaoConflitanteException("Já existe um fornecedor cadastrado com esse e-mail.");
        }
+        if (fornecedorDto.getCnpj() == null || fornecedorDto.getCnpj().isBlank()){
+            throw new RequisicaoInvalidaException("CNPJ não pode ser vazio nem nulo");
+        }
+        if (fornecedorDto.getCnpj().length() < 14){
+            throw new RequisicaoInvalidaException("CNPJ deve conter pelo menos 14 dígitos");
+        }
 
         try {
             viaCepService.buscarEnderecoPorCep(fornecedorDto.getCep());
         } catch (IllegalArgumentException ex) {
-            throw new BadRequestException("CEP inválido ou não encontrado.");
+            throw new RequisicaoInvalidaException("CEP inválido ou não encontrado.");
         }
 
         // Converte DTO para Model usando o mapper
@@ -76,7 +72,7 @@ public class FornecedorService {
         ContatoModel contatoSalvo = contatoRepository.save(contato);
 
         // Retorna o DTO original com os dados salvos
-        return fornecedorDto;
+        return fornecedorSalvo;
     }
 
 
