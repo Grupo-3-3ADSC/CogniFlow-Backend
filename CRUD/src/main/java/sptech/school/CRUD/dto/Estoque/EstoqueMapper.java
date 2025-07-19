@@ -18,6 +18,7 @@ public class EstoqueMapper {
                 .quantidadeMaxima(entity.getQuantidadeMaxima())
                 .externa(entity.getExterno())
                 .interna(entity.getInterno())
+                .tipoTransferencia(entity.getTipoTransferencia())
                 .ultimaMovimentacao(entity.getUltimaMovimentacao())
                 .build();
     }

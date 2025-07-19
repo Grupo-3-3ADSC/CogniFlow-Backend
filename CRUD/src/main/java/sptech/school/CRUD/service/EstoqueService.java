@@ -96,6 +96,7 @@ public class EstoqueService {
             throw new IllegalArgumentException("Transferência deve ser do tipo 'INTERNA' ou 'EXTERNA'. Valor recebido: " + tipoTransferencia);
         }
 
+        estoque.setTipoTransferencia(tipoTransferencia);
         EstoqueModel atualizado = estoqueRepository.save(estoque);
         return EstoqueMapper.toListagemDto(atualizado);
     }

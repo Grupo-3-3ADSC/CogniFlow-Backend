@@ -22,6 +22,7 @@ public class EstoqueModel {
         private Integer quantidadeMaxima;
         private Integer externo;
         private Integer interno;
+        private String tipoTransferencia;
         private LocalDateTime ultimaMovimentacao;
 
 
