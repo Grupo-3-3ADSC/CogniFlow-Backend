@@ -18,21 +18,23 @@ public class AutenticacaoService implements UserDetailsService {
     private UsuarioRepository usuarioRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         Optional<UsuarioModel> usuarioOpt = usuarioRepository.findByEmail(username);
 
-        if(usuarioOpt.isEmpty()){
+        if (usuarioOpt.isEmpty()) {
             System.out.println("Lançando exceção UsernameNotFoundException!");
             throw new UsernameNotFoundException(String.format("usuario: %s não encontrado", username));
         }
         UsuarioModel usuario = usuarioOpt.get();
 
-        return new UsuarioDetalhesDto(
-                usuario.getNome(),
-                usuario.getEmail(),
-                usuario.getPassword()
-        );
+        return UsuarioDetalhesDto.builder()
+                .id(Long.valueOf(usuario.getId()))
+                .nome(usuario.getNome())
+                .email(usuario.getEmail())
+                .password(usuario.getPassword())
+                .build();
     }
+
 
 }

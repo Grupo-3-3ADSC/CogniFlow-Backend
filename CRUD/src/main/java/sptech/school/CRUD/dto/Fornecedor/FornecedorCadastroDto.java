@@ -25,7 +25,7 @@ public class FornecedorCadastroDto {
     private String nomeFantasia;
 
     @NotBlank(message = "CEP não pode ser nulo ou vazio.")
-    @Size(min = 8, max = 8, message = "CEP deve ter 8 dígitos.")
+    @Size(min = 9, max = 9, message = "CEP deve ter 8 dígitos.")
     private String cep;
 
     @NotBlank(message = "Endereço não pode ser nulo ou vazio.")

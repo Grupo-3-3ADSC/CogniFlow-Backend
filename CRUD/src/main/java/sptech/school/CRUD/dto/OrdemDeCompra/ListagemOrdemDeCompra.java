@@ -11,6 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 public class ListagemOrdemDeCompra {
 
+    private Long id;
     private String prazoEntrega;
     private String ie;
     private String condPagamento;
@@ -24,4 +25,6 @@ public class ListagemOrdemDeCompra {
     private Integer fornecedorId;
     private Integer estoqueId;
     private Integer usuarioId;
+    private String nomeFornecedor;
+    private String descricaoMaterialCompleta;
 }

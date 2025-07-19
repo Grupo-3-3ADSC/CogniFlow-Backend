@@ -75,4 +75,10 @@ public class OrdemDeCompraService {
                 .map(OrdemDeCompraMapper::toListagemDto)
                 .collect(Collectors.toList());
     }
+
+    public OrdemDeCompraModel getById(Long id) {
+        return ordemDeCompraRepository.findByIdComJoins(id)
+                .orElseThrow(() -> new RuntimeException("Ordem de compra não encontrada"));
+    }
+
 }

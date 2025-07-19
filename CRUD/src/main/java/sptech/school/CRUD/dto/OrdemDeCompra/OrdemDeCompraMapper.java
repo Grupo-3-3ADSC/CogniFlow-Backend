@@ -11,6 +11,7 @@ public class OrdemDeCompraMapper {
             return null;
         }
         return ListagemOrdemDeCompra.builder()
+                .id(Long.valueOf(entity.getId()))
                 .prazoEntrega(entity.getPrazoEntrega())
                 .ie(entity.getIe())
                 .condPagamento(entity.getCondPagamento())
@@ -24,6 +25,8 @@ public class OrdemDeCompraMapper {
                 .fornecedorId(entity.getFornecedorId())
                 .estoqueId(entity.getEstoqueId())
                 .usuarioId(entity.getUsuarioId())
+                .nomeFornecedor(entity.getFornecedor() != null ? entity.getFornecedor().getNomeFantasia() : "Fornecedor não encontrado")
+                .descricaoMaterialCompleta(entity.getEstoque() != null ? entity.getEstoque().getTipoMaterial() : "Material não encontrado")
                 .build();
     }
 
