@@ -17,9 +17,9 @@ import sptech.school.CRUD.Repository.CargoRepository;
 import sptech.school.CRUD.Repository.UsuarioRepository;
 import sptech.school.CRUD.config.GerenciadorTokenJwt;
 import sptech.school.CRUD.dto.Usuario.*;
-import sptech.school.CRUD.exception.BadRequestException;
-import sptech.school.CRUD.exception.ConflictException;
-import sptech.school.CRUD.exception.EntidadeNaoEncontrado;
+import sptech.school.CRUD.exception.RecursoNaoEncontradoException;
+import sptech.school.CRUD.exception.RequisicaoConflitanteException;
+import sptech.school.CRUD.exception.RequisicaoInvalidaException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -56,27 +56,27 @@ public class UsuarioService {
 
     public UsuarioModel getById(int id) {
         return usuarioRepository.findById(id)
-                .orElseThrow(()-> new EntidadeNaoEncontrado("Usuario de id %d não encontrado".formatted(id)));
+                .orElseThrow(()-> new RecursoNaoEncontradoException("Usuario de id %d não encontrado".formatted(id)));
     }
 
     public UsuarioModel cadastrarUsuarioComum(UsuarioModel usuario) {
 
         if (usuario == null) {
-            throw new BadRequestException("O corpo da requisição está vazio.");
+            throw new RequisicaoInvalidaException("O corpo da requisição está vazio.");
         }
 
         if (usuario.getNome().length() <= 3){
-            throw new BadRequestException("Senha deve ter pelo menos 3 caracteres");
+            throw new RequisicaoInvalidaException("Senha deve ter pelo menos 3 caracteres");
         }
         if (usuarioRepository.existsByEmail(usuario.getEmail())) {
-            throw new ConflictException("Email já cadastrado.");
+            throw new RequisicaoConflitanteException("Email já cadastrado.");
         }
 
         if (usuario.getPassword() == null || usuario.getPassword().isBlank()) {
-            throw new BadRequestException("Senha não pode ser nulo ou vazio.");
+            throw new RequisicaoInvalidaException("Senha não pode ser nulo ou vazio.");
         }
         if (usuario.getPassword().length() < 6) {
-            throw new BadRequestException("Senha deve ter pelo menos 6 caracteres.");
+            throw new RequisicaoInvalidaException("Senha deve ter pelo menos 6 caracteres.");
         }
 
         CargoModel cargo = cargoRepository.findByNome("comum");
@@ -92,22 +92,22 @@ public class UsuarioService {
 
 
         if (usuario == null) {
-            throw new BadRequestException("O corpo da requisição está vazio.");
+            throw new RequisicaoInvalidaException("O corpo da requisição está vazio.");
         }
 
         if (usuarioRepository.existsByEmail(usuario.getEmail())) {
-            throw new ConflictException("Email já cadastrado.");
+            throw new RequisicaoConflitanteException("Email já cadastrado.");
         }
         if (usuario.getNome().length() <= 3){
-            throw new BadRequestException("O nome deve ter pelo menos 3 caracteres");
+            throw new RequisicaoInvalidaException("O nome deve ter pelo menos 3 caracteres");
         }
 
         if (usuario.getPassword() == null || usuario.getPassword().isBlank()) {
-            throw new BadRequestException("Senha não pode ser nulo ou vazio.");
+            throw new RequisicaoInvalidaException("Senha não pode ser nulo ou vazio.");
         }
 
         if (usuario.getPassword().length() < 6) {
-            throw new BadRequestException("Senha deve ter pelo menos 6 caracteres.");
+            throw new RequisicaoInvalidaException("Senha deve ter pelo menos 6 caracteres.");
         }
 
         CargoModel cargo = cargoRepository.findByNome("gestor");
@@ -130,27 +130,27 @@ public class UsuarioService {
 //            boolean emailVazio = usuarioParaAtualizar.getEmail() == null || usuarioParaAtualizar.getEmail().trim().isEmpty();
 
             if (usuarioParaAtualizar == null) {
-                throw new BadRequestException("O corpo da requisição está vazio.");
+                throw new RequisicaoInvalidaException("O corpo da requisição está vazio.");
             }
 
 
 
             if (usuarioParaAtualizar.getNome() == null || usuarioParaAtualizar.getNome().trim().isEmpty()) {
-                throw new BadRequestException("Nome não pode estar vazio");
+                throw new RequisicaoInvalidaException("Nome não pode estar vazio");
             }
             if (usuarioParaAtualizar.getEmail() == null || usuarioParaAtualizar.getEmail().trim().isEmpty()) {
-                throw new BadRequestException("Email não pode estar vazio");
+                throw new RequisicaoInvalidaException("Email não pode estar vazio");
             }
 
             if (usuarioRepository.existsByEmail(usuarioParaAtualizar.getEmail())) {
-                throw new ConflictException("Email já cadastrado.");
+                throw new RequisicaoConflitanteException("Email já cadastrado.");
             }
             if (usuarioParaAtualizar.getPassword() != null) {
                 if (usuarioParaAtualizar.getPassword().isBlank()) {
-                    throw new BadRequestException("Senha não pode ser nulo ou vazio.");
+                    throw new RequisicaoInvalidaException("Senha não pode ser nulo ou vazio.");
                 }
                 if (usuarioParaAtualizar.getPassword().length() < 6) {
-                    throw new BadRequestException("Senha deve ter pelo menos 6 caracteres.");
+                    throw new RecursoNaoEncontradoException("Senha deve ter pelo menos 6 caracteres.");
                 }
             }
 
@@ -160,7 +160,7 @@ public class UsuarioService {
             UsuarioModel usuario = usuarioRepository.save(usuarioParaAtualizar);
             return usuario;
         }else {
-            throw new EntidadeNaoEncontrado("Usuario de id %d não encontrado".formatted(id));
+            throw new RecursoNaoEncontradoException("Usuario de id %d não encontrado".formatted(id));
         }
     }
 
@@ -189,21 +189,6 @@ public class UsuarioService {
 
         return usuarioRepository.save(usuario);
     }
-
-//    public Optional<UsuarioDeleteDto> delete(int id) {
-//        Optional<UsuarioModel> usuario = usuarioRepository.findById(id);
-//
-//        if (usuario.isEmpty()) {
-//            return Optional.empty();
-//        }
-//
-//        usuario.get().setUpdatedAt(LocalDateTime.now());
-//        usuario.get().setAtivo(false);
-//        usuarioRepository.save(usuario.get());
-//
-//        return Optional.of(UsuarioMapper.toDeleteDto(usuario.get()));
-//    }
-
 
     public Boolean uploadFoto(Integer id, MultipartFile file){
         if(file == null || file.isEmpty()){
@@ -265,7 +250,7 @@ public class UsuarioService {
 
         // Buscar usuário
         UsuarioModel usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new EntidadeNaoEncontrado("Usuário não encontrado com ID: " + id));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado com ID: " + id));
 
         // Verificar se usuário está ativo
         if (!usuario.getAtivo()) {
@@ -285,7 +270,7 @@ public class UsuarioService {
 
     public UsuarioModel buscarPorEmail(String email) {
         return usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new EntidadeNaoEncontrado("Usuário não encontrado"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
     }
 
     public UsuarioAtivoDto desativarUsuario(Integer id, UsuarioAtivoDto dto){

@@ -8,15 +8,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import sptech.school.CRUD.Repository.CargoRepository;
 import sptech.school.CRUD.Repository.UsuarioRepository;
 import sptech.school.CRUD.Model.CargoModel;
 import sptech.school.CRUD.Model.UsuarioModel;
-import sptech.school.CRUD.exception.BadRequestException;
-import sptech.school.CRUD.exception.ConflictException;
+import sptech.school.CRUD.dto.Usuario.UsuarioAtivoDto;
+import sptech.school.CRUD.exception.RequisicaoInvalidaException;
+import sptech.school.CRUD.exception.RequisicaoConflitanteException;
 import sptech.school.CRUD.dto.Usuario.UsuarioDeleteDto;
-import sptech.school.CRUD.exception.EntidadeNaoEncontrado;
+import sptech.school.CRUD.exception.RecursoNaoEncontradoException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.junit.jupiter.api.Assertions.*;
@@ -100,8 +104,8 @@ class UsuarioServiceTest {
         novoUsuario.setPassword("senhaValida123");
 
         // Act & Assert
-        ConflictException exception = assertThrows(
-                ConflictException.class,
+        RequisicaoConflitanteException exception = assertThrows(
+                RequisicaoConflitanteException.class,
                 () -> usuarioService.cadastrarUsuarioComum(novoUsuario)
         );
 
@@ -120,7 +124,7 @@ class UsuarioServiceTest {
         usuario.setPassword("123");
 
         // Act & Assert
-        BadRequestException exception = assertThrows(BadRequestException.class, () -> usuarioService.cadastrarUsuarioGestor(usuario));
+        RequisicaoInvalidaException exception = assertThrows(RequisicaoInvalidaException.class, () -> usuarioService.cadastrarUsuarioGestor(usuario));
 
         assertEquals("Senha deve ter pelo menos 6 caracteres.", exception.getMessage());
     }
@@ -135,8 +139,8 @@ class UsuarioServiceTest {
         usuario.setPassword(null); // Simulamos um usuário sem senha
 
         // Act & Assert
-        BadRequestException exception = assertThrows(
-                BadRequestException.class,
+        RequisicaoInvalidaException exception = assertThrows(
+                RequisicaoInvalidaException.class,
                 () -> usuarioService.cadastrarUsuarioGestor(usuario)
         );
         assertEquals("Senha não pode ser nulo ou vazio.", exception.getMessage());
@@ -173,7 +177,7 @@ class UsuarioServiceTest {
         when(usuarioRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         // Act & Assert
-        EntidadeNaoEncontrado exception = assertThrows(EntidadeNaoEncontrado.class, () -> usuarioService.getById(99));
+        RecursoNaoEncontradoException exception = assertThrows(RecursoNaoEncontradoException.class, () -> usuarioService.getById(99));
 
         assertEquals("Usuario de id 99 não encontrado", exception.getMessage());
         verify(usuarioRepository).findById(99);
@@ -186,7 +190,7 @@ class UsuarioServiceTest {
         when(usuarioRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         // Act & Assert
-        EntidadeNaoEncontrado exception = assertThrows(EntidadeNaoEncontrado.class, () -> usuarioService.getById(-1));
+        RecursoNaoEncontradoException exception = assertThrows(RecursoNaoEncontradoException.class, () -> usuarioService.getById(-1));
 
         assertEquals("Usuario de id -1 não encontrado", exception.getMessage());
         verify(usuarioRepository).findById(-1);
@@ -263,8 +267,8 @@ class UsuarioServiceTest {
         novoUsuario.setPassword("senhaVali123");
 
         // Act & Assert
-        ConflictException exception = assertThrows(
-                ConflictException.class,
+        RequisicaoConflitanteException exception = assertThrows(
+                RequisicaoConflitanteException.class,
                 () -> usuarioService.cadastrarUsuarioComum(novoUsuario)
         );
 
@@ -282,7 +286,7 @@ class UsuarioServiceTest {
         usuario.setPassword("123");
 
         // Act & Assert
-        BadRequestException exception = assertThrows(BadRequestException.class, () -> usuarioService.cadastrarUsuarioGestor(usuario));
+        RequisicaoInvalidaException exception = assertThrows(RequisicaoInvalidaException.class, () -> usuarioService.cadastrarUsuarioGestor(usuario));
 
         assertEquals("Senha deve ter pelo menos 6 caracteres.", exception.getMessage());
     }
@@ -297,8 +301,8 @@ class UsuarioServiceTest {
         usuario.setPassword(null);
 
         // Act & Assert
-        BadRequestException exception = assertThrows(
-                BadRequestException.class,
+        RequisicaoInvalidaException exception = assertThrows(
+                RequisicaoInvalidaException.class,
                 () -> usuarioService.cadastrarUsuarioGestor(usuario)
         );
         assertEquals("Senha não pode ser nulo ou vazio.", exception.getMessage());
@@ -400,7 +404,7 @@ class UsuarioServiceTest {
         when(usuarioRepository.existsById(1)).thenReturn(true);
 
         // Act & Assert
-        BadRequestException exception = assertThrows(BadRequestException.class, () -> usuarioService.put(usuarioAtualizado, 1));
+        RequisicaoInvalidaException exception = assertThrows(RequisicaoInvalidaException.class, () -> usuarioService.put(usuarioAtualizado, 1));
 
         System.out.println("Mensagem de erro retornada: " + exception.getMessage());
 
@@ -423,7 +427,7 @@ class UsuarioServiceTest {
         when(usuarioRepository.existsById(anyInt())).thenReturn(false);
 
         // Act & Assert
-        EntidadeNaoEncontrado exception = assertThrows(EntidadeNaoEncontrado.class, () -> usuarioService.put(usuarioAtualizado, 99));
+        RecursoNaoEncontradoException exception = assertThrows(RecursoNaoEncontradoException.class, () -> usuarioService.put(usuarioAtualizado, 99));
 
         assertEquals("Usuario de id 99 não encontrado", exception.getMessage());
         verify(usuarioRepository, never()).save(any());
@@ -468,5 +472,67 @@ class UsuarioServiceTest {
         verify(usuarioRepository, never()).save(any());
     }
 
+    @Test
+    @DisplayName("Desativar usuário - Usuário desativado com sucesso")
+    void deveDesativarUsuarioComSucesso() {
+        Integer idUsuario = 1;
+        UsuarioModel usuario = new UsuarioModel();
+        usuario.setId(idUsuario);
+        usuario.setAtivo(true);
+
+        UsuarioAtivoDto dto = new UsuarioAtivoDto();
+        dto.setAtivo(false); // queremos desativar
+
+        when(usuarioRepository.findById(idUsuario)).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.save(any(UsuarioModel.class))).thenReturn(usuario);
+
+        UsuarioAtivoDto response = usuarioService.desativarUsuario(idUsuario, dto);
+
+        assertFalse(response.getAtivo()); // o usuário deve estar inativo
+        assertFalse(usuario.getAtivo());  // também vale verificar o model salvo
+    }
+
+    @Test
+    @DisplayName("Ativar usuário - Usuário ativado com sucesso")
+    void deveAtivarUsuarioComSucesso() {
+        Integer idUsuario = 2;
+        UsuarioModel usuario = new UsuarioModel();
+        usuario.setId(idUsuario);
+        usuario.setAtivo(false);
+
+        UsuarioAtivoDto dto = new UsuarioAtivoDto();
+        dto.setAtivo(true);
+
+        when(usuarioRepository.findById(idUsuario)).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.save(any(UsuarioModel.class))).thenReturn(usuario);
+
+        UsuarioAtivoDto response = usuarioService.desativarUsuario(idUsuario, dto);
+
+        assertTrue(response.getAtivo());
+        assertTrue(usuario.getAtivo());
+    }
+
+    void assertUsuarioNaoEncontrado(Integer id, boolean ativo) {
+        UsuarioAtivoDto dto = new UsuarioAtivoDto();
+        dto.setAtivo(ativo);
+
+        when(usuarioRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(UsernameNotFoundException.class, () -> {
+            usuarioService.desativarUsuario(id, dto);
+        });
+    }
+
+    @Test
+    @DisplayName("Desativar usuário - Deve ser lançada uma exceção quando o id for inexistente!")
+    void deveLancarExcecaoQuandoUsuarioNaoEncontrado() {
+        assertUsuarioNaoEncontrado(999, false);
+    }
+
+    @Test
+    @DisplayName("Ativar usuário - Deve ser lançada uma exceção quando o id for inexistente!")
+    void deveLancarExcecaoQuandoUsuarioNaoEncontradoParaAtivar() {
+        assertUsuarioNaoEncontrado(999, true);
+    }
 }
 

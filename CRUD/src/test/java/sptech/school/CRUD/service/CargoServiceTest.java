@@ -13,8 +13,7 @@ import sptech.school.CRUD.Model.CargoModel;
 import sptech.school.CRUD.Repository.CargoRepository;
 import sptech.school.CRUD.dto.Cargo.CargoCadastraDto;
 import sptech.school.CRUD.dto.Cargo.CargoListagemDto;
-
-import sptech.school.CRUD.exception.BadRequestException;
+import sptech.school.CRUD.exception.RequisicaoInvalidaException;
 
 import java.util.List;
 
@@ -57,7 +56,7 @@ class CargoServiceTest {
     @DisplayName("Cadastro de cargo - Falha (cargo nulo)")
     void testePostCargoNulo() {
         // Act & Assert
-        BadRequestException exception = assertThrows(BadRequestException.class, () -> {
+        RequisicaoInvalidaException exception = assertThrows(RequisicaoInvalidaException.class, () -> {
             cargoService.post(null);
         });
 

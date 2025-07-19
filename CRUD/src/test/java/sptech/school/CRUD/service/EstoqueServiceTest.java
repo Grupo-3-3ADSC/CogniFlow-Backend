@@ -9,7 +9,8 @@ import sptech.school.CRUD.Repository.EstoqueRepository;
 import sptech.school.CRUD.dto.Estoque.AtualizarEstoqueDto;
 import sptech.school.CRUD.dto.Estoque.EstoqueListagemDto;
 import sptech.school.CRUD.dto.Estoque.RetirarEstoqueDto;
-import sptech.school.CRUD.exception.BadRequestException;
+import sptech.school.CRUD.exception.RecursoNaoEncontradoException;
+import sptech.school.CRUD.exception.RequisicaoInvalidaException;
 
 import java.util.Optional;
 
@@ -17,7 +18,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import org.mockito.junit.jupiter.MockitoExtension;
-import sptech.school.CRUD.exception.EntidadeNaoEncontrado;
+
+
 
 @ExtendWith(MockitoExtension.class)
 class EstoqueServiceTest {
@@ -36,7 +38,7 @@ class EstoqueServiceTest {
         when(estoqueRepository.findByTipoMaterial("Cabo")).thenReturn(Optional.empty());
 
         // Act + Assert
-        assertThrows(EntidadeNaoEncontrado.class, () -> {
+        assertThrows(RecursoNaoEncontradoException.class, () -> {
             estoqueService.atualizarEstoque(dto);
         });
 
@@ -58,7 +60,7 @@ class EstoqueServiceTest {
         AtualizarEstoqueDto dto = new AtualizarEstoqueDto("SAE 1020", 50);
 
         // Act + Assert
-        assertThrows(BadRequestException.class, () -> estoqueService.atualizarEstoque(dto));
+        assertThrows(RequisicaoInvalidaException.class, () -> estoqueService.atualizarEstoque(dto));
     }
 
     @Test
@@ -202,7 +204,7 @@ class EstoqueServiceTest {
         RetirarEstoqueDto dto = new RetirarEstoqueDto("", 10, "Interna");
 
         // Act & Assert
-        assertThrows(BadRequestException.class, () -> estoqueService.retirarEstoque(dto));
+        assertThrows(RequisicaoInvalidaException.class, () -> estoqueService.retirarEstoque(dto));
     }
 
     @Test
@@ -211,6 +213,6 @@ class EstoqueServiceTest {
         RetirarEstoqueDto dto = new RetirarEstoqueDto("SAE 1020", -5, "Externa");
 
         // Act & Assert
-        assertThrows(BadRequestException.class, () -> estoqueService.retirarEstoque(dto));
+        assertThrows(RequisicaoInvalidaException.class, () -> estoqueService.retirarEstoque(dto));
     }
 }

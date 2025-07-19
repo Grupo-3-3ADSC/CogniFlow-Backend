@@ -11,8 +11,8 @@ import sptech.school.CRUD.Repository.FornecedorRepository;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorCadastroDto;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorCompletoDTO;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorMapper;
-import sptech.school.CRUD.exception.BadRequestException;
-import sptech.school.CRUD.exception.ConflictException;
+import sptech.school.CRUD.exception.RequisicaoConflitanteException;
+import sptech.school.CRUD.exception.RequisicaoInvalidaException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,22 +30,22 @@ public class FornecedorService {
 
         // Verificar se já existe fornecedor com o CNPJ
         if (fornecedorRepository.findByCnpj(fornecedorDto.getCnpj()).isPresent()) {
-            throw new ConflictException("Já existe um fornecedor cadastrado com esse CNPJ.");
+            throw new RequisicaoConflitanteException("Já existe um fornecedor cadastrado com esse CNPJ.");
         }
         if (contatoRepository.existsByEmail(fornecedorDto.getEmail())) {
-            throw new ConflictException("Já existe um fornecedor cadastrado com esse e-mail.");
+            throw new RequisicaoConflitanteException("Já existe um fornecedor cadastrado com esse e-mail.");
        }
         if (fornecedorDto.getCnpj() == null || fornecedorDto.getCnpj().isBlank()){
-            throw new BadRequestException("CNPJ não pode ser vazio nem nulo");
+            throw new RequisicaoInvalidaException("CNPJ não pode ser vazio nem nulo");
         }
         if (fornecedorDto.getCnpj().length() < 14){
-            throw new BadRequestException("CNPJ deve conter pelo menos 14 dígitos");
+            throw new RequisicaoInvalidaException("CNPJ deve conter pelo menos 14 dígitos");
         }
 
         try {
             viaCepService.buscarEnderecoPorCep(fornecedorDto.getCep());
         } catch (IllegalArgumentException ex) {
-            throw new BadRequestException("CEP inválido ou não encontrado.");
+            throw new RequisicaoInvalidaException("CEP inválido ou não encontrado.");
         }
 
         // Converte DTO para Model usando o mapper

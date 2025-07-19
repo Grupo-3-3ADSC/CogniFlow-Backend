@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.context.request.WebRequest;
-import sptech.school.CRUD.exception.BadRequestException;
-import sptech.school.CRUD.exception.ConflictException;
+import sptech.school.CRUD.exception.RequisicaoInvalidaException;
+import sptech.school.CRUD.exception.RequisicaoConflitanteException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -52,8 +52,8 @@ public class GlobalExceptionHandler {
         public void setPath(String path) { this.path = path; }
     }
 
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ErrorResponse> handleBadRequest(BadRequestException ex, WebRequest request) {
+    @ExceptionHandler(RequisicaoInvalidaException.class)
+    public ResponseEntity<ErrorResponse> handleBadRequest(RequisicaoInvalidaException ex, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 "Bad Request",
@@ -63,8 +63,8 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
-    @ExceptionHandler(EntidadeNaoEncontrado.class)
-    public ResponseEntity<ErrorResponse> handleNotFound(EntidadeNaoEncontrado ex, WebRequest request) {
+    @ExceptionHandler(RecursoNaoEncontradoException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(RecursoNaoEncontradoException ex, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 "Not Found",
@@ -87,8 +87,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(ex.getStatusCode()).body(errorResponse);
     }
 
-    @ExceptionHandler(ConflictException.class)
-    public ResponseEntity<ErrorResponse> handleConflict(ConflictException ex, WebRequest request) {
+    @ExceptionHandler(RequisicaoConflitanteException.class)
+    public ResponseEntity<ErrorResponse> handleConflict(RequisicaoConflitanteException ex, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.CONFLICT.value(),
                 "Conflict",
@@ -152,14 +152,4 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
     }
 
-    @ExceptionHandler(CargoJaExistenteException.class)
-    public ResponseEntity<Object> handleCargoExistente(CargoJaExistenteException ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("status", 409);
-        body.put("error", "Conflict");
-        body.put("message", ex.getMessage());
-        body.put("timestamp", LocalDateTime.now());
-
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
-    }
 }
