@@ -3,6 +3,7 @@ package sptech.school.CRUD.dto.OrdemDeCompra;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 @Getter
 @Setter
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class OrdemDeCompraCadastroDto {
     @NotBlank(message = "Prazo de Entrega não pode ser nulo ou vazio")
-    private String prazoEntrega;
+    private LocalDate prazoEntrega;
     @NotBlank(message = "I.E não pode ser nulo ou vazio")
     @Size(min = 12, max = 12, message = "IE deve ter exatamente 12 caracteres")
     private String ie;

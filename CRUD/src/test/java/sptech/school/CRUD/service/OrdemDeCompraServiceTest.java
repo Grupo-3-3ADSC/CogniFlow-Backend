@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class OrdemDeCompraServiceTest {
 
-```
+
 @Mock
 private OrdemDeCompraRepository ordemDeCompraRepository;
 
@@ -63,24 +63,24 @@ void setUp() {
     dto.setValorUnitario(10.00);
     dto.setQuantidade(100);
     dto.setIpi(5.0);
-    dto.setFornecedorId(1L);
-    dto.setEstoqueId(1L);
-    dto.setUsuarioId(1L);
+    dto.setFornecedorId(1);
+    dto.setEstoqueId(1);
+    dto.setUsuarioId(1);
 
     fornecedor = new FornecedorModel();
-    fornecedor.setId(1L);
+    fornecedor.setId(1);
     fornecedor.setNome("Fornecedor Teste");
 
     estoque = new EstoqueModel();
-    estoque.setId(1L);
+    estoque.setId(1);
     estoque.setQuantidadeAtual(50);
 
     usuario = new UsuarioModel();
-    usuario.setId(1L);
+    usuario.setId(1);
     usuario.setNome("Usuario Teste");
 
     ordemDeCompra = new OrdemDeCompraModel();
-    ordemDeCompra.setId(1L);
+    ordemDeCompra.setId(1);
     ordemDeCompra.setQuantidade(100);
     ordemDeCompra.setEstoque(estoque);
 }
@@ -94,9 +94,9 @@ void testCadastroOrdemDeCompraComSucesso() {
     // Também testa se o estoque é atualizado corretamente após o cadastro.
 
     // Arrange
-    when(fornecedorRepository.findById(1L)).thenReturn(Optional.of(fornecedor));
-    when(estoqueRepository.findById(1L)).thenReturn(Optional.of(estoque));
-    when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
+    when(fornecedorRepository.findById(1)).thenReturn(Optional.of(fornecedor));
+    when(estoqueRepository.findById(1)).thenReturn(Optional.of(estoque));
+    when(usuarioRepository.findById(1)).thenReturn(Optional.of(usuario));
     when(ordemDeCompraRepository.save(any(OrdemDeCompraModel.class))).thenReturn(ordemDeCompra);
 
     // Act
@@ -104,7 +104,7 @@ void testCadastroOrdemDeCompraComSucesso() {
 
     // Assert
     assertNotNull(resultado);
-    assertEquals(1L, resultado.getId());
+    assertEquals(1, resultado.getId());
     assertEquals(100, resultado.getQuantidade());
     
     // Verifica se o estoque foi atualizado (50 + 100 = 150)
@@ -114,9 +114,9 @@ void testCadastroOrdemDeCompraComSucesso() {
     }));
     
     // Verifica se todas as entidades foram buscadas
-    verify(fornecedorRepository).findById(1L);
-    verify(estoqueRepository).findById(1L);
-    verify(usuarioRepository).findById(1L);
+    verify(fornecedorRepository).findById(1);
+    verify(estoqueRepository).findById(1);
+    verify(usuarioRepository).findById(1);
     verify(ordemDeCompraRepository).save(any(OrdemDeCompraModel.class));
 }
 
@@ -128,7 +128,7 @@ void testCadastroOrdemDeCompraFornecedorNaoEncontrado() {
     // de compra com um fornecedor que não existe no banco de dados.
 
     // Arrange
-    when(fornecedorRepository.findById(1L)).thenReturn(Optional.empty());
+    when(fornecedorRepository.findById(1)).thenReturn(Optional.empty());
 
     // Act & Assert
     RuntimeException exception = assertThrows(RuntimeException.class, 
@@ -149,8 +149,8 @@ void testCadastroOrdemDeCompraEstoqueNaoEncontrado() {
     // de compra com um estoque que não existe no banco de dados.
 
     // Arrange
-    when(fornecedorRepository.findById(1L)).thenReturn(Optional.of(fornecedor));
-    when(estoqueRepository.findById(1L)).thenReturn(Optional.empty());
+    when(fornecedorRepository.findById(1)).thenReturn(Optional.of(fornecedor));
+    when(estoqueRepository.findById(1)).thenReturn(Optional.empty());
 
     // Act & Assert
     RuntimeException exception = assertThrows(RuntimeException.class, 
@@ -170,9 +170,9 @@ void testCadastroOrdemDeCompraUsuarioNaoEncontrado() {
     // de compra com um usuário que não existe no banco de dados.
 
     // Arrange
-    when(fornecedorRepository.findById(1L)).thenReturn(Optional.of(fornecedor));
-    when(estoqueRepository.findById(1L)).thenReturn(Optional.of(estoque));
-    when(usuarioRepository.findById(1L)).thenReturn(Optional.empty());
+    when(fornecedorRepository.findById(1)).thenReturn(Optional.of(fornecedor));
+    when(estoqueRepository.findById(1)).thenReturn(Optional.of(estoque));
+    when(usuarioRepository.findById(1)).thenReturn(Optional.empty());
 
     // Act & Assert
     RuntimeException exception = assertThrows(RuntimeException.class, 
@@ -194,17 +194,17 @@ void testCadastroOrdemDeCompraComEstoqueQuantidadeNula() {
 
     // Arrange
     EstoqueModel estoqueComQuantidadeNula = new EstoqueModel();
-    estoqueComQuantidadeNula.setId(1L);
+    estoqueComQuantidadeNula.setId(1);
     estoqueComQuantidadeNula.setQuantidadeAtual(null); // Quantidade nula
 
     OrdemDeCompraModel ordemComEstoqueNulo = new OrdemDeCompraModel();
-    ordemComEstoqueNulo.setId(1L);
+    ordemComEstoqueNulo.setId(1);
     ordemComEstoqueNulo.setQuantidade(75);
     ordemComEstoqueNulo.setEstoque(estoqueComQuantidadeNula);
 
-    when(fornecedorRepository.findById(1L)).thenReturn(Optional.of(fornecedor));
-    when(estoqueRepository.findById(1L)).thenReturn(Optional.of(estoqueComQuantidadeNula));
-    when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
+    when(fornecedorRepository.findById(1)).thenReturn(Optional.of(fornecedor));
+    when(estoqueRepository.findById(1)).thenReturn(Optional.of(estoqueComQuantidadeNula));
+    when(usuarioRepository.findById(1)).thenReturn(Optional.of(usuario));
     when(ordemDeCompraRepository.save(any(OrdemDeCompraModel.class))).thenReturn(ordemComEstoqueNulo);
 
     // Act
@@ -221,6 +221,6 @@ void testCadastroOrdemDeCompraComEstoqueQuantidadeNula() {
     
     verify(ordemDeCompraRepository).save(any(OrdemDeCompraModel.class));
 }
-```
+
 
 }

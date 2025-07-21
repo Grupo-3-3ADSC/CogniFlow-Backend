@@ -12,7 +12,7 @@ public class OrdemDeCompraMapper {
         }
         return ListagemOrdemDeCompra.builder()
                 .id(Long.valueOf(entity.getId()))
-                .prazoEntrega(entity.getPrazoEntrega())
+                .prazoEntrega(String.valueOf(entity.getPrazoEntrega()))
                 .ie(entity.getIe())
                 .condPagamento(entity.getCondPagamento())
                 .valorKg(entity.getValorKg())
