@@ -27,6 +27,7 @@ public class OrdemDeCompraMapper {
                 .usuarioId(entity.getUsuarioId())
                 .nomeFornecedor(entity.getFornecedor() != null ? entity.getFornecedor().getNomeFantasia() : "Fornecedor não encontrado")
                 .descricaoMaterialCompleta(entity.getEstoque() != null ? entity.getEstoque().getTipoMaterial() : "Material não encontrado")
+                .dataDeEmissao(entity.getDataDeEmissao())
                 .build();
     }
 
