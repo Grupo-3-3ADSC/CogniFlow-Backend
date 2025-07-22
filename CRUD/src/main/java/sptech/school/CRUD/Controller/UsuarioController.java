@@ -205,6 +205,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/buscar-por-email/{email}")
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<UsuarioListagemDto> buscarPorEmail(@PathVariable String email) {
         UsuarioModel usuario = usuarioService.buscarPorEmail(email);
         return ResponseEntity.ok(UsuarioMapper.toListagemDto(usuario));
