@@ -16,6 +16,7 @@ import sptech.school.CRUD.Repository.FornecedorRepository;
 import sptech.school.CRUD.Repository.OrdemDeCompraRepository;
 import sptech.school.CRUD.Repository.UsuarioRepository;
 import sptech.school.CRUD.dto.OrdemDeCompra.OrdemDeCompraCadastroDto;
+import sptech.school.CRUD.exception.RecursoNaoEncontradoException;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -86,12 +87,9 @@ void setUp() {
 }
 
 @Test
-@DisplayName("Teste 1: Cadastro de ordem de compra com sucesso - cenário completo")
+@DisplayName("Cadastro de ordem de compra - Sucesso")
 void testCadastroOrdemDeCompraComSucesso() {
-    // **O QUE ESTE TESTE FAZ:**
-    // Verifica se uma ordem de compra é cadastrada corretamente quando todos os dados
-    // estão válidos e as entidades relacionadas (fornecedor, estoque, usuário) existem.
-    // Também testa se o estoque é atualizado corretamente após o cadastro.
+
 
     // Arrange
     when(fornecedorRepository.findById(1)).thenReturn(Optional.of(fornecedor));
@@ -121,20 +119,16 @@ void testCadastroOrdemDeCompraComSucesso() {
 }
 
 @Test
-@DisplayName("Teste 2: Falha ao cadastrar - fornecedor não encontrado")
+@DisplayName("Cadastro de ordem de compra - Fornecedor não encontrado")
 void testCadastroOrdemDeCompraFornecedorNaoEncontrado() {
-    // **O QUE ESTE TESTE FAZ:**
-    // Verifica se o sistema lança exceção adequada quando tenta cadastrar uma ordem
-    // de compra com um fornecedor que não existe no banco de dados.
 
     // Arrange
     when(fornecedorRepository.findById(1)).thenReturn(Optional.empty());
 
     // Act & Assert
-    RuntimeException exception = assertThrows(RuntimeException.class, 
+    assertThrows(RecursoNaoEncontradoException.class,
         () -> ordemDeCompraService.cadastroOrdemDeCompra(dto));
-    
-    assertEquals("Fornecedor não encontrado", exception.getMessage());
+
     
     // Verifica que o save não foi chamado devido ao erro
     verify(ordemDeCompraRepository, never()).save(any(OrdemDeCompraModel.class));
@@ -142,32 +136,26 @@ void testCadastroOrdemDeCompraFornecedorNaoEncontrado() {
 }
 
 @Test
-@DisplayName("Teste 3: Falha ao cadastrar - estoque não encontrado")
+@DisplayName("Cadastro de ordem de compra - Estoque não encontrado")
 void testCadastroOrdemDeCompraEstoqueNaoEncontrado() {
-    // **O QUE ESTE TESTE FAZ:**
-    // Verifica se o sistema lança exceção adequada quando tenta cadastrar uma ordem
-    // de compra com um estoque que não existe no banco de dados.
 
     // Arrange
     when(fornecedorRepository.findById(1)).thenReturn(Optional.of(fornecedor));
     when(estoqueRepository.findById(1)).thenReturn(Optional.empty());
 
     // Act & Assert
-    RuntimeException exception = assertThrows(RuntimeException.class, 
-        () -> ordemDeCompraService.cadastroOrdemDeCompra(dto));
+    assertThrows(RecursoNaoEncontradoException.class,
+            () -> ordemDeCompraService.cadastroOrdemDeCompra(dto));
     
-    assertEquals("Estoque não encontrado", exception.getMessage());
+
     
     // Verifica que o save não foi chamado devido ao erro
     verify(ordemDeCompraRepository, never()).save(any(OrdemDeCompraModel.class));
 }
 
 @Test
-@DisplayName("Teste 4: Falha ao cadastrar - usuário não encontrado")
+@DisplayName("Cadastro de ordem de compra - Usuário não encontrado")
 void testCadastroOrdemDeCompraUsuarioNaoEncontrado() {
-    // **O QUE ESTE TESTE FAZ:**
-    // Verifica se o sistema lança exceção adequada quando tenta cadastrar uma ordem
-    // de compra com um usuário que não existe no banco de dados.
 
     // Arrange
     when(fornecedorRepository.findById(1)).thenReturn(Optional.of(fornecedor));
@@ -175,22 +163,16 @@ void testCadastroOrdemDeCompraUsuarioNaoEncontrado() {
     when(usuarioRepository.findById(1)).thenReturn(Optional.empty());
 
     // Act & Assert
-    RuntimeException exception = assertThrows(RuntimeException.class, 
-        () -> ordemDeCompraService.cadastroOrdemDeCompra(dto));
-    
-    assertEquals("Usuário não encontrado", exception.getMessage());
+    assertThrows(RecursoNaoEncontradoException.class,
+            () -> ordemDeCompraService.cadastroOrdemDeCompra(dto));
     
     // Verifica que o save não foi chamado devido ao erro
     verify(ordemDeCompraRepository, never()).save(any(OrdemDeCompraModel.class));
 }
 
 @Test
-@DisplayName("Teste 5: Atualização de estoque com quantidade inicial nula")
+@DisplayName("Cadastro de ordem de compra - Atualização de estoque com quantidade inicial nula")
 void testCadastroOrdemDeCompraComEstoqueQuantidadeNula() {
-    // **O QUE ESTE TESTE FAZ:**
-    // Verifica se o sistema trata corretamente o caso onde o estoque tem quantidade
-    // atual nula (null), tratando como 0 e somando corretamente a nova quantidade.
-    // Este é um caso edge importante para evitar NullPointerException.
 
     // Arrange
     EstoqueModel estoqueComQuantidadeNula = new EstoqueModel();

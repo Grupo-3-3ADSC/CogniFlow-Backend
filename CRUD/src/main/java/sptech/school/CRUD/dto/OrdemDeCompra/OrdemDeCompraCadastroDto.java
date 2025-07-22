@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrdemDeCompraCadastroDto {
-    @NotBlank(message = "Prazo de Entrega não pode ser nulo ou vazio")
+    @NotNull(message = "Prazo de Entrega não pode ser nulo ou vazio")
     private LocalDate prazoEntrega;
     @NotBlank(message = "I.E não pode ser nulo ou vazio")
     @Size(min = 12, max = 12, message = "IE deve ter exatamente 12 caracteres")
