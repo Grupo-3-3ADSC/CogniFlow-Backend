@@ -78,7 +78,7 @@ public class OrdemDeCompraService {
 
     public OrdemDeCompraModel getById(Integer id) {
         return ordemDeCompraRepository.findByIdComJoins(id)
-                .orElseThrow(() -> new RuntimeException("Ordem de compra não encontrada"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Ordem de compra não encontrada"));
     }
 
 }
