@@ -12,11 +12,11 @@ public interface OrdemDeCompraRepository extends JpaRepository<OrdemDeCompraMode
     boolean existsByRastreabilidadeAndEstoqueId( String rastreabilidade,Integer estoqueId);
 
     @Query("SELECT o FROM OrdemDeCompraModel o " +
-            "JOIN FETCH o.fornecedor " +
-            "JOIN FETCH o.estoque " +
-            "JOIN FETCH o.usuario " +
+            "LEFT JOIN FETCH o.fornecedor " +
+            "LEFT JOIN FETCH o.estoque " +
+            "LEFT JOIN FETCH o.usuario " +
             "WHERE o.id = :id")
-    Optional<OrdemDeCompraModel> findByIdComJoins(@Param("id") Long id);
+    Optional<OrdemDeCompraModel> findByIdComJoins(@Param("id") Integer id);
 
 
 }

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class OrdemDeCompraCadastroDto {
     @NotNull(message = "Prazo de Entrega não pode ser nulo ou vazio")
-    private LocalDate prazoEntrega;
+    private String prazoEntrega;
     @NotBlank(message = "I.E não pode ser nulo ou vazio")
     @Size(min = 12, max = 12, message = "IE deve ter exatamente 12 caracteres")
     private String ie;

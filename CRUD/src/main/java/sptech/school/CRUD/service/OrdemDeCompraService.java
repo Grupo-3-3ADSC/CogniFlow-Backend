@@ -76,7 +76,7 @@ public class OrdemDeCompraService {
                 .collect(Collectors.toList());
     }
 
-    public OrdemDeCompraModel getById(Long id) {
+    public OrdemDeCompraModel getById(Integer id) {
         return ordemDeCompraRepository.findByIdComJoins(id)
                 .orElseThrow(() -> new RuntimeException("Ordem de compra não encontrada"));
     }

@@ -16,7 +16,7 @@ public class OrdemDeCompraModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private LocalDate prazoEntrega;
+    private String prazoEntrega;
     private String ie;
     private String condPagamento;
     private Double valorKg;
