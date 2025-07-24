@@ -54,6 +54,7 @@ class FornecedorServiceTest {
         dto.setEmail("email@fornecedor.com");
 
         when(fornecedorRepository.findByCnpj("12345678000199")).thenReturn(Optional.empty());
+        when(contatoRepository.existsByEmail("email@fornecedor.com")).thenReturn(false);
 
         FornecedorModel salvo = new FornecedorModel();
         salvo.setId(1);
@@ -62,10 +63,13 @@ class FornecedorServiceTest {
         when(contatoRepository.save(any())).thenReturn(new ContatoModel());
 
         // Act
-        FornecedorModel resultado = fornecedorService.cadastroFornecedor(dto);
+        FornecedorCadastroDto resultado = fornecedorService.cadastroFornecedor(dto);
+
         // Assert
         assertNotNull(resultado);
-        assertEquals(1, resultado.getId());
+        assertEquals("12345678000199", resultado.getCnpj());
+        assertEquals("email@fornecedor.com", resultado.getEmail());
+
         verify(fornecedorRepository).save(any());
         verify(enderecoRepository).save(any());
         verify(contatoRepository).save(any());
