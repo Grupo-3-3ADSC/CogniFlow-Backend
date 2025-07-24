@@ -26,7 +26,7 @@ public class FornecedorService {
     private final ContatoRepository contatoRepository;
     private final ViaCepService viaCepService;
 
-    public FornecedorModel cadastroFornecedor(FornecedorCadastroDto fornecedorDto) {
+    public FornecedorCadastroDto cadastroFornecedor(FornecedorCadastroDto fornecedorDto) {
 
         // Verificar se já existe fornecedor com o CNPJ
         if (fornecedorRepository.findByCnpj(fornecedorDto.getCnpj()).isPresent()) {
@@ -72,7 +72,7 @@ public class FornecedorService {
         ContatoModel contatoSalvo = contatoRepository.save(contato);
 
         // Retorna o DTO original com os dados salvos
-        return fornecedorSalvo;
+        return fornecedorDto;
     }
 
 

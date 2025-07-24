@@ -54,7 +54,7 @@ private OrdemDeCompraModel ordemDeCompra;
 void setUp() {
     // Configuração dos dados de teste
     dto = new OrdemDeCompraCadastroDto();
-    dto.setPrazoEntrega(LocalDate.now().plusDays(30));
+    dto.setPrazoEntrega(String.valueOf(LocalDate.now().plusDays(30)));
     dto.setIe("123456789");
     dto.setCondPagamento("30 dias");
     dto.setValorKg(15.50);

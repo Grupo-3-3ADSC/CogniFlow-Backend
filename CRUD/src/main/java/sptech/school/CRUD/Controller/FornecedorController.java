@@ -34,17 +34,12 @@ public class FornecedorController {
 
     @PostMapping
     @SecurityRequirement(name = "Bearer")
-    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<FornecedorCadastroDto> cadastrarFornecedor(@RequestBody @Valid FornecedorCadastroDto fornecedorDto) {
 
         // Chama o service passando o DTO diretamente
-        FornecedorModel fornecedorSalvo = fornecedorService.cadastroFornecedor(fornecedorDto);
-        FornecedorCadastroDto responseDto = FornecedorMapper.toDto(fornecedorSalvo);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+        FornecedorCadastroDto novoFornecedor = fornecedorService.cadastroFornecedor(fornecedorDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoFornecedor);
     }
-
-
 
     @GetMapping("/top5")
     @SecurityRequirement(name = "Bearer")
@@ -52,7 +47,6 @@ public class FornecedorController {
         List<FornecedorCompletoDTO> fornecedores = fornecedorService.buscarTop5Fornecedores();
         return ResponseEntity.ok(fornecedores);
     }
-
 
     @SecurityRequirement(name = "Bearer")
     @GetMapping
