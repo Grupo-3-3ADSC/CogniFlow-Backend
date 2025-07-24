@@ -70,7 +70,7 @@ void setUp() {
 
     fornecedor = new FornecedorModel();
     fornecedor.setId(1);
-    fornecedor.setNome("Fornecedor Teste");
+    fornecedor.setNomeFantasia("Fornecedor Teste");
 
     estoque = new EstoqueModel();
     estoque.setId(1);

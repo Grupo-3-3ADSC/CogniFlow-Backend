@@ -19,5 +19,4 @@ public class FornecedorModel {
     private String cnpj;
     private String razaoSocial;
     private String nomeFantasia;
-    private String nome;
 }
