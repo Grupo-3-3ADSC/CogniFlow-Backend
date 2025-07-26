@@ -49,14 +49,6 @@ public class DataInitializer implements CommandLineRunner {
 
         }
 
-//        if (fornecedorRepository.count() == 0) {
-//            FornecedorModel fornecedor = new FornecedorModel();
-//            fornecedor.setCnpj("12345678901234");
-//            fornecedor.setNomeFantasia("teste");
-//            fornecedor.setRazaoSocial("teste");
-//            fornecedorRepository.save(fornecedor);
-//        }
-
         if (estoqueRepository.count() == 0) {
             EstoqueModel model1 = new EstoqueModel();
 

@@ -195,7 +195,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}/senha")// Adicione o path completo
-    @SecurityRequirement(name = "Bearer")
+
     public ResponseEntity<Void> atualizarSenha(
             @PathVariable Integer id, // Corrigido: Integer em vez de String
             @RequestBody @Valid UsuarioSenhaAtualizada request // DTO para receber a senha
@@ -205,7 +205,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/buscar-por-email/{email}")
-    @SecurityRequirement(name = "Bearer")
+
     public ResponseEntity<UsuarioListagemDto> buscarPorEmail(@PathVariable String email) {
         UsuarioModel usuario = usuarioService.buscarPorEmail(email);
         return ResponseEntity.ok(UsuarioMapper.toListagemDto(usuario));
