@@ -56,6 +56,8 @@ public class FornecedorMapper {
         entity.setContatoId(dto.getContatoId());
         entity.setTelefone(dto.getTelefone());
         entity.setEmail(dto.getEmail());
+        entity.setResponsavel(dto.getResponsavel());
+        entity.setCargo(dto.getCargo());
         return entity;
     }
 }

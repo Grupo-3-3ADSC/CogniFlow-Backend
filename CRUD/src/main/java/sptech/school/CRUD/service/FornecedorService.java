@@ -67,6 +67,8 @@ public class FornecedorService {
         ContatoModel contato = new ContatoModel();
         contato.setTelefone(fornecedorDto.getTelefone());
         contato.setEmail(fornecedorDto.getEmail());
+        contato.setResponsavel(fornecedorDto.getResponsavel());
+        contato.setCargo(fornecedorDto.getCargo());
         contato.setFornecedor(fornecedorSalvo);
 
         ContatoModel contatoSalvo = contatoRepository.save(contato);

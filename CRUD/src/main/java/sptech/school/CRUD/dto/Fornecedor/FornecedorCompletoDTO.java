@@ -24,4 +24,6 @@ public class FornecedorCompletoDTO {
         private Integer contatoId;
         private String telefone;
         private String email;
+        private String responsavel;
+        private String cargo;
 }

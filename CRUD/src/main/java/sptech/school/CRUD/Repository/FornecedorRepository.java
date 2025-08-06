@@ -25,7 +25,7 @@ public interface FornecedorRepository extends JpaRepository<FornecedorModel, Int
     SELECT new sptech.school.CRUD.dto.Fornecedor.FornecedorCompletoDTO(
         f.id, f.cnpj, f.razaoSocial, f.nomeFantasia,
         e.id, e.cep, e.numero, e.complemento,
-        c.id, c.telefone, c.email
+        c.id, c.telefone, c.email, c.responsavel, c.cargo
     )
     FROM FornecedorModel f
     LEFT JOIN EnderecoModel e ON e.fornecedor.id = f.id
