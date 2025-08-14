@@ -26,6 +26,7 @@ public class OrdemDeCompraModel {
     private Double valorUnitario;
     private Integer quantidade;
     private Double ipi;
+    private Integer pendentes;
     private LocalDateTime dataDeEmissao;
     @Column(name = "fornecedor_id")
     private Integer fornecedorId;

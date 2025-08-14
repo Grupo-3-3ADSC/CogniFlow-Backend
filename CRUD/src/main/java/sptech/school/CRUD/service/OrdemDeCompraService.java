@@ -11,6 +11,7 @@ import sptech.school.CRUD.Repository.FornecedorRepository;
 import sptech.school.CRUD.Repository.OrdemDeCompraRepository;
 import sptech.school.CRUD.Repository.UsuarioRepository;
 import sptech.school.CRUD.dto.OrdemDeCompra.ListagemOrdemDeCompra;
+import sptech.school.CRUD.dto.OrdemDeCompra.MudarQuantidadeAtualDto;
 import sptech.school.CRUD.dto.OrdemDeCompra.OrdemDeCompraCadastroDto;
 import sptech.school.CRUD.dto.OrdemDeCompra.OrdemDeCompraMapper;
 import sptech.school.CRUD.exception.RecursoNaoEncontradoException;
@@ -57,12 +58,13 @@ public class OrdemDeCompraService {
         OrdemDeCompraModel ordemSalva = ordemDeCompraRepository.save(ordemDeCompra);
 
         // Atualiza a quantidade no estoque
-        Integer novaQuantidade = (estoque.getQuantidadeAtual() != null ? estoque.getQuantidadeAtual() : 0)
+        Integer novaQuantidade = (dto.getPendentes() != null ? dto.getPendentes() : 0)
                 + ordemSalva.getQuantidade();
         if (estoque.getQuantidadeMaxima() != null && novaQuantidade > estoque.getQuantidadeMaxima()) {
             throw new RequisicaoInvalidaException("A quantidade comprada ultrapassa o limite máximo de estoque permitido.");
         }
-        estoque.setQuantidadeAtual(novaQuantidade);
+        //estoque.setQuantidadeAtual(novaQuantidade);
+        dto.setPendentes(novaQuantidade);
         estoque.setUltimaMovimentacao(LocalDateTime.now());
         estoqueRepository.save(estoque);
 
@@ -80,5 +82,31 @@ public class OrdemDeCompraService {
         return ordemDeCompraRepository.findByIdComJoins(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Ordem de compra não encontrada"));
     }
+
+    public OrdemDeCompraModel mudarQuantidadeAtual(Integer id, MudarQuantidadeAtualDto dto) {
+        // Buscar a ordem de compra existente
+        OrdemDeCompraModel ordemDeCompra = ordemDeCompraRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Ordem de compra não encontrada"));
+
+        // Atualizar os campos necessários
+        ordemDeCompra.setPendentes(dto.getPendentes());
+
+        // Atualizar o estoque, se necessário
+        EstoqueModel estoque = estoqueRepository.findById(ordemDeCompra.getEstoqueId())
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Estoque não encontrado"));
+
+        estoque.setQuantidadeAtual(estoque.getQuantidadeAtual() + dto.getPendentes());
+        ordemDeCompra.setQuantidade(dto.getPendentes());
+        ordemDeCompra.setPendentes(0);
+        ordemDeCompraRepository.save(ordemDeCompra);
+        estoqueRepository.save(estoque);
+
+       // ordemDeCompra.setEstoque(estoque); // opcional se quiser vincular novamente
+
+        // Salvar e retornar
+        return ordemDeCompraRepository.save(ordemDeCompra);
+    }
+
+
 
 }

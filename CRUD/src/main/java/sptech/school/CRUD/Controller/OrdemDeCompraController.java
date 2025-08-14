@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.CRUD.Model.OrdemDeCompraModel;
 import sptech.school.CRUD.dto.OrdemDeCompra.ListagemOrdemDeCompra;
+import sptech.school.CRUD.dto.OrdemDeCompra.MudarQuantidadeAtualDto;
 import sptech.school.CRUD.dto.OrdemDeCompra.OrdemDeCompraCadastroDto;
 import sptech.school.CRUD.dto.OrdemDeCompra.OrdemDeCompraMapper;
 import sptech.school.CRUD.service.OrdemDeCompraService;
@@ -50,5 +51,11 @@ public class OrdemDeCompraController {
         OrdemDeCompraModel ordem = ordemDeCompraService.getById(id);
         return ResponseEntity.ok(OrdemDeCompraMapper.toListagemDto(ordem));
     }
+    @PatchMapping("/{id}")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<ListagemOrdemDeCompra> mudarQuantidadeAtual(@PathVariable Integer id, @Valid @RequestBody MudarQuantidadeAtualDto dto){
 
+        OrdemDeCompraModel ordem = ordemDeCompraService.mudarQuantidadeAtual(id, dto);
+        return  ResponseEntity.ok(OrdemDeCompraMapper.toDto(ordem));
+    }
 }
