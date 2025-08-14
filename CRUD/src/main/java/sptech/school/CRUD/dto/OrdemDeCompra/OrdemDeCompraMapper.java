@@ -28,6 +28,7 @@ public class OrdemDeCompraMapper {
                 .nomeFornecedor(entity.getFornecedor() != null ? entity.getFornecedor().getNomeFantasia() : "Fornecedor não encontrado")
                 .descricaoMaterialCompleta(entity.getEstoque() != null ? entity.getEstoque().getTipoMaterial() : "Material não encontrado")
                 .dataDeEmissao(entity.getDataDeEmissao())
+                .pendentes(entity.getPendentes())
                 .build();
     }
 
@@ -51,8 +52,28 @@ public class OrdemDeCompraMapper {
         ordem.setFornecedorId(dto.getFornecedorId());
         ordem.setEstoqueId(dto.getEstoqueId());
         ordem.setUsuarioId(dto.getUsuarioId());
+        ordem.setPendentes(dto.getPendentes());
         return ordem;
     }
 
+    public static OrdemDeCompraModel toEntity(MudarQuantidadeAtualDto dto) {
+        if (dto == null) return null;
+
+        OrdemDeCompraModel ordem = new OrdemDeCompraModel();
+        ordem.setPendentes(dto.getPendentes());
+        // adicione outros campos conforme necessário
+        return ordem;
+    }
+    public static ListagemOrdemDeCompra toDto(OrdemDeCompraModel model) {
+        if (model == null) return null;
+
+        return ListagemOrdemDeCompra.builder()
+                .id(model.getId())
+                .quantidade(model.getQuantidade())
+                .pendentes(model.getPendentes())
+                .estoqueId(model.getEstoqueId())
+                // adicione outros campos se houver
+                .build();
+    }
 
 }
