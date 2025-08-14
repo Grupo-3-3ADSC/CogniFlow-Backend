@@ -56,14 +56,14 @@ public class OrdemDeCompraMapper {
         return ordem;
     }
 
-    public static OrdemDeCompraModel toEntity(MudarQuantidadeAtualDto dto) {
-        if (dto == null) return null;
-
-        OrdemDeCompraModel ordem = new OrdemDeCompraModel();
-        ordem.setPendentes(dto.getPendentes());
-        // adicione outros campos conforme necessário
-        return ordem;
-    }
+//    public static OrdemDeCompraModel toEntity(MudarQuantidadeAtualDto dto) {
+//        if (dto == null) return null;
+//
+//        OrdemDeCompraModel ordem = new OrdemDeCompraModel();
+//        ordem.setPendentes(dto.getPendentes());
+//        // adicione outros campos conforme necessário
+//        return ordem;
+//    }
     public static ListagemOrdemDeCompra toDto(OrdemDeCompraModel model) {
         if (model == null) return null;
 
@@ -72,7 +72,7 @@ public class OrdemDeCompraMapper {
                 .quantidade(model.getQuantidade())
                 .pendentes(model.getPendentes())
                 .estoqueId(model.getEstoqueId())
-                // adicione outros campos se houver
+                .pendenciaAlterada(model.getPendenciaAlterada())
                 .build();
     }
 
