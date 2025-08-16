@@ -56,6 +56,6 @@ public class OrdemDeCompraController {
     public ResponseEntity<ListagemOrdemDeCompra> mudarQuantidadeAtual(@PathVariable Integer id, @Valid @RequestBody MudarQuantidadeAtualDto dto){
 
         OrdemDeCompraModel ordem = ordemDeCompraService.mudarQuantidadeAtual(id, dto);
-        return  ResponseEntity.ok(OrdemDeCompraMapper.toDto(ordem));
+        return  ResponseEntity.ok(OrdemDeCompraMapper.toListagemDto(ordem));
     }
 }

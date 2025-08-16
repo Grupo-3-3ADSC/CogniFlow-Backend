@@ -54,7 +54,8 @@ public class OrdemDeCompraService {
             throw new RequisicaoConflitanteException("Rastreabilidade já cadastrada para este estoque");
         }
 
-        // Salva a ordem de compra
+        ordemDeCompra.setPendenciaAlterada(false);
+
         OrdemDeCompraModel ordemSalva = ordemDeCompraRepository.save(ordemDeCompra);
 
         // Atualiza a quantidade no estoque
@@ -95,7 +96,7 @@ public class OrdemDeCompraService {
         EstoqueModel estoque = estoqueRepository.findById(ordemDeCompra.getEstoqueId())
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Estoque não encontrado"));
 
-        if(dto.getPendenciaAlterada()){
+        if(ordemDeCompra.getPendenciaAlterada()){
             estoque.setQuantidadeAtual(estoque.getQuantidadeAtual() - dto.getPendentes());
             ordemDeCompra.setQuantidade(0);
             ordemDeCompra.setPendentes(dto.getPendentes());
@@ -111,9 +112,6 @@ public class OrdemDeCompraService {
         ordemDeCompra.setPendenciaAlterada(true);
         estoqueRepository.save(estoque);
 
-       // ordemDeCompra.setEstoque(estoque); // opcional se quiser vincular novamente
-
-        // Salvar e retornar
         return ordemDeCompraRepository.save(ordemDeCompra);
     }
 

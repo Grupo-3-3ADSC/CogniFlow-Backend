@@ -27,6 +27,7 @@ public class OrdemDeCompraModel {
     private Integer quantidade;
     private Double ipi;
     private Integer pendentes;
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
     private Boolean pendenciaAlterada;
     private LocalDateTime dataDeEmissao;
     @Column(name = "fornecedor_id")

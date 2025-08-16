@@ -29,6 +29,7 @@ public class OrdemDeCompraMapper {
                 .descricaoMaterialCompleta(entity.getEstoque() != null ? entity.getEstoque().getTipoMaterial() : "Material não encontrado")
                 .dataDeEmissao(entity.getDataDeEmissao())
                 .pendentes(entity.getPendentes())
+                .pendenciaAlterada(Boolean.TRUE.equals(entity.getPendenciaAlterada()))
                 .build();
     }
 
@@ -64,16 +65,16 @@ public class OrdemDeCompraMapper {
 //        // adicione outros campos conforme necessário
 //        return ordem;
 //    }
-    public static ListagemOrdemDeCompra toDto(OrdemDeCompraModel model) {
-        if (model == null) return null;
-
-        return ListagemOrdemDeCompra.builder()
-                .id(model.getId())
-                .quantidade(model.getQuantidade())
-                .pendentes(model.getPendentes())
-                .estoqueId(model.getEstoqueId())
-                .pendenciaAlterada(model.getPendenciaAlterada())
-                .build();
-    }
+//    public static ListagemOrdemDeCompra toDto(OrdemDeCompraModel model) {
+//        if (model == null) return null;
+//
+//        return ListagemOrdemDeCompra.builder()
+//                .id(model.getId())
+//                .quantidade(model.getQuantidade())
+//                .pendentes(model.getPendentes())
+//                .estoqueId(model.getEstoqueId())
+//                .pendenciaAlterada(model.getPendenciaAlterada())
+//                .build();
+//    }
 
 }

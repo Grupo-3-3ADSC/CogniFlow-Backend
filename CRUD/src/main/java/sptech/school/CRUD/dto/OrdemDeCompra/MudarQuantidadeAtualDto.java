@@ -11,5 +11,4 @@ import lombok.*;
 public class MudarQuantidadeAtualDto {
     private Integer id;
     private Integer pendentes;
-    private Boolean pendenciaAlterada = false;
 }
