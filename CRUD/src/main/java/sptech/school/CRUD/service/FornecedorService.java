@@ -32,6 +32,9 @@ public class FornecedorService {
         if (fornecedorRepository.findByCnpj(fornecedorDto.getCnpj()).isPresent()) {
             throw new RequisicaoConflitanteException("Já existe um fornecedor cadastrado com esse CNPJ.");
         }
+        if (fornecedorRepository.findByCnpj(fornecedorDto.getIe()).isPresent()) {
+            throw new RequisicaoConflitanteException("Já existe um fornecedor cadastrado com esse IE.");
+        }
         if (contatoRepository.existsByEmail(fornecedorDto.getEmail())) {
             throw new RequisicaoConflitanteException("Já existe um fornecedor cadastrado com esse e-mail.");
        }

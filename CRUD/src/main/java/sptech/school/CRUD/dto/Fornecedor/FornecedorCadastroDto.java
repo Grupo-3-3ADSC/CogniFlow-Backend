@@ -18,6 +18,10 @@ public class FornecedorCadastroDto {
     @CNPJ
     private String cnpj;
 
+    @NotBlank
+    @NotNull
+    private String ie;
+
     @NotBlank(message = "Razão Social não pode ser nulo ou vazio.")
     private String razaoSocial;
 
