@@ -28,7 +28,6 @@ public class OrdemDeCompraMapper {
                 .nomeFornecedor(entity.getFornecedor() != null ? entity.getFornecedor().getNomeFantasia() : "Fornecedor não encontrado")
                 .descricaoMaterialCompleta(entity.getEstoque() != null ? entity.getEstoque().getTipoMaterial() : "Material não encontrado")
                 .dataDeEmissao(entity.getDataDeEmissao())
-                .pendentes(entity.getPendentes())
                 .pendenciaAlterada(Boolean.TRUE.equals(entity.getPendenciaAlterada()))
                 .build();
     }
@@ -53,7 +52,7 @@ public class OrdemDeCompraMapper {
         ordem.setFornecedorId(dto.getFornecedorId());
         ordem.setEstoqueId(dto.getEstoqueId());
         ordem.setUsuarioId(dto.getUsuarioId());
-        ordem.setPendentes(dto.getPendentes());
+
         return ordem;
     }
 

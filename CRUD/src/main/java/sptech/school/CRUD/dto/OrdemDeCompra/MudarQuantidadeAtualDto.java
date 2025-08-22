@@ -10,5 +10,5 @@ import lombok.*;
 @NoArgsConstructor
 public class MudarQuantidadeAtualDto {
     private Integer id;
-    private Integer pendentes;
+    private Integer quantidade;
 }

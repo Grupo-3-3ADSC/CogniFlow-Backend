@@ -45,5 +45,5 @@ public class OrdemDeCompraCadastroDto {
     private Integer estoqueId;
     @NotNull(message = "Usuario  não pode ser nulo ou vazio")
     private Integer usuarioId;
-    private Integer pendentes;
+
 }

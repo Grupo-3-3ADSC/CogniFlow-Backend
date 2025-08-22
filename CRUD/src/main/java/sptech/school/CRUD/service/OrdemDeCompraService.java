@@ -59,13 +59,13 @@ public class OrdemDeCompraService {
         OrdemDeCompraModel ordemSalva = ordemDeCompraRepository.save(ordemDeCompra);
 
         // Atualiza a quantidade no estoque
-        Integer novaQuantidade = (dto.getPendentes() != null ? dto.getPendentes() : 0)
+        Integer novaQuantidade = (dto.getQuantidade() != null ? dto.getQuantidade() : 0)
                 + ordemSalva.getQuantidade();
         if (estoque.getQuantidadeMaxima() != null && novaQuantidade > estoque.getQuantidadeMaxima()) {
             throw new RequisicaoInvalidaException("A quantidade comprada ultrapassa o limite máximo de estoque permitido.");
         }
         //estoque.setQuantidadeAtual(novaQuantidade);
-        dto.setPendentes(novaQuantidade);
+        dto.setQuantidade(novaQuantidade);
         estoque.setUltimaMovimentacao(LocalDateTime.now());
         estoqueRepository.save(estoque);
 
@@ -90,25 +90,25 @@ public class OrdemDeCompraService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Ordem de compra não encontrada"));
 
         // Atualizar os campos necessários
-        ordemDeCompra.setPendentes(dto.getPendentes());
+        //ordemDeCompra.setPendentes(dto.getPendentes());
 
         // Atualizar o estoque, se necessário
         EstoqueModel estoque = estoqueRepository.findById(ordemDeCompra.getEstoqueId())
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Estoque não encontrado"));
 
         if(ordemDeCompra.getPendenciaAlterada()){
-            estoque.setQuantidadeAtual(estoque.getQuantidadeAtual() - dto.getPendentes());
-            ordemDeCompra.setQuantidade(0);
-            ordemDeCompra.setPendentes(dto.getPendentes());
+            estoque.setQuantidadeAtual(estoque.getQuantidadeAtual() - dto.getQuantidade());
+            //ordemDeCompra.setQuantidade(0);
+            //ordemDeCompra.setPendentes(dto.getPendentes());
             ordemDeCompra.setPendenciaAlterada(false);
             estoqueRepository.save(estoque);
 
             return ordemDeCompraRepository.save(ordemDeCompra);
         }
 
-        estoque.setQuantidadeAtual(estoque.getQuantidadeAtual() + dto.getPendentes());
-        ordemDeCompra.setQuantidade(dto.getPendentes());
-        ordemDeCompra.setPendentes(0);
+        estoque.setQuantidadeAtual(estoque.getQuantidadeAtual() + dto.getQuantidade());
+        //ordemDeCompra.setQuantidade(dto.getPendentes());
+        //ordemDeCompra.setPendentes(0);
         ordemDeCompra.setPendenciaAlterada(true);
         estoqueRepository.save(estoque);
 
