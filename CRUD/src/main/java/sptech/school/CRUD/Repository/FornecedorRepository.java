@@ -1,5 +1,7 @@
 package sptech.school.CRUD.Repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import sptech.school.CRUD.Model.FornecedorModel;
@@ -35,5 +37,17 @@ public interface FornecedorRepository extends JpaRepository<FornecedorModel, Int
 
     List<FornecedorCompletoDTO> findFornecedoresCompletos();
 
-
+    @Query("""
+    SELECT DISTINCT new sptech.school.CRUD.dto.Fornecedor.FornecedorCompletoDTO(
+        f.id, f.cnpj, f.razaoSocial, f.nomeFantasia,
+        e.id, e.cep, e.numero, e.complemento,
+        c.id, c.telefone, c.email, f.responsavel,
+        f.cargo
+        )
+    FROM FornecedorModel f
+    LEFT JOIN EnderecoModel e ON e.fornecedor.id = f.id
+    LEFT JOIN ContatoModel c ON c.fornecedor.id = f.id
+    ORDER BY f.id ASC
+""")
+    Page<FornecedorCompletoDTO> findFornecedoresPaginados(Pageable pageable);
 }

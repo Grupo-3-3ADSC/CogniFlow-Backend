@@ -60,4 +60,35 @@ public class FornecedorMapper {
         entity.setCargo(dto.getCargo());
         return entity;
     }
+//    public static FornecedorPaginadoDTO fornecedorPaginado(FornecedorPaginadoDTO dto){
+//        if(dto == null){
+//            return null;
+//        }
+//
+//        FornecedorPaginadoDTO entity = new FornecedorPaginadoDTO();
+//        entity.setFornecedorId(dto.getFornecedorId());
+//        entity.setCnpj(dto.getCnpj());
+//        entity.setRazaoSocial(dto.getRazaoSocial());
+//        entity.setNomeFantasia(dto.getNomeFantasia());
+//        entity.setEnderecoId(dto.getEnderecoId());
+//        entity.setCep(dto.getCep());
+//        entity.setNumero(dto.getNumero());
+//        entity.setComplemento(dto.getComplemento());
+//        entity.setContatoId(dto.getContatoId());
+//        entity.setTelefone(dto.getTelefone());
+//        entity.setEmail(dto.getEmail());
+//        entity.setOrdemDeCompraId(dto.getOrdemDeCompraId());
+//        entity.setPrazoEntrega(dto.getPrazoEntrega());
+//        entity.setIe(dto.getIe());
+//        entity.setCondPagamento(dto.getCondPagamento());
+//        entity.setValorKg(dto.getValorKg());
+//        entity.setRastreabilidade(dto.getRastreabilidade());
+//        entity.setValorPeca(dto.getValorPeca());
+//        entity.setDescricaoMaterial(dto.getDescricaoMaterial());
+//        entity.setValorUnitario(dto.getValorUnitario());
+//        entity.setQuantidade(dto.getQuantidade());
+//        entity.setIpi(dto.getIpi());
+//        entity.setDataDeEmissao(dto.getDataDeEmissao());
+//        return entity;
+//    }
 }

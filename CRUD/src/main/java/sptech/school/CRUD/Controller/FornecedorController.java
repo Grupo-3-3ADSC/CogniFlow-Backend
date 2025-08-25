@@ -8,10 +8,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sptech.school.CRUD.Model.FornecedorModel;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorCadastroDto;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorCompletoDTO;
-import sptech.school.CRUD.dto.Fornecedor.FornecedorMapper;
+import sptech.school.CRUD.dto.Fornecedor.PaginacaoFornecedorDTO;
 import sptech.school.CRUD.service.FornecedorService;
 
 import java.util.List;
@@ -55,4 +54,11 @@ public class FornecedorController {
         return ResponseEntity.ok(fornecedores);
     }
 
+    @GetMapping("/paginados")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<PaginacaoFornecedorDTO> getFornecedorPaginado(@RequestParam(defaultValue = "1") Integer pagina,
+                                                                        @RequestParam(defaultValue = "6") Integer tamanho){
+        PaginacaoFornecedorDTO fornecedores = fornecedorService.fornecedorPaginado(pagina, tamanho);
+        return ResponseEntity.ok(fornecedores);
+    }
 }

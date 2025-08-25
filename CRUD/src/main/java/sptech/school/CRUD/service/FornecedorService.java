@@ -1,6 +1,10 @@
 package sptech.school.CRUD.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import sptech.school.CRUD.Model.ContatoModel;
 import sptech.school.CRUD.Model.EnderecoModel;
@@ -11,6 +15,7 @@ import sptech.school.CRUD.Repository.FornecedorRepository;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorCadastroDto;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorCompletoDTO;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorMapper;
+import sptech.school.CRUD.dto.Fornecedor.PaginacaoFornecedorDTO;
 import sptech.school.CRUD.exception.RequisicaoConflitanteException;
 import sptech.school.CRUD.exception.RequisicaoInvalidaException;
 
@@ -105,6 +110,28 @@ public class FornecedorService {
             dto.setEmail((String) row[10]);
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    public PaginacaoFornecedorDTO fornecedorPaginado(Integer pagina, Integer tamanho){
+        Pageable pageable = PageRequest.of(pagina, tamanho);
+
+        Page<FornecedorCompletoDTO> fornecedores = fornecedorRepository.findFornecedoresPaginados(pageable);
+
+        List<FornecedorCompletoDTO> fornecedoresMapeados= fornecedores.getContent()
+                .stream()
+                .map(FornecedorMapper::fornecedorCompleto)
+                .collect(Collectors.toList());
+
+        PaginacaoFornecedorDTO response = new PaginacaoFornecedorDTO();
+        response.setData(fornecedoresMapeados);
+        response.setPaginaAtual(pagina);
+        response.setPaginasTotais(fornecedores.getTotalPages());
+        response.setTotalItems(fornecedores.getTotalElements());
+        response.setHasNext(fornecedores.hasNext());
+        response.setHasPrevious(fornecedores.hasPrevious());
+        response.setPageSize(tamanho);
+
+        return response;
     }
 
 }
