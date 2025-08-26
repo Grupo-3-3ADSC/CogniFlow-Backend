@@ -7,6 +7,8 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Entity
@@ -15,5 +17,8 @@ public class TransferenciaModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String tipoTransferencia;
+    private LocalDateTime ultimaMovimentacao;
+    private Integer quantidadeTransferida;
+    private String tipoMaterial;
+    private String setor;
 }
