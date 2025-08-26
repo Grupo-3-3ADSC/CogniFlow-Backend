@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 public class TransferenciaService {
 
     private final TransferenciaRepository transferenciaRepository;
+    private final EstoqueRepository estoqueRepository;
 
     // Listar todas as transferências
     public List<TransferenciaListagemDto> buscarSetor() {
@@ -34,7 +35,8 @@ public class TransferenciaService {
                 .collect(Collectors.toList());
     }
 
-    // Realizar uma transferência
+    // Realizar uma transferência e atualizar o estoque
+    @Transactional
     public TransferenciaDto realizarTransferencia(TransferenciaDto dto) {
         String tipoMaterial = dto.getTipoMaterial();
         Integer quantidadeTransferida = dto.getQuantidadeTransferida();
@@ -46,10 +48,23 @@ public class TransferenciaService {
             throw new RequisicaoInvalidaException("A quantidade transferida deve ser maior que zero.");
         }
 
+        // Buscar o material no estoque
+        EstoqueModel estoque = estoqueRepository.findByTipoMaterial(tipoMaterial)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Material não encontrado no estoque"));
+
+        // Verificar se há quantidade suficiente
+        if (estoque.getQuantidadeAtual() < quantidadeTransferida) {
+            throw new RequisicaoInvalidaException("Quantidade insuficiente no estoque");
+        }
+
+        // Atualizar o estoque
+        estoque.setQuantidadeAtual(estoque.getQuantidadeAtual() - quantidadeTransferida);
+        estoqueRepository.save(estoque);
+
         // Converte DTO para entidade
         TransferenciaModel transferencia = TransferenciaMapper.toTransferencia(dto);
 
-        // Salva no banco
+        // Salva a transferência
         TransferenciaModel salvo = transferenciaRepository.save(transferencia);
 
         // Retorna DTO
