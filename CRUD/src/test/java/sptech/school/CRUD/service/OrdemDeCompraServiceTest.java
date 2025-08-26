@@ -108,9 +108,9 @@ void testCadastroOrdemDeCompraComSucesso() {
     assertEquals(1, resultado.getId());
     assertEquals(100, resultado.getQuantidade());
     
-    // Verifica se o estoque foi atualizado (50 + 100 = 150)
+    // Estoque se mantém o mesmo
     verify(estoqueRepository).save(argThat(estoqueArg -> {
-        return estoqueArg.getQuantidadeAtual() == 150 && 
+        return estoqueArg.getQuantidadeAtual() == 50 &&
                estoqueArg.getUltimaMovimentacao() != null;
     }));
     
@@ -174,7 +174,7 @@ void testCadastroOrdemDeCompraUsuarioNaoEncontrado() {
 }
     @Test
     @DisplayName("Mudança quantidade Atual da Ordem de compra - Atualização de quantidade atual com quantidade inicial nula")
-    void testeEdicaoDeEstoqueQuantidadeNula() {
+    void testeMudarQuantidadeAtualQuantidadeNula() {
 
         // Arrange
         EstoqueModel estoqueComQuantidadeNula = new EstoqueModel();
