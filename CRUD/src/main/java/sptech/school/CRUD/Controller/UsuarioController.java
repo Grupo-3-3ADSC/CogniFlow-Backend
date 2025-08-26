@@ -208,7 +208,7 @@ public class UsuarioController {
 
     public ResponseEntity<UsuarioListagemDto> buscarPorEmail(@PathVariable String email) {
         UsuarioModel usuario = usuarioService.buscarPorEmail(email);
-        return ResponseEntity.ok(UsuarioMapper.toListagemDto(usuario));
+        return ResponseEntity.ok(UsuarioMapper.toEmailDto(usuario));
 
     }
 

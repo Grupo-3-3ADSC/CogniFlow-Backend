@@ -24,6 +24,13 @@ public class UsuarioMapper {
         return dto;
     }
 
+    public static UsuarioListagemDto toEmailDto(UsuarioModel entity){
+         UsuarioListagemDto dto = new UsuarioListagemDto();
+         dto.setEmail(entity.getEmail());
+
+         return dto;
+    }
+
     public static UsuarioAtivoDto toActiveDto(UsuarioModel entity){
 
         if(entity == null){
