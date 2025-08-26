@@ -96,19 +96,17 @@ public class OrdemDeCompraService {
         EstoqueModel estoque = estoqueRepository.findById(ordemDeCompra.getEstoqueId())
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Estoque não encontrado"));
 
+        Integer quantidadeAtual = Optional.ofNullable(estoque.getQuantidadeAtual()).orElse(0);
+
         if(ordemDeCompra.getPendenciaAlterada()){
-            estoque.setQuantidadeAtual(estoque.getQuantidadeAtual() - dto.getQuantidade());
-            //ordemDeCompra.setQuantidade(0);
-            //ordemDeCompra.setPendentes(dto.getPendentes());
+            estoque.setQuantidadeAtual(quantidadeAtual - dto.getQuantidade());
             ordemDeCompra.setPendenciaAlterada(false);
             estoqueRepository.save(estoque);
 
             return ordemDeCompraRepository.save(ordemDeCompra);
         }
 
-        estoque.setQuantidadeAtual(estoque.getQuantidadeAtual() + dto.getQuantidade());
-        //ordemDeCompra.setQuantidade(dto.getPendentes());
-        //ordemDeCompra.setPendentes(0);
+        estoque.setQuantidadeAtual(quantidadeAtual + dto.getQuantidade());
         ordemDeCompra.setPendenciaAlterada(true);
         estoqueRepository.save(estoque);
 

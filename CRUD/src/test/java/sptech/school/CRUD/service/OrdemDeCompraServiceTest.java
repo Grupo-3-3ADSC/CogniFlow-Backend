@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -15,10 +16,12 @@ import sptech.school.CRUD.Repository.EstoqueRepository;
 import sptech.school.CRUD.Repository.FornecedorRepository;
 import sptech.school.CRUD.Repository.OrdemDeCompraRepository;
 import sptech.school.CRUD.Repository.UsuarioRepository;
+import sptech.school.CRUD.dto.OrdemDeCompra.MudarQuantidadeAtualDto;
 import sptech.school.CRUD.dto.OrdemDeCompra.OrdemDeCompraCadastroDto;
 import sptech.school.CRUD.exception.RecursoNaoEncontradoException;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -169,40 +172,45 @@ void testCadastroOrdemDeCompraUsuarioNaoEncontrado() {
     // Verifica que o save não foi chamado devido ao erro
     verify(ordemDeCompraRepository, never()).save(any(OrdemDeCompraModel.class));
 }
+    @Test
+    @DisplayName("Mudança quantidade Atual da Ordem de compra - Atualização de quantidade atual com quantidade inicial nula")
+    void testeEdicaoDeEstoqueQuantidadeNula() {
 
-@Test
-@DisplayName("Cadastro de ordem de compra - Atualização de estoque com quantidade inicial nula")
-void testCadastroOrdemDeCompraComEstoqueQuantidadeNula() {
+        // Arrange
+        EstoqueModel estoqueComQuantidadeNula = new EstoqueModel();
+        estoqueComQuantidadeNula.setId(1);
+        estoqueComQuantidadeNula.setQuantidadeAtual(null); // Quantidade nula
 
-    // Arrange
-    EstoqueModel estoqueComQuantidadeNula = new EstoqueModel();
-    estoqueComQuantidadeNula.setId(1);
-    estoqueComQuantidadeNula.setQuantidadeAtual(null); // Quantidade nula
+        OrdemDeCompraModel ordemComEstoqueNulo = new OrdemDeCompraModel();
+        ordemComEstoqueNulo.setId(1);
+        ordemComEstoqueNulo.setQuantidade(75);
+        ordemComEstoqueNulo.setEstoque(estoqueComQuantidadeNula);
+        ordemComEstoqueNulo.setEstoqueId(1);
+        ordemComEstoqueNulo.setPendenciaAlterada(false);
 
-    OrdemDeCompraModel ordemComEstoqueNulo = new OrdemDeCompraModel();
-    ordemComEstoqueNulo.setId(1);
-    ordemComEstoqueNulo.setQuantidade(75);
-    ordemComEstoqueNulo.setEstoque(estoqueComQuantidadeNula);
+        MudarQuantidadeAtualDto mudarQuantidadeDto = new MudarQuantidadeAtualDto();
+        mudarQuantidadeDto.setQuantidade(75);
 
-    when(fornecedorRepository.findById(1)).thenReturn(Optional.of(fornecedor));
-    when(estoqueRepository.findById(1)).thenReturn(Optional.of(estoqueComQuantidadeNula));
-    when(usuarioRepository.findById(1)).thenReturn(Optional.of(usuario));
-    when(ordemDeCompraRepository.save(any(OrdemDeCompraModel.class))).thenReturn(ordemComEstoqueNulo);
+        when(ordemDeCompraRepository.findById(1)).thenReturn(Optional.of(ordemComEstoqueNulo));
+        when(estoqueRepository.findById(1)).thenReturn(Optional.of(estoqueComQuantidadeNula));
+        when(ordemDeCompraRepository.save(any(OrdemDeCompraModel.class))).thenReturn(ordemComEstoqueNulo);
 
-    // Act
-    OrdemDeCompraModel resultado = ordemDeCompraService.cadastroOrdemDeCompra(dto);
+        // Act
+        OrdemDeCompraModel resultado = ordemDeCompraService.mudarQuantidadeAtual(1, mudarQuantidadeDto);
 
-    // Assert
-    assertNotNull(resultado);
-    
-    // Verifica se o estoque foi atualizado corretamente (null tratado como 0 + 75 = 75)
-    verify(estoqueRepository).save(argThat(estoqueArg -> {
-        return estoqueArg.getQuantidadeAtual() == 75 && 
-               estoqueArg.getUltimaMovimentacao() != null;
-    }));
-    
-    verify(ordemDeCompraRepository).save(any(OrdemDeCompraModel.class));
-}
+        // Assert
+        assertNotNull(resultado);
+
+        // Captura o argumento que realmente foi salvo
+        ArgumentCaptor<EstoqueModel> estoqueCaptor = ArgumentCaptor.forClass(EstoqueModel.class);
+        verify(estoqueRepository).save(estoqueCaptor.capture());
+
+        EstoqueModel estoqueSalvo = estoqueCaptor.getValue();
+        assertEquals(75, estoqueSalvo.getQuantidadeAtual());
+
+        verify(ordemDeCompraRepository).save(any(OrdemDeCompraModel.class));
+    }
+
 
 
 }
