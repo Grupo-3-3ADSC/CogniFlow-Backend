@@ -197,7 +197,7 @@ public class UsuarioController {
     @PutMapping("/{id}/senha")// Adicione o path completo
 
     public ResponseEntity<Void> atualizarSenha(
-            @PathVariable Integer id, // Corrigido: Integer em vez de String
+            @PathVariable Integer id,
             @RequestBody @Valid UsuarioSenhaAtualizada request // DTO para receber a senha
     ){
         usuarioService.atualizarSenha(id, request.getPassword());

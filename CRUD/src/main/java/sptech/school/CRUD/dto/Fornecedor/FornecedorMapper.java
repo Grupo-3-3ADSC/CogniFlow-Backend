@@ -16,6 +16,7 @@ public class FornecedorMapper {
         entity.setCnpj(dto.getCnpj());
         entity.setNomeFantasia(dto.getNomeFantasia());
         entity.setRazaoSocial(dto.getRazaoSocial());
+        entity.setIe(dto.getIe());
         // Nota: Os campos de endereço e contato não são setados aqui pois
         // são entidades separadas que serão criadas no service
 
@@ -32,6 +33,7 @@ public class FornecedorMapper {
         dto.setCnpj(model.getCnpj());
         dto.setNomeFantasia(model.getNomeFantasia());
         dto.setRazaoSocial(model.getRazaoSocial());
+        dto.setIe(model.getIe());
 
         // Como o FornecedorModel não tem relacionamentos diretos,
         // os dados de endereço e contato precisam ser passados separadamente
@@ -58,6 +60,7 @@ public class FornecedorMapper {
         entity.setEmail(dto.getEmail());
         entity.setResponsavel(dto.getResponsavel());
         entity.setCargo(dto.getCargo());
+        entity.setIe(dto.getIe());
         return entity;
     }
 //    public static FornecedorPaginadoDTO fornecedorPaginado(FornecedorPaginadoDTO dto){

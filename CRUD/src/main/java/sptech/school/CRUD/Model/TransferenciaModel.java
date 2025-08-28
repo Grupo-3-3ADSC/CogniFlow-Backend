@@ -7,19 +7,18 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Entity
-public class FornecedorModel {
-
+public class TransferenciaModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String cnpj;
-    private String ie;
-    private String razaoSocial;
-    private String nomeFantasia;
-    private String responsavel;
-    private String cargo;
+    private LocalDateTime ultimaMovimentacao;
+    private Integer quantidadeTransferida;
+    private String tipoMaterial;
+    private String setor;
 }
