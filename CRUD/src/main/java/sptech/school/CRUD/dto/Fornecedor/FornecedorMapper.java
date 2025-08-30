@@ -17,6 +17,8 @@ public class FornecedorMapper {
         entity.setNomeFantasia(dto.getNomeFantasia());
         entity.setRazaoSocial(dto.getRazaoSocial());
         entity.setIe(dto.getIe());
+        entity.setCargo(dto.getCargo());
+        entity.setResponsavel(dto.getResponsavel());
         // Nota: Os campos de endereço e contato não são setados aqui pois
         // são entidades separadas que serão criadas no service
 
