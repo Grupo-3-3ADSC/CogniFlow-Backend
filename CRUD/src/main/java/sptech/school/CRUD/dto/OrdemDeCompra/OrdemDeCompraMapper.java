@@ -13,7 +13,7 @@ public class OrdemDeCompraMapper {
         return ListagemOrdemDeCompra.builder()
                 .id(Integer.valueOf(entity.getId()))
                 .prazoEntrega(String.valueOf(entity.getPrazoEntrega()))
-                .ie(entity.getIe())
+//                .ie(entity.getIe())
                 .condPagamento(entity.getCondPagamento())
                 .valorKg(entity.getValorKg())
                 .rastreabilidade(entity.getRastreabilidade())
@@ -39,7 +39,7 @@ public class OrdemDeCompraMapper {
             return null;
         }
         ordem.setPrazoEntrega(dto.getPrazoEntrega());
-        ordem.setIe(dto.getIe());
+//        ordem.setIe(dto.getIe());
         ordem.setCondPagamento(dto.getCondPagamento());
         ordem.setValorKg(dto.getValorKg());
         ordem.setRastreabilidade(dto.getRastreabilidade());

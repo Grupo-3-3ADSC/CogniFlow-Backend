@@ -13,9 +13,9 @@ import java.time.LocalDateTime;
 public class OrdemDeCompraCadastroDto {
     @NotNull(message = "Prazo de Entrega não pode ser nulo ou vazio")
     private String prazoEntrega;
-    @NotBlank(message = "I.E não pode ser nulo ou vazio")
-    @Size(min = 12, max = 12, message = "IE deve ter exatamente 12 caracteres")
-    private String ie;
+//    @NotBlank(message = "I.E não pode ser nulo ou vazio")
+//    @Size(min = 12, max = 12, message = "IE deve ter exatamente 12 caracteres")
+//    private String ie;
     @NotBlank(message = "Condição de Pagamento não pode ser nulo ou vazio")
     private String condPagamento;
     @NotNull(message = "Valor por KG não pode ser nulo ou vazio")
