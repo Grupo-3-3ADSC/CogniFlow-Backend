@@ -1,6 +1,9 @@
 package sptech.school.CRUD.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import sptech.school.CRUD.Model.EstoqueModel;
 import sptech.school.CRUD.Model.FornecedorModel;
@@ -10,10 +13,7 @@ import sptech.school.CRUD.Repository.EstoqueRepository;
 import sptech.school.CRUD.Repository.FornecedorRepository;
 import sptech.school.CRUD.Repository.OrdemDeCompraRepository;
 import sptech.school.CRUD.Repository.UsuarioRepository;
-import sptech.school.CRUD.dto.OrdemDeCompra.ListagemOrdemDeCompra;
-import sptech.school.CRUD.dto.OrdemDeCompra.MudarQuantidadeAtualDto;
-import sptech.school.CRUD.dto.OrdemDeCompra.OrdemDeCompraCadastroDto;
-import sptech.school.CRUD.dto.OrdemDeCompra.OrdemDeCompraMapper;
+import sptech.school.CRUD.dto.OrdemDeCompra.*;
 import sptech.school.CRUD.exception.RecursoNaoEncontradoException;
 import sptech.school.CRUD.exception.RequisicaoConflitanteException;
 import sptech.school.CRUD.exception.RequisicaoInvalidaException;
@@ -113,6 +113,25 @@ public class OrdemDeCompraService {
         return ordemDeCompraRepository.save(ordemDeCompra);
     }
 
+    public PaginacaoHistoricoOrdemDeCompraDTO ordemDeCompraPaginada(Integer pagina, Integer tamanho){
+        Pageable pageable = PageRequest.of(pagina, tamanho);
 
+        Page<OrdemDeCompraModel> ordens = ordemDeCompraRepository.findOrdensDeCompraPaginadas(pageable);
 
+        List<ListagemOrdemDeCompra> ordensMapeadas = ordens.getContent()
+                .stream()
+                .map(OrdemDeCompraMapper::toListagemDto)
+                .collect(Collectors.toList());
+
+        PaginacaoHistoricoOrdemDeCompraDTO response = new PaginacaoHistoricoOrdemDeCompraDTO();
+        response.setData(ordensMapeadas);
+        response.setPaginaAtual(pagina);
+        response.setPaginasTotais(ordens.getTotalPages());
+        response.setTotalItems(ordens.getTotalElements());
+        response.setHasNext(ordens.hasNext());
+        response.setHasPrevious(ordens.hasPrevious());
+        response.setPageSize(tamanho);
+
+        return response;
+    }
 }

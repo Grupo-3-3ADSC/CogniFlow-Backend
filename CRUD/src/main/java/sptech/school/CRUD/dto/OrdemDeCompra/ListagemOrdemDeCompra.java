@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ListagemOrdemDeCompra {
-
     private Integer id;
     private String prazoEntrega;
     private String ie;
@@ -31,7 +30,5 @@ public class ListagemOrdemDeCompra {
     private String nomeFornecedor;
     private String descricaoMaterialCompleta;
     private LocalDateTime dataDeEmissao;
-
-
     private Boolean pendenciaAlterada;
 }

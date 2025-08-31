@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.CRUD.Model.OrdemDeCompraModel;
-import sptech.school.CRUD.dto.OrdemDeCompra.ListagemOrdemDeCompra;
-import sptech.school.CRUD.dto.OrdemDeCompra.MudarQuantidadeAtualDto;
-import sptech.school.CRUD.dto.OrdemDeCompra.OrdemDeCompraCadastroDto;
-import sptech.school.CRUD.dto.OrdemDeCompra.OrdemDeCompraMapper;
+import sptech.school.CRUD.dto.OrdemDeCompra.*;
 import sptech.school.CRUD.service.OrdemDeCompraService;
 
 import java.util.List;
@@ -57,5 +54,16 @@ public class OrdemDeCompraController {
 
         OrdemDeCompraModel ordem = ordemDeCompraService.mudarQuantidadeAtual(id, dto);
         return  ResponseEntity.ok(OrdemDeCompraMapper.toListagemDto(ordem));
+    }
+
+    @GetMapping("/paginados")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<PaginacaoHistoricoOrdemDeCompraDTO> getOrdemDeCompraPaginada(
+            @RequestParam(defaultValue = "1") Integer pagina,
+            @RequestParam(defaultValue = "6") Integer tamanho
+    ){
+        PaginacaoHistoricoOrdemDeCompraDTO ordens = ordemDeCompraService.ordemDeCompraPaginada(pagina, tamanho);
+
+        return ResponseEntity.ok(ordens);
     }
 }
