@@ -8,27 +8,29 @@ import java.time.LocalDateTime;
 
 public class TransferenciaMapper {
 
-    public static TransferenciaListagemDto toTransferenciaListagemDto(TransferenciaModel entity){
-        if (entity == null){
+    // Método atualizado que recebe o EstoqueModel como parâmetro
+    public static TransferenciaModel toTransferencia(TransferenciaDto dto, EstoqueModel estoque) {
+        if (dto == null) {
             return null;
         }
 
-        return TransferenciaListagemDto.builder()
-                .id(entity.getId())
-                .ultimaMovimentacao(entity.getUltimaMovimentacao())
-                .setor(entity.getSetor())
-                .quantidadeTransferida(entity.getQuantidadeTransferida())
-                .tipoMaterial(entity.getTipoMaterial())
-                .build();
+        TransferenciaModel entity = new TransferenciaModel();
+        entity.setEstoque(estoque); // Usar o estoque fornecido
+        entity.setQuantidadeTransferida(dto.getQuantidadeTransferida());
+        entity.setSetor(dto.getSetor());
+        entity.setUltimaMovimentacao(LocalDateTime.now());
+
+        return entity;
     }
 
+    // Método original sem estoque (pode manter para outros casos)
     public static TransferenciaModel toTransferencia(TransferenciaDto dto) {
         if (dto == null) {
             return null;
         }
 
         TransferenciaModel entity = new TransferenciaModel();
-        entity.setTipoMaterial(dto.getTipoMaterial());
+        // Não define estoque - deve ser definido externamente
         entity.setQuantidadeTransferida(dto.getQuantidadeTransferida());
         entity.setSetor(dto.getSetor());
         entity.setUltimaMovimentacao(LocalDateTime.now());
@@ -40,11 +42,22 @@ public class TransferenciaMapper {
         if (entity == null) return null;
 
         return TransferenciaDto.builder()
-                .tipoMaterial(entity.getTipoMaterial())
+                .tipoMaterial(entity.getEstoque() != null ? entity.getEstoque().getTipoMaterial() : null)
                 .quantidadeTransferida(entity.getQuantidadeTransferida())
                 .setor(entity.getSetor())
                 .ultimaMovimentacao(entity.getUltimaMovimentacao())
                 .build();
     }
 
+    public static TransferenciaListagemDto toTransferenciaListagemDto(TransferenciaModel entity) {
+        if (entity == null) return null;
+
+        return TransferenciaListagemDto.builder()
+                .id(entity.getId())
+                .tipoMaterial(entity.getEstoque() != null ? entity.getEstoque().getTipoMaterial() : null)
+                .quantidadeTransferida(entity.getQuantidadeTransferida())
+                .setor(entity.getSetor())
+                .ultimaMovimentacao(entity.getUltimaMovimentacao())
+                .build();
+    }
 }

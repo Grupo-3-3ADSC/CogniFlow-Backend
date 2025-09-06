@@ -21,7 +21,6 @@ public class OrdemDeCompraMapper {
                 .descricaoMaterial(entity.getDescricaoMaterial())
                 .valorUnitario(entity.getValorUnitario())
                 .quantidade(entity.getQuantidade())
-                .ipi(entity.getIpi())
                 .fornecedorId(entity.getFornecedorId())
                 .estoqueId(entity.getEstoqueId())
                 .usuarioId(entity.getUsuarioId())
@@ -47,7 +46,6 @@ public class OrdemDeCompraMapper {
         ordem.setDescricaoMaterial(dto.getDescricaoMaterial());
         ordem.setValorUnitario(dto.getValorUnitario());
         ordem.setQuantidade(dto.getQuantidade());
-        ordem.setIpi(dto.getIpi());
         ordem.setDataDeEmissao(LocalDateTime.now());
         ordem.setFornecedorId(dto.getFornecedorId());
         ordem.setEstoqueId(dto.getEstoqueId());

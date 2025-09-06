@@ -86,15 +86,15 @@ public class EstoqueService {
         estoque.setUltimaMovimentacao(LocalDateTime.now());
 
         // Incrementa o contador baseado no tipo de transferência
-        if ("Externa".equalsIgnoreCase(tipoTransferencia)) {
-            estoque.setExterno(estoque.getExterno() != null ? estoque.getExterno() + 1 : 1);
-            System.out.println("Incrementando contador externo para: " + estoque.getExterno());
-        } else if ("Interna".equalsIgnoreCase(tipoTransferencia)) {
-            estoque.setInterno(estoque.getInterno() != null ? estoque.getInterno() + 1 : 1);
-            System.out.println("Incrementando contador interno para: " + estoque.getInterno());
-        } else {
-            throw new IllegalArgumentException("Transferência deve ser do tipo 'INTERNA' ou 'EXTERNA'. Valor recebido: " + tipoTransferencia);
-        }
+//        if ("Externa".equalsIgnoreCase(tipoTransferencia)) {
+//            estoque.setExterno(estoque.getExterno() != null ? estoque.getExterno() + 1 : 1);
+//            System.out.println("Incrementando contador externo para: " + estoque.getExterno());
+//        } else if ("Interna".equalsIgnoreCase(tipoTransferencia)) {
+//            estoque.setInterno(estoque.getInterno() != null ? estoque.getInterno() + 1 : 1);
+//            System.out.println("Incrementando contador interno para: " + estoque.getInterno());
+//        } else {
+//            throw new IllegalArgumentException("Transferência deve ser do tipo 'INTERNA' ou 'EXTERNA'. Valor recebido: " + tipoTransferencia);
+//        }
 
         EstoqueModel atualizado = estoqueRepository.save(estoque);
         return EstoqueMapper.toListagemDto(atualizado);

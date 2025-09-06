@@ -17,8 +17,7 @@ public class EstoqueMapper {
                 .quantidadeAtual(entity.getQuantidadeAtual())
                 .quantidadeMinima(entity.getQuantidadeMinima())
                 .quantidadeMaxima(entity.getQuantidadeMaxima())
-                .externa(entity.getExterno())
-                .interna(entity.getInterno())
+                .ipi(entity.getIpi())
                 .ultimaMovimentacao(entity.getUltimaMovimentacao())
                 .build();
     }
@@ -32,6 +31,7 @@ public class EstoqueMapper {
         entity.setQuantidadeAtual(dto.getQuantidadeAtual());
         entity.setQuantidadeMinima(dto.getQuantidadeMinima());
         entity.setQuantidadeMaxima(dto.getQuantidadeMaxima());
+        entity.setIpi(dto.getIpi());
         entity.setUltimaMovimentacao(LocalDateTime.now());
 
 

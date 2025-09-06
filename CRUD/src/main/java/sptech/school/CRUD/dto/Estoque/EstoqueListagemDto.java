@@ -19,8 +19,7 @@ public class EstoqueListagemDto {
     private Integer quantidadeAtual;
     private Integer quantidadeMinima;
     private Integer quantidadeMaxima;
-    private Integer interna;
-    private Integer externa;
+    private Double ipi;
     private String tipoTransferencia;
     private LocalDateTime ultimaMovimentacao;
 }

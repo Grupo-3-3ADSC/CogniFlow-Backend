@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface TransferenciaRepository extends JpaRepository<TransferenciaModel, Integer> {
     Optional<TransferenciaModel> findBySetor(String setor);
-    Optional<TransferenciaModel> findByTipoMaterial(String tipoMaterial);
+//    Optional<TransferenciaModel> findByTipoMaterial(String tipoMaterial);
 }

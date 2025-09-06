@@ -53,25 +53,25 @@ public class DataInitializer implements CommandLineRunner {
 
         }
 
-        if (transferenciaRepository.count() == 0) {
-            TransferenciaModel model1 = new TransferenciaModel();
-
-            model1.setTipoMaterial("SAE 1020");
-            model1.setQuantidadeTransferida(50);
-            model1.setSetor("C1");
-            model1.setUltimaMovimentacao(LocalDateTime.now());
-
-            TransferenciaModel model2 = new TransferenciaModel();
-            model2.setTipoMaterial("SAE 1045");
-            model2.setQuantidadeTransferida(100);
-            model2.setSetor("C2");
-            model2.setUltimaMovimentacao(LocalDateTime.now());
-
-            TransferenciaModel model3 = new TransferenciaModel();
-            model3.setTipoMaterial("HARDOX 450");
-            model3.setQuantidadeTransferida(100);
-            model3.setSetor("C3");
-            model3.setUltimaMovimentacao(LocalDateTime.now());
+//        if (transferenciaRepository.count() == 0) {
+//            TransferenciaModel model1 = new TransferenciaModel();
+//
+//            model1.setTipoMaterial("SAE 1020");
+//            model1.setQuantidadeTransferida(50);
+//            model1.setSetor("C1");
+//            model1.setUltimaMovimentacao(LocalDateTime.now());
+//
+//            TransferenciaModel model2 = new TransferenciaModel();
+//            model2.setTipoMaterial("SAE 1045");
+//            model2.setQuantidadeTransferida(100);
+//            model2.setSetor("C2");
+//            model2.setUltimaMovimentacao(LocalDateTime.now());
+//
+//            TransferenciaModel model3 = new TransferenciaModel();
+//            model3.setTipoMaterial("HARDOX 450");
+//            model3.setQuantidadeTransferida(100);
+//            model3.setSetor("C3");
+//            model3.setUltimaMovimentacao(LocalDateTime.now());
 
 //            EstoqueModel model2 = new EstoqueModel();
 //            model2.setTipoMaterial("SAE 1045");
@@ -90,18 +90,18 @@ public class DataInitializer implements CommandLineRunner {
 //            model3.setUltimaMovimentacao(LocalDateTime.now());
 //            model3.setExterno(2);
 //            model3.setInterno(7);
-//
+
 //            estoqueRepository.save(model1);
 //            estoqueRepository.save(model2);
 //            estoqueRepository.save(model3);
 
-            transferenciaRepository.save(model1);
-            transferenciaRepository.save(model2);
-            transferenciaRepository.save(model3);
+//            transferenciaRepository.save(model1);
+//            transferenciaRepository.save(model2);
+//            transferenciaRepository.save(model3);
         }
     }
 
-    }
+
 
 
 

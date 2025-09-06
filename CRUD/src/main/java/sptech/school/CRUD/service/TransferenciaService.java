@@ -59,15 +59,20 @@ public class TransferenciaService {
 
         // Atualizar o estoque
         estoque.setQuantidadeAtual(estoque.getQuantidadeAtual() - quantidadeTransferida);
+        estoque.setUltimaMovimentacao(LocalDateTime.now());
         estoqueRepository.save(estoque);
 
-        // Converte DTO para entidade
-        TransferenciaModel transferencia = TransferenciaMapper.toTransferencia(dto);
+        // Criar a transferência manualmente associando o estoque
+        TransferenciaModel transferencia = new TransferenciaModel();
+        transferencia.setEstoque(estoque); // CRUCIAL: associar o estoque salvo
+        transferencia.setQuantidadeTransferida(quantidadeTransferida);
+        transferencia.setSetor(dto.getSetor());
+        transferencia.setUltimaMovimentacao(LocalDateTime.now());
 
-        // Salva a transferência
+        // Salvar a transferência
         TransferenciaModel salvo = transferenciaRepository.save(transferencia);
 
-        // Retorna DTO
+        // Retornar DTO
         return TransferenciaMapper.toTransferenciaDto(salvo);
     }
 }

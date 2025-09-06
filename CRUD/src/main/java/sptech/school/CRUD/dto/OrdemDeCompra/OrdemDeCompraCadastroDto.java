@@ -36,9 +36,9 @@ public class OrdemDeCompraCadastroDto {
     @NotNull(message = "Quantidade não pode ser nulo ou vazio")
     @Min(value = 1, message = "Quantidade deve ser no mínimo 1")
     private Integer quantidade;
-    @NotNull(message = "IPI não pode ser nulo ou vazio")
-    @DecimalMin(value = "0.00", message = "IPI deve ser zero ou maior")
-    private Double ipi;
+//    @NotNull(message = "IPI não pode ser nulo ou vazio")
+//    @DecimalMin(value = "0.00", message = "IPI deve ser zero ou maior")
+//    private Double ipi;
     @NotNull(message = "Fornecedor não pode ser nulo ou vazio")
     private Integer fornecedorId;
     @NotNull(message = "Estoque não pode ser nulo ou vazio")
