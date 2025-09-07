@@ -37,4 +37,18 @@ public class TransferenciaController {
         List<TransferenciaListagemDto> lista = transferenciaService.buscarSetor();
         return ResponseEntity.ok(lista);
     }
+
+    @GetMapping("/material/{tipoMaterial}")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<List<TransferenciaListagemDto>> listarTransferenciasPorMaterial(
+            @PathVariable String tipoMaterial,
+            @RequestParam(required = false) Integer ano) {
+
+        List<TransferenciaListagemDto> lista = transferenciaService.buscarPorMaterialEano(tipoMaterial, ano);
+        return ResponseEntity.ok(lista);
+    }
+
+
+
+
 }

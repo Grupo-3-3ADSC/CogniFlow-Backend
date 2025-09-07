@@ -113,6 +113,19 @@ public class OrdemDeCompraService {
         return ordemDeCompraRepository.save(ordemDeCompra);
     }
 
+    public List<ListagemOrdemDeCompra> getByMaterial(Integer estoqueId, Integer ano) {
+        List<OrdemDeCompraModel> ordens;
+
+        if (ano != null) {
+            ordens = ordemDeCompraRepository.findByEstoqueIdAndAno(estoqueId, ano);
+        } else {
+            ordens = ordemDeCompraRepository.findByEstoqueId(estoqueId);
+        }
+
+        return ordens.stream()
+                .map(OrdemDeCompraMapper::toListagemDto)
+                .toList();
+    }
 
 
 }

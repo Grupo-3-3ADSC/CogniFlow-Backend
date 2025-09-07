@@ -58,4 +58,14 @@ public class OrdemDeCompraController {
         OrdemDeCompraModel ordem = ordemDeCompraService.mudarQuantidadeAtual(id, dto);
         return  ResponseEntity.ok(OrdemDeCompraMapper.toListagemDto(ordem));
     }
+
+    @GetMapping("/material/{estoqueId}")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<List<ListagemOrdemDeCompra>> listarPorMaterial(
+            @PathVariable Integer estoqueId,
+            @RequestParam(required = false) Integer ano
+    ) {
+        List<ListagemOrdemDeCompra> ordens = ordemDeCompraService.getByMaterial(estoqueId, ano);
+        return ResponseEntity.ok(ordens);
+    }
 }
