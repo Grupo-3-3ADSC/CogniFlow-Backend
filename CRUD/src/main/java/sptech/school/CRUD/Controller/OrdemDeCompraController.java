@@ -66,4 +66,19 @@ public class OrdemDeCompraController {
 
         return ResponseEntity.ok(ordens);
     }
+
+    @GetMapping("/relatorioFornecedor/{fornecedorId}")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<List<OrdemDeCompraModel>> getRelatorioFornecedor(
+            @PathVariable Integer fornecedorId,
+            @RequestParam Integer ano
+    ) {
+        List<OrdemDeCompraModel> ordens = ordemDeCompraService.getRelatorioFornecedor(fornecedorId, ano);
+
+        if (ordens.isEmpty()) {
+            return ResponseEntity.noContent().build(); // 204
+        }
+
+        return ResponseEntity.ok(ordens); // 200
+    }
 }

@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import sptech.school.CRUD.Model.OrdemDeCompraModel;
 import sptech.school.CRUD.dto.OrdemDeCompra.ListagemOrdemDeCompra;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface OrdemDeCompraRepository extends JpaRepository<OrdemDeCompraModel, Integer> {
@@ -23,4 +24,14 @@ public interface OrdemDeCompraRepository extends JpaRepository<OrdemDeCompraMode
 
     @Query("SELECT o FROM OrdemDeCompraModel o ORDER BY o.id ASC")
     Page<OrdemDeCompraModel> findOrdensDeCompraPaginadas(Pageable pageable);
+
+    @Query("SELECT o FROM OrdemDeCompraModel o " +
+            "JOIN FETCH o.fornecedor f " +
+            "WHERE o.fornecedor.id = :fornecedorId " +
+            "AND o.dataDeEmissao IS NOT NULL " +
+            "AND FUNCTION('YEAR', o.dataDeEmissao) = :ano")
+    List<OrdemDeCompraModel> findByFornecedorIdAndAno(
+            @Param("fornecedorId") Integer fornecedorId,
+            @Param("ano") Integer ano
+    );
 }

@@ -134,4 +134,18 @@ public class OrdemDeCompraService {
 
         return response;
     }
+
+    public List<OrdemDeCompraModel> getRelatorioFornecedor(Integer fornecedorId, Integer ano) {
+        // Verifica se o fornecedor existe
+        fornecedorRepository.findById(fornecedorId)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Fornecedor não encontrado"));
+
+        List<OrdemDeCompraModel> ordens = ordemDeCompraRepository.findByFornecedorIdAndAno(fornecedorId, ano);
+
+        if (ordens.isEmpty()) {
+            System.out.println("Nenhuma ordem encontrada para fornecedor " + fornecedorId + " no ano " + ano);
+        }
+
+        return ordens;
+    }
 }
