@@ -31,7 +31,6 @@ public class ListagemOrdemDeCompra {
     private String nomeFornecedor;
     private String descricaoMaterialCompleta;
     private LocalDateTime dataDeEmissao;
-
-
+    private String tipoMaterial;
     private Boolean pendenciaAlterada;
 }

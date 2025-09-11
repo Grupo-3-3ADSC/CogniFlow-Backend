@@ -84,6 +84,11 @@ public class OrdemDeCompraService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Ordem de compra não encontrada"));
     }
 
+    public ListagemOrdemDeCompra buscarPorIdDto(Integer id) {
+        return ordemDeCompraRepository.findByIdComJoinsDTO(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Ordem de compra não encontrada"));
+    }
+
     public OrdemDeCompraModel mudarQuantidadeAtual(Integer id, MudarQuantidadeAtualDto dto) {
         // Buscar a ordem de compra existente
         OrdemDeCompraModel ordemDeCompra = ordemDeCompraRepository.findById(id)
@@ -125,6 +130,21 @@ public class OrdemDeCompraService {
         return ordens.stream()
                 .map(OrdemDeCompraMapper::toListagemDto)
                 .toList();
+    }
+
+
+    public List<OrdemDeCompraModel> getRelatorioFornecedor(Integer fornecedorId, Integer ano) {
+        // Verifica se o fornecedor existe
+        fornecedorRepository.findById(fornecedorId)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Fornecedor não encontrado"));
+
+        List<OrdemDeCompraModel> ordens = ordemDeCompraRepository.findByFornecedorIdAndAno(fornecedorId, ano);
+
+        if (ordens.isEmpty()) {
+            System.out.println("Nenhuma ordem encontrada para fornecedor " + fornecedorId + " no ano " + ano);
+        }
+
+        return ordens;
     }
 
 

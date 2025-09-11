@@ -51,6 +51,14 @@ public class OrdemDeCompraController {
         OrdemDeCompraModel ordem = ordemDeCompraService.getById(id);
         return ResponseEntity.ok(OrdemDeCompraMapper.toListagemDto(ordem));
     }
+
+    @GetMapping("/buscar/{id}")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<ListagemOrdemDeCompra> buscarPorIdDto(@PathVariable Integer id) {
+        ListagemOrdemDeCompra ordem = ordemDeCompraService.buscarPorIdDto(id);
+        return ResponseEntity.ok(ordem);
+    }
+
     @PatchMapping("/{id}")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<ListagemOrdemDeCompra> mudarQuantidadeAtual(@PathVariable Integer id, @Valid @RequestBody MudarQuantidadeAtualDto dto){
@@ -67,5 +75,20 @@ public class OrdemDeCompraController {
     ) {
         List<ListagemOrdemDeCompra> ordens = ordemDeCompraService.getByMaterial(estoqueId, ano);
         return ResponseEntity.ok(ordens);
+    }
+
+    @GetMapping("/relatorioFornecedor/{fornecedorId}")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<List<OrdemDeCompraModel>> getRelatorioFornecedor(
+            @PathVariable Integer fornecedorId,
+            @RequestParam Integer ano
+    ) {
+        List<OrdemDeCompraModel> ordens = ordemDeCompraService.getRelatorioFornecedor(fornecedorId, ano);
+
+        if (ordens.isEmpty()) {
+            return ResponseEntity.noContent().build(); // 204
+        }
+
+        return ResponseEntity.ok(ordens); // 200
     }
 }

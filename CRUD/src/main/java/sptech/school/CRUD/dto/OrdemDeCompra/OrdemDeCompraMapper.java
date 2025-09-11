@@ -29,6 +29,7 @@ public class OrdemDeCompraMapper {
                 .descricaoMaterialCompleta(entity.getEstoque() != null ? entity.getEstoque().getTipoMaterial() : "Material não encontrado")
                 .dataDeEmissao(entity.getDataDeEmissao())
                 .pendenciaAlterada(Boolean.TRUE.equals(entity.getPendenciaAlterada()))
+                .tipoMaterial(entity.getEstoque() != null ? entity.getEstoque().getTipoMaterial() : null)
                 .build();
     }
 
