@@ -73,7 +73,14 @@ public class TransferenciaService {
     }
 
     public List<TransferenciaListagemDto> buscarPorMaterialEano(String tipoMaterial, Integer ano) {
-        List<TransferenciaModel> transferencias = transferenciaRepository.findByTipoMaterialAndAno(tipoMaterial, ano);
+        List<TransferenciaModel> transferencias;
+
+        if (ano == null) {
+            transferencias = transferenciaRepository.findByTipoMaterial(tipoMaterial);
+        } else {
+            transferencias = transferenciaRepository.findByTipoMaterialAndAno(tipoMaterial, ano);
+        }
+
         return transferencias.stream()
                 .map(TransferenciaMapper::toTransferenciaListagemDto)
                 .collect(Collectors.toList());
