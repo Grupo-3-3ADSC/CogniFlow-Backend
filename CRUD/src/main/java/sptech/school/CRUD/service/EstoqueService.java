@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sptech.school.CRUD.Model.EstoqueModel;
 import sptech.school.CRUD.Repository.EstoqueRepository;
-import sptech.school.CRUD.dto.Estoque.AtualizarEstoqueDto;
-import sptech.school.CRUD.dto.Estoque.EstoqueListagemDto;
-import sptech.school.CRUD.dto.Estoque.EstoqueMapper;
-import sptech.school.CRUD.dto.Estoque.RetirarEstoqueDto;
+import sptech.school.CRUD.dto.Estoque.*;
 import sptech.school.CRUD.exception.RecursoNaoEncontradoException;
 import sptech.school.CRUD.exception.RequisicaoInvalidaException;
 
@@ -29,6 +26,9 @@ public class EstoqueService {
         return estoqueRepository.findAll().stream()
                 .map(EstoqueMapper::toListagemDto)
                 .collect(Collectors.toList());
+
+
+
     }
 
     public EstoqueListagemDto atualizarEstoque(AtualizarEstoqueDto dto) {
@@ -59,6 +59,22 @@ public class EstoqueService {
         return EstoqueMapper.toListagemDto(salvo);
     }
 
+    public EstoqueListagemDto atualizarInfo(AtualizarInfoEstoqueDto dto){
+        Double ipi = dto.getIpi();
+        String tipoMaterial = dto.getTipoMaterial();
+
+        if(ipi == null || ipi.isNaN() || ipi < 0 ){
+            throw  new RequisicaoInvalidaException("Ipi não pode ser nulo, NaN ou menor que zero");
+        }
+
+        EstoqueModel estoque = estoqueRepository.findByTipoMaterial(tipoMaterial)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Material não encontrado no estoque: " + tipoMaterial));
+
+        estoque.setIpi(ipi);
+        EstoqueModel atualizado = estoqueRepository.save(estoque);
+
+        return EstoqueMapper.toListagemDto(atualizado);
+    }
 
     public EstoqueListagemDto retirarEstoque(RetirarEstoqueDto dto) {
         String tipoMaterial = dto.getTipoMaterial();

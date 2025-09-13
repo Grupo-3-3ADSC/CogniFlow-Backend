@@ -53,4 +53,10 @@ public class EstoqueController {
         return ResponseEntity.ok(resposta);
     }
 
+    @PatchMapping("/atualizarInfo")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<EstoqueListagemDto> atualizarInfo(@RequestBody @Valid AtualizarInfoEstoqueDto dto){
+        EstoqueListagemDto resposta = estoqueService.atualizarInfo(dto);
+        return ResponseEntity.ok(resposta);
+    }
 }
