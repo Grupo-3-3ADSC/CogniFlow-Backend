@@ -23,6 +23,10 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private EstoqueRepository estoqueRepository;
 
+    @Autowired
+    private TransferenciaRepository transferenciaRepository;
+
+
     @Override
     public void run(String... args) throws Exception {
 
@@ -49,42 +53,55 @@ public class DataInitializer implements CommandLineRunner {
 
         }
 
-        if (estoqueRepository.count() == 0) {
-            EstoqueModel model1 = new EstoqueModel();
+//        if (transferenciaRepository.count() == 0) {
+//            TransferenciaModel model1 = new TransferenciaModel();
+//
+//            model1.setTipoMaterial("SAE 1020");
+//            model1.setQuantidadeTransferida(50);
+//            model1.setSetor("C1");
+//            model1.setUltimaMovimentacao(LocalDateTime.now());
+//
+//            TransferenciaModel model2 = new TransferenciaModel();
+//            model2.setTipoMaterial("SAE 1045");
+//            model2.setQuantidadeTransferida(100);
+//            model2.setSetor("C2");
+//            model2.setUltimaMovimentacao(LocalDateTime.now());
+//
+//            TransferenciaModel model3 = new TransferenciaModel();
+//            model3.setTipoMaterial("HARDOX 450");
+//            model3.setQuantidadeTransferida(100);
+//            model3.setSetor("C3");
+//            model3.setUltimaMovimentacao(LocalDateTime.now());
 
-            model1.setTipoMaterial("SAE 1020");
-            model1.setQuantidadeMinima(300);
-            model1.setQuantidadeMaxima(10000);
-            model1.setQuantidadeAtual(1800);
-            model1.setUltimaMovimentacao(LocalDateTime.now());
-            model1.setInterno(2);
-            model1.setExterno(5);
+//            EstoqueModel model2 = new EstoqueModel();
+//            model2.setTipoMaterial("SAE 1045");
+//            model2.setQuantidadeMinima(400);
+//            model2.setQuantidadeMaxima(10000);
+//            model2.setQuantidadeAtual(200);
+//            model2.setUltimaMovimentacao(LocalDateTime.now());
+//            model2.setExterno(8);
+//            model2.setInterno(3);
+//
+//            EstoqueModel model3 = new EstoqueModel();
+//            model3.setTipoMaterial("HARDOX 450");
+//            model3.setQuantidadeMinima(150);
+//            model3.setQuantidadeMaxima(10000);
+//            model3.setQuantidadeAtual(7500);
+//            model3.setUltimaMovimentacao(LocalDateTime.now());
+//            model3.setExterno(2);
+//            model3.setInterno(7);
 
-            EstoqueModel model2 = new EstoqueModel();
-            model2.setTipoMaterial("SAE 1045");
-            model2.setQuantidadeMinima(400);
-            model2.setQuantidadeMaxima(10000);
-            model2.setQuantidadeAtual(200);
-            model2.setUltimaMovimentacao(LocalDateTime.now());
-            model2.setExterno(8);
-            model2.setInterno(3);
+//            estoqueRepository.save(model1);
+//            estoqueRepository.save(model2);
+//            estoqueRepository.save(model3);
 
-            EstoqueModel model3 = new EstoqueModel();
-            model3.setTipoMaterial("HARDOX 450");
-            model3.setQuantidadeMinima(150);
-            model3.setQuantidadeMaxima(10000);
-            model3.setQuantidadeAtual(7500);
-            model3.setUltimaMovimentacao(LocalDateTime.now());
-            model3.setExterno(2);
-            model3.setInterno(7);
-
-            estoqueRepository.save(model1);
-            estoqueRepository.save(model2);
-            estoqueRepository.save(model3);
+//            transferenciaRepository.save(model1);
+//            transferenciaRepository.save(model2);
+//            transferenciaRepository.save(model3);
         }
     }
 
-    }
+
 
 
 

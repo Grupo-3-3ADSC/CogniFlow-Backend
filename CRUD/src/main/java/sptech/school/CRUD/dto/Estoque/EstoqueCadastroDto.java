@@ -1,6 +1,7 @@
 package sptech.school.CRUD.dto.Estoque;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -30,11 +31,9 @@ public class EstoqueCadastroDto {
     @Min(value = 1, message = "Quantidade Máxima deve ser positiva")
     private Integer quantidadeMaxima;
 
-    @NotNull(message = "valor externo não pode ser nula")
-    private Integer externo;
-
-    @NotNull(message = "valor interno não pode ser nula")
-    private Integer interno;
+    @NotNull(message = "IPI não pode ser nulo ou vazio")
+    @DecimalMin(value = "0.00", message = "IPI deve ser zero ou maior")
+    private Double ipi;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime ultimaMovimentacao;

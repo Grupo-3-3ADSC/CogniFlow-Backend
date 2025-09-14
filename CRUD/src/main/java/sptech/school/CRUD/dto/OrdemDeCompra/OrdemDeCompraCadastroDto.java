@@ -13,9 +13,9 @@ import java.time.LocalDateTime;
 public class OrdemDeCompraCadastroDto {
     @NotNull(message = "Prazo de Entrega não pode ser nulo ou vazio")
     private String prazoEntrega;
-    @NotBlank(message = "I.E não pode ser nulo ou vazio")
-    @Size(min = 12, max = 12, message = "IE deve ter exatamente 12 caracteres")
-    private String ie;
+//    @NotBlank(message = "I.E não pode ser nulo ou vazio")
+//    @Size(min = 12, max = 12, message = "IE deve ter exatamente 12 caracteres")
+//    private String ie;
     @NotBlank(message = "Condição de Pagamento não pode ser nulo ou vazio")
     private String condPagamento;
     @NotNull(message = "Valor por KG não pode ser nulo ou vazio")
@@ -36,9 +36,9 @@ public class OrdemDeCompraCadastroDto {
     @NotNull(message = "Quantidade não pode ser nulo ou vazio")
     @Min(value = 1, message = "Quantidade deve ser no mínimo 1")
     private Integer quantidade;
-    @NotNull(message = "IPI não pode ser nulo ou vazio")
-    @DecimalMin(value = "0.00", message = "IPI deve ser zero ou maior")
-    private Double ipi;
+//    @NotNull(message = "IPI não pode ser nulo ou vazio")
+//    @DecimalMin(value = "0.00", message = "IPI deve ser zero ou maior")
+//    private Double ipi;
     @NotNull(message = "Fornecedor não pode ser nulo ou vazio")
     private Integer fornecedorId;
     @NotNull(message = "Estoque não pode ser nulo ou vazio")

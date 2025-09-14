@@ -20,8 +20,7 @@ public class EstoqueModel {
         private Integer quantidadeAtual;
         private Integer quantidadeMinima;
         private Integer quantidadeMaxima;
-        private Integer externo;
-        private Integer interno;
+        private Double ipi;
         private LocalDateTime ultimaMovimentacao;
 
 

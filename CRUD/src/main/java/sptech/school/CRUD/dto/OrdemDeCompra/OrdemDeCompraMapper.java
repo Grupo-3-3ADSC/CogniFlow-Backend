@@ -13,7 +13,7 @@ public class OrdemDeCompraMapper {
         return ListagemOrdemDeCompra.builder()
                 .id(Integer.valueOf(entity.getId()))
                 .prazoEntrega(String.valueOf(entity.getPrazoEntrega()))
-                .ie(entity.getIe())
+//                .ie(entity.getIe())
                 .condPagamento(entity.getCondPagamento())
                 .valorKg(entity.getValorKg())
                 .rastreabilidade(entity.getRastreabilidade())
@@ -21,7 +21,6 @@ public class OrdemDeCompraMapper {
                 .descricaoMaterial(entity.getDescricaoMaterial())
                 .valorUnitario(entity.getValorUnitario())
                 .quantidade(entity.getQuantidade())
-                .ipi(entity.getIpi())
                 .fornecedorId(entity.getFornecedorId())
                 .estoqueId(entity.getEstoqueId())
                 .usuarioId(entity.getUsuarioId())
@@ -40,7 +39,7 @@ public class OrdemDeCompraMapper {
             return null;
         }
         ordem.setPrazoEntrega(dto.getPrazoEntrega());
-        ordem.setIe(dto.getIe());
+//        ordem.setIe(dto.getIe());
         ordem.setCondPagamento(dto.getCondPagamento());
         ordem.setValorKg(dto.getValorKg());
         ordem.setRastreabilidade(dto.getRastreabilidade());
@@ -48,7 +47,6 @@ public class OrdemDeCompraMapper {
         ordem.setDescricaoMaterial(dto.getDescricaoMaterial());
         ordem.setValorUnitario(dto.getValorUnitario());
         ordem.setQuantidade(dto.getQuantidade());
-        ordem.setIpi(dto.getIpi());
         ordem.setDataDeEmissao(LocalDateTime.now());
         ordem.setFornecedorId(dto.getFornecedorId());
         ordem.setEstoqueId(dto.getEstoqueId());

@@ -23,7 +23,6 @@ public class ListagemOrdemDeCompra {
     private String descricaoMaterial;
     private Double valorUnitario;
     private Integer quantidade;
-    private Double ipi;
     private Integer fornecedorId;
     private Integer estoqueId;
     private Integer usuarioId;
