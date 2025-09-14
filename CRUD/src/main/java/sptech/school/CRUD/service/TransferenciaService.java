@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sptech.school.CRUD.Model.EstoqueModel;
+import sptech.school.CRUD.Model.OrdemDeCompraModel;
 import sptech.school.CRUD.Model.TransferenciaModel;
 import sptech.school.CRUD.Repository.EstoqueRepository;
 import sptech.school.CRUD.Repository.TransferenciaRepository;
@@ -70,4 +71,21 @@ public class TransferenciaService {
         // Retorna DTO
         return TransferenciaMapper.toTransferenciaDto(salvo);
     }
+
+    public List<TransferenciaListagemDto> buscarPorMaterialEano(String tipoMaterial, Integer ano) {
+        List<TransferenciaModel> transferencias;
+
+        if (ano == null) {
+            transferencias = transferenciaRepository.findByTipoMaterial(tipoMaterial);
+        } else {
+            transferencias = transferenciaRepository.findByTipoMaterialAndAno(tipoMaterial, ano);
+        }
+
+        return transferencias.stream()
+                .map(TransferenciaMapper::toTransferenciaListagemDto)
+                .collect(Collectors.toList());
+    }
+
+
+
 }

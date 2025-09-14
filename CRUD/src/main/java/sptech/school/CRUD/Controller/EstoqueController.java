@@ -53,4 +53,11 @@ public class EstoqueController {
         return ResponseEntity.ok(resposta);
     }
 
+    @GetMapping("/materiais/{id}")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<EstoqueListagemDto> buscarMaterialPorId(@PathVariable int id) {
+        return ResponseEntity.ok(estoqueService.buscarMaterialPorId(id));
+    }
+
+
 }

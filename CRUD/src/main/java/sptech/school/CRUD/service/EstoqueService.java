@@ -31,6 +31,13 @@ public class EstoqueService {
                 .collect(Collectors.toList());
     }
 
+    public EstoqueListagemDto buscarMaterialPorId(int id) {
+        EstoqueModel estoque = estoqueRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Material não encontrado com ID: " + id));
+        return EstoqueMapper.toListagemDto(estoque);
+    }
+
+
     public EstoqueListagemDto atualizarEstoque(AtualizarEstoqueDto dto) {
         String tipoMaterial = dto.getTipoMaterial();
         Integer quantidade = dto.getQuantidadeAtual();

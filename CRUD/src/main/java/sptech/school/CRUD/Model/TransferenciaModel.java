@@ -21,4 +21,5 @@ public class TransferenciaModel {
     private Integer quantidadeTransferida;
     private String tipoMaterial;
     private String setor;
+
 }

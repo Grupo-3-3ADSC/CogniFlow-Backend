@@ -25,6 +25,25 @@ public interface OrdemDeCompraRepository extends JpaRepository<OrdemDeCompraMode
     @Query("SELECT o FROM OrdemDeCompraModel o ORDER BY o.id ASC")
     Page<OrdemDeCompraModel> findOrdensDeCompraPaginadas(Pageable pageable);
 
+    List<OrdemDeCompraModel> findByEstoqueId(Integer estoqueId);
+
+    @Query("SELECT o FROM OrdemDeCompraModel o WHERE o.estoque.id = :estoqueId AND YEAR(o.dataDeEmissao) = :ano")
+    List<OrdemDeCompraModel> findByEstoqueIdAndAno(@Param("estoqueId") Integer estoqueId, @Param("ano") Integer ano);
+
+    @Query("SELECT new sptech.school.CRUD.dto.OrdemDeCompra.ListagemOrdemDeCompra(" +
+            "o.id, o.prazoEntrega, o.ie, o.condPagamento, o.valorKg, o.rastreabilidade, " +
+            "o.valorPeca, o.descricaoMaterial, o.valorUnitario, o.quantidade, o.ipi, " +
+            "o.fornecedorId, o.estoqueId, o.usuarioId, f.nomeFantasia, " +
+            "CONCAT(o.descricaoMaterial, ' ', e.tipoMaterial), " + // descricaoMaterialCompleta
+            "o.dataDeEmissao, " +
+            "e.tipoMaterial, " + // tipoMaterial
+            "o.pendenciaAlterada) " +
+            "FROM OrdemDeCompraModel o " +
+            "LEFT JOIN o.fornecedor f " +
+            "LEFT JOIN o.estoque e " +
+            "WHERE o.id = :id")
+    Optional<ListagemOrdemDeCompra> findByIdComJoinsDTO(@Param("id") Integer id);
+
     @Query("SELECT o FROM OrdemDeCompraModel o " +
             "JOIN FETCH o.fornecedor f " +
             "WHERE o.fornecedor.id = :fornecedorId " +
@@ -34,4 +53,5 @@ public interface OrdemDeCompraRepository extends JpaRepository<OrdemDeCompraMode
             @Param("fornecedorId") Integer fornecedorId,
             @Param("ano") Integer ano
     );
+
 }
