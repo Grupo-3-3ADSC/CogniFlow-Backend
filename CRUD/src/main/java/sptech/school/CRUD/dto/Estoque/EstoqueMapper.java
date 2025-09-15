@@ -12,14 +12,16 @@ public class EstoqueMapper {
         }
 
         return EstoqueListagemDto.builder()
+                .id(entity.getId())
                 .tipoMaterial(entity.getTipoMaterial())
                 .quantidadeAtual(entity.getQuantidadeAtual())
                 .quantidadeMinima(entity.getQuantidadeMinima())
                 .quantidadeMaxima(entity.getQuantidadeMaxima())
-//                .tipoTransferencia(entity.getTipoTransferencia())
+                .ipi(entity.getIpi())
+                .ultimaMovimentacao(entity.getUltimaMovimentacao())
                 .build();
     }
-    public static EstoqueModel toEntity(EstoqueCadastroDto dto) {
+    public static EstoqueModel toCadastro(EstoqueCadastroDto dto) {
         if (dto == null) {
             return null;
         }
@@ -29,10 +31,14 @@ public class EstoqueMapper {
         entity.setQuantidadeAtual(dto.getQuantidadeAtual());
         entity.setQuantidadeMinima(dto.getQuantidadeMinima());
         entity.setQuantidadeMaxima(dto.getQuantidadeMaxima());
+        entity.setIpi(dto.getIpi());
         entity.setUltimaMovimentacao(LocalDateTime.now());
-//        entity.setTipoTransferencia(dto.getTipoTransferencia());
+
+
 
         return entity;
     }
+
+
 
 }

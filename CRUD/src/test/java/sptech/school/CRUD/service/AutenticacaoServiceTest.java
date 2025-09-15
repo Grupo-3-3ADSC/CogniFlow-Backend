@@ -37,7 +37,7 @@ class AutenticacaoServiceTest {
     private AuthenticationManager authenticationManager;
 
     @Test
-    @DisplayName("Autenticação - sucesso")
+    @DisplayName("Autenticação - Sucesso")
     void testeLoginSucesso() {
         // Arrange
         UsuarioModel usuario = new UsuarioModel();
@@ -59,7 +59,7 @@ class AutenticacaoServiceTest {
     }
 
     @Test
-    @DisplayName("Autenticação - email não cadastrado")
+    @DisplayName("Autenticação - E-mail não cadastrado")
     void testeLoginEmailNaoEncontrado() {
         // Arrange
         when(usuarioRepository.findByEmail(anyString())).thenReturn(Optional.empty());

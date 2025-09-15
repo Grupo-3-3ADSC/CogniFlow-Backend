@@ -1,17 +1,31 @@
 package sptech.school.CRUD.Controller;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.CRUD.Model.EstoqueModel;
-import sptech.school.CRUD.dto.Estoque.EstoqueListagemDto;
+import sptech.school.CRUD.dto.Estoque.*;
 import sptech.school.CRUD.service.EstoqueService;
 
 import java.util.List;
+import java.util.stream.Collectors;
+@Tag(name = "Estoque", description = "Endpoints de Estoque")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/estoque")
+@ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Requisição inválida"),
+        @ApiResponse(responseCode = "404", description = "Entidade relacionada não encontrada"),
+        @ApiResponse(responseCode = "409", description = "Conflito de dados (ex: rastreabilidade duplicada)")
+})
+
 public class EstoqueController {
 
     @Autowired
@@ -19,49 +33,31 @@ public class EstoqueController {
 
 
     @GetMapping
-    public List<EstoqueModel> listarEstoque(){
-        return estoqueService.buscarEstoque();
-    }
-
-
-    @PostMapping
-    public ResponseEntity<EstoqueModel> cadastrarEstoque(@RequestBody EstoqueModel estoque){
-
-        EstoqueModel novoEstoque = estoqueService.cadastroEstoque(estoque);
-
-        return ResponseEntity.status(201).body(novoEstoque);
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<List<EstoqueListagemDto>> listarEstoque() {
+            return ResponseEntity.ok(estoqueService.buscarEstoque());
 
     }
+
     @PostMapping("/adicionar")
-    public ResponseEntity<EstoqueModel> adicionarEstoque(@RequestBody EstoqueModel request) {
-        try {
-            EstoqueModel estoque = estoqueService.atualizarEstoque(
-                    request.getTipoMaterial(),
-                    request.getQuantidadeAtual()
-
-            );
-            return ResponseEntity.ok(estoque);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-    @PutMapping("/retirar/{tipoMaterial}/{quantidadeAtual}/{tipoTransferencia}")
-    public ResponseEntity<EstoqueModel> retirarEstoque(
-            @PathVariable String tipoMaterial,
-            @PathVariable Integer quantidadeAtual,
-            @PathVariable String tipoTransferencia) {
-        try {
-            EstoqueModel estoqueAtualizado = estoqueService.retirarEstoque(tipoMaterial, quantidadeAtual, tipoTransferencia);
-            return ResponseEntity.ok(estoqueAtualizado);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.unprocessableEntity().build();
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<EstoqueListagemDto> adicionarEstoque(@RequestBody @Valid AtualizarEstoqueDto dto) {
+        EstoqueListagemDto resposta = estoqueService.atualizarEstoque(dto);
+        return ResponseEntity.ok(resposta);
     }
 
+    @PutMapping("/retirar")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<EstoqueListagemDto> retirarEstoque(@RequestBody @Valid RetirarEstoqueDto dto) {
+        EstoqueListagemDto resposta = estoqueService.retirarEstoque(dto);
+        return ResponseEntity.ok(resposta);
+    }
+
+    @GetMapping("/materiais/{id}")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<EstoqueListagemDto> buscarMaterialPorId(@PathVariable int id) {
+        return ResponseEntity.ok(estoqueService.buscarMaterialPorId(id));
+    }
 
 
 }

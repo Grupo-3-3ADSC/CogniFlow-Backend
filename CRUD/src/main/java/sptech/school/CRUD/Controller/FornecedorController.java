@@ -1,18 +1,28 @@
 package sptech.school.CRUD.Controller;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sptech.school.CRUD.Model.EstoqueModel;
-import sptech.school.CRUD.Model.FornecedorModel;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorCadastroDto;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorCompletoDTO;
-import sptech.school.CRUD.dto.Fornecedor.FornecedorListagemDto;
+import sptech.school.CRUD.dto.Fornecedor.PaginacaoFornecedorDTO;
 import sptech.school.CRUD.service.FornecedorService;
 
 import java.util.List;
-
+@Tag(name = "Fornecedor", description = "Endpoints de Fornecedor")
 @RestController
 @RequestMapping("/fornecedores")
+@ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Requisição inválida"),
+        @ApiResponse(responseCode = "404", description = "Entidade relacionada não encontrada"),
+        @ApiResponse(responseCode = "409", description = "Conflito de dados (ex: rastreabilidade duplicada)")
+})
 public class FornecedorController {
 
     private final FornecedorService fornecedorService;
@@ -22,37 +32,33 @@ public class FornecedorController {
     }
 
     @PostMapping
-    public ResponseEntity cadastrarFornecedor(@RequestBody FornecedorCadastroDto fornecedor){
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<FornecedorCadastroDto> cadastrarFornecedor(@RequestBody @Valid FornecedorCadastroDto fornecedorDto) {
 
-        FornecedorModel novoFornecedor = fornecedorService.cadastroFornecedor(fornecedor);
-
-        return ResponseEntity.status(201).body(novoFornecedor);
-
-    }
-
-    @GetMapping
-    public ResponseEntity<List<FornecedorListagemDto>> listarFornecedores(){
-        List<FornecedorListagemDto> dtos = fornecedorService.listarFornecedoresDto();
-
-        return ResponseEntity.ok().body(dtos);
-    }
-
-    @GetMapping("/listarTudo")
-    public ResponseEntity<List<FornecedorModel>> getAll() {
-
-        return ResponseEntity.ok().body(fornecedorService.getAll());
+        // Chama o service passando o DTO diretamente
+        FornecedorCadastroDto novoFornecedor = fornecedorService.cadastroFornecedor(fornecedorDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoFornecedor);
     }
 
     @GetMapping("/top5")
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<List<FornecedorCompletoDTO>> getTop5Fornecedores() {
         List<FornecedorCompletoDTO> fornecedores = fornecedorService.buscarTop5Fornecedores();
         return ResponseEntity.ok(fornecedores);
     }
 
-    @GetMapping("/listarFornecedorCompleto")
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping
     public ResponseEntity<List<FornecedorCompletoDTO>> getFornecedorCompleto() {
         List<FornecedorCompletoDTO> fornecedores = fornecedorService.fornecedorCompleto();
         return ResponseEntity.ok(fornecedores);
     }
 
+    @GetMapping("/paginados")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<PaginacaoFornecedorDTO> getFornecedorPaginado(@RequestParam(defaultValue = "1") Integer pagina,
+                                                                        @RequestParam(defaultValue = "6") Integer tamanho){
+        PaginacaoFornecedorDTO fornecedores = fornecedorService.fornecedorPaginado(pagina, tamanho);
+        return ResponseEntity.ok(fornecedores);
+    }
 }

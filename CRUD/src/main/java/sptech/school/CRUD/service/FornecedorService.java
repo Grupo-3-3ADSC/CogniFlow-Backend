@@ -1,6 +1,10 @@
 package sptech.school.CRUD.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import sptech.school.CRUD.Model.ContatoModel;
 import sptech.school.CRUD.Model.EnderecoModel;
@@ -10,73 +14,81 @@ import sptech.school.CRUD.Repository.EnderecoRepository;
 import sptech.school.CRUD.Repository.FornecedorRepository;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorCadastroDto;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorCompletoDTO;
-import sptech.school.CRUD.dto.Fornecedor.FornecedorListagemDto;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorMapper;
+import sptech.school.CRUD.dto.Fornecedor.PaginacaoFornecedorDTO;
+import sptech.school.CRUD.exception.RequisicaoConflitanteException;
+import sptech.school.CRUD.exception.RequisicaoInvalidaException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class FornecedorService {
 
-    @Autowired
     private final FornecedorRepository fornecedorRepository;
+    private final EnderecoRepository enderecoRepository;
+    private final ContatoRepository contatoRepository;
+    private final ViaCepService viaCepService;
 
-    @Autowired
-    private EnderecoRepository enderecoRepository;
+    public FornecedorCadastroDto cadastroFornecedor(FornecedorCadastroDto fornecedorDto) {
 
-    @Autowired
-    private ContatoRepository contatoRepository;
+        // Verificar se já existe fornecedor com o CNPJ
+        if (fornecedorRepository.findByCnpj(fornecedorDto.getCnpj()).isPresent()) {
+            throw new RequisicaoConflitanteException("Já existe um fornecedor cadastrado com esse CNPJ.");
+        }
+        if (fornecedorRepository.findByCnpj(fornecedorDto.getIe()).isPresent()) {
+            throw new RequisicaoConflitanteException("Já existe um fornecedor cadastrado com esse IE.");
+        }
+        if (contatoRepository.existsByEmail(fornecedorDto.getEmail())) {
+            throw new RequisicaoConflitanteException("Já existe um fornecedor cadastrado com esse e-mail.");
+       }
+        if (fornecedorDto.getCnpj() == null || fornecedorDto.getCnpj().isBlank()){
+            throw new RequisicaoInvalidaException("CNPJ não pode ser vazio nem nulo");
+        }
+        if (fornecedorDto.getCnpj().length() < 14){
+            throw new RequisicaoInvalidaException("CNPJ deve conter pelo menos 14 dígitos");
+        }
 
-    public FornecedorService(FornecedorRepository fornecedorRepository) {
-        this.fornecedorRepository = fornecedorRepository;
-    }
-    public FornecedorModel cadastroFornecedor(FornecedorCadastroDto fornecedorDto) {
+        try {
+            viaCepService.buscarEnderecoPorCep(fornecedorDto.getCep());
+        } catch (IllegalArgumentException ex) {
+            throw new RequisicaoInvalidaException("CEP inválido ou não encontrado.");
+        }
+
         // Converte DTO para Model usando o mapper
         FornecedorModel fornecedor = FornecedorMapper.toCadastroModel(fornecedorDto);
 
-        // Salva no banco
+        // Salva o fornecedor primeiro
+        FornecedorModel fornecedorSalvo = fornecedorRepository.save(fornecedor);
 
-
+        // Cria e salva o endereço
         EnderecoModel endereco = new EnderecoModel();
         endereco.setCep(fornecedorDto.getCep());
         endereco.setComplemento(fornecedorDto.getEndereco());
-
-        // Converter número para Integer
-        try {
-            endereco.setNumero(Integer.parseInt(fornecedorDto.getNumero()));
-        } catch (NumberFormatException e) {
-            endereco.setNumero(null);
-        }
-
-        FornecedorModel fornecedorSalvo = fornecedorRepository.save(fornecedor);
-
+        endereco.setNumero(fornecedorDto.getNumero());
         endereco.setFornecedor(fornecedorSalvo);
+
         EnderecoModel enderecoSalvo = enderecoRepository.save(endereco);
 
+        // Cria e salva o contato
         ContatoModel contato = new ContatoModel();
         contato.setTelefone(fornecedorDto.getTelefone());
         contato.setEmail(fornecedorDto.getEmail());
-
-
+        contato.setResponsavel(fornecedorDto.getResponsavel());
+        contato.setCargo(fornecedorDto.getCargo());
         contato.setFornecedor(fornecedorSalvo);
+
         ContatoModel contatoSalvo = contatoRepository.save(contato);
 
-        return fornecedorSalvo;
+        // Retorna o DTO original com os dados salvos
+        return fornecedorDto;
     }
 
-    public List<FornecedorModel> getAll(){return fornecedorRepository.findAll();}
 
-    public  List<FornecedorListagemDto> listarFornecedoresDto(){
-
-        List<FornecedorModel> fornecedores = fornecedorRepository.findAll();
-
-        return fornecedores.stream()
-                .map(FornecedorMapper::toListagemDto)
-                .collect(Collectors.toList());
-    }
     public  List<FornecedorCompletoDTO> fornecedorCompleto(){
         List<FornecedorCompletoDTO> fornecedores = fornecedorRepository.findFornecedoresCompletos();
+
 
         return fornecedores.stream()
                 .map(FornecedorMapper::fornecedorCompleto)
@@ -101,6 +113,28 @@ public class FornecedorService {
             dto.setEmail((String) row[10]);
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    public PaginacaoFornecedorDTO fornecedorPaginado(Integer pagina, Integer tamanho){
+        Pageable pageable = PageRequest.of(pagina, tamanho);
+
+        Page<FornecedorCompletoDTO> fornecedores = fornecedorRepository.findFornecedoresPaginados(pageable);
+
+        List<FornecedorCompletoDTO> fornecedoresMapeados= fornecedores.getContent()
+                .stream()
+                .map(FornecedorMapper::fornecedorCompleto)
+                .collect(Collectors.toList());
+
+        PaginacaoFornecedorDTO response = new PaginacaoFornecedorDTO();
+        response.setData(fornecedoresMapeados);
+        response.setPaginaAtual(pagina);
+        response.setPaginasTotais(fornecedores.getTotalPages());
+        response.setTotalItems(fornecedores.getTotalElements());
+        response.setHasNext(fornecedores.hasNext());
+        response.setHasPrevious(fornecedores.hasPrevious());
+        response.setPageSize(tamanho);
+
+        return response;
     }
 
 }

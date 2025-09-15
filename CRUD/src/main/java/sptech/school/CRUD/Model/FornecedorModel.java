@@ -17,6 +17,9 @@ public class FornecedorModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String cnpj;
+    private String ie;
     private String razaoSocial;
     private String nomeFantasia;
+    private String responsavel;
+    private String cargo;
 }

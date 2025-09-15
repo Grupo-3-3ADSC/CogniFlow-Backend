@@ -8,8 +8,10 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FornecedorCompletoDTO {
+
         private Integer fornecedorId;
         private String cnpj;
+        private String ie;
         private String razaoSocial;
         private String nomeFantasia;
         private Integer enderecoId;
@@ -19,4 +21,6 @@ public class FornecedorCompletoDTO {
         private Integer contatoId;
         private String telefone;
         private String email;
+        private String responsavel;
+        private String cargo;
 }

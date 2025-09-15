@@ -4,8 +4,15 @@ package sptech.school.CRUD.service;
 import org.springframework.stereotype.Service;
 import sptech.school.CRUD.Model.CargoModel;
 import sptech.school.CRUD.Repository.CargoRepository;
+import sptech.school.CRUD.dto.Cargo.CargoCadastraDto;
+import sptech.school.CRUD.dto.Cargo.CargoListagemDto;
+import sptech.school.CRUD.dto.Cargo.CargoMapper;
+import sptech.school.CRUD.exception.RequisicaoConflitanteException;
+import sptech.school.CRUD.exception.RecursoNaoEncontradoException;
+import sptech.school.CRUD.exception.RequisicaoInvalidaException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CargoService {
@@ -16,19 +23,36 @@ public class CargoService {
         this.cargoRepository = cargoRepository;
     }
 
-    public List<CargoModel> getAll() {
-        return cargoRepository.findAll();
+    public List<CargoListagemDto> getAll() {
+        return cargoRepository.findAll().stream()
+                .map(CargoMapper::toListagemDto)
+                .collect(Collectors.toList());
     }
 
-    public CargoModel post(CargoModel cargo) {
+    public CargoListagemDto post(CargoCadastraDto cargo) {
+        if (cargo == null || cargo.getNome() == null || cargo.getNome().isBlank()) {
+            throw new RequisicaoInvalidaException("O nome do cargo é obrigatório.");
+        }
+
+        CargoModel entity = CargoMapper.toCadastro(cargo);
+        CargoModel saved = this.cadastrar(entity);
+
+        return CargoMapper.toListagemDto(saved);
+    }
 
 
-        if(cargo == null) {
-            return null;
+    public CargoModel cadastrar(CargoModel cargo) {
+        if (cargoRepository.existsByNomeIgnoreCase(cargo.getNome())) {
+            throw new RequisicaoConflitanteException("Já existe um cargo com o nome:" + cargo.getNome());
         }
 
         return cargoRepository.save(cargo);
     }
 
+    public CargoListagemDto buscarPorId(Integer id) {
+        CargoModel cargo = cargoRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Cargo não encontrado com id " + id));
+        return CargoMapper.toListagemDto(cargo);
+    }
 
 }

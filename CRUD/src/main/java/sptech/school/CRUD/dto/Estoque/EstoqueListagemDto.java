@@ -1,8 +1,11 @@
 package sptech.school.CRUD.dto.Estoque;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -10,14 +13,13 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EstoqueListagemDto {
-    @NotBlank
+
+    private Integer id;
     private String tipoMaterial;
-    @NotNull
     private Integer quantidadeAtual;
-    @NotNull
     private Integer quantidadeMinima;
-    @NotNull
     private Integer quantidadeMaxima;
-    @NotBlank
+    private Double ipi;
     private String tipoTransferencia;
+    private LocalDateTime ultimaMovimentacao;
 }

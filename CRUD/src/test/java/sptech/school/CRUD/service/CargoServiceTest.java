@@ -11,6 +11,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import sptech.school.CRUD.Model.CargoModel;
 import sptech.school.CRUD.Repository.CargoRepository;
+import sptech.school.CRUD.dto.Cargo.CargoCadastraDto;
+import sptech.school.CRUD.dto.Cargo.CargoListagemDto;
+import sptech.school.CRUD.exception.RequisicaoInvalidaException;
+
 import java.util.List;
 
 
@@ -28,36 +32,40 @@ class CargoServiceTest {
     }
 
     @Test
-    @DisplayName("Cadastro de cargo - sucesso")
+    @DisplayName("Cadastro de cargo - Sucesso")
     void testePostCargoSucesso() {
         // Arrange
-        CargoModel cargo = new CargoModel();
-        cargo.setNome("Desenvolvedor");
+        CargoCadastraDto dto = new CargoCadastraDto();
+        dto.setNome("Desenvolvedor");
 
-        when(cargoRepository.save(any(CargoModel.class))).thenReturn(cargo);
+        CargoModel salvo = new CargoModel();
+        salvo.setNome("Desenvolvedor");
+
+        when(cargoRepository.save(any(CargoModel.class))).thenReturn(salvo);
 
         // Act
-        CargoModel resultado = cargoService.post(cargo);
+        CargoListagemDto resultado = cargoService.post(dto);
 
         // Assert
         assertNotNull(resultado);
         assertEquals("Desenvolvedor", resultado.getNome());
-        verify(cargoRepository).save(cargo);
+        verify(cargoRepository).save(any(CargoModel.class));
     }
 
     @Test
-    @DisplayName("Cadastro de cargo - falha (cargo nulo)")
+    @DisplayName("Cadastro de cargo - Falha (cargo nulo)")
     void testePostCargoNulo() {
-        // Act
-        CargoModel resultado = cargoService.post(null);
+        // Act & Assert
+        RequisicaoInvalidaException exception = assertThrows(RequisicaoInvalidaException.class, () -> {
+            cargoService.post(null);
+        });
 
-        // Assert
-        assertNull(resultado);
-        verify(cargoRepository, never()).save(any());
+        assertEquals("O nome do cargo é obrigatório.", exception.getMessage());
     }
 
+
     @Test
-    @DisplayName("Listagem de cargos - sucesso")
+    @DisplayName("Listagem de cargos - Sucesso")
     void testeGetAllCargos() {
         // Arrange
         CargoModel cargo1 = new CargoModel();
@@ -71,7 +79,7 @@ class CargoServiceTest {
         when(cargoRepository.findAll()).thenReturn(listaCargos);
 
         // Act
-        List<CargoModel> resultado = cargoService.getAll();
+        List<CargoListagemDto> resultado = cargoService.getAll();
 
         // Assert
         assertNotNull(resultado);

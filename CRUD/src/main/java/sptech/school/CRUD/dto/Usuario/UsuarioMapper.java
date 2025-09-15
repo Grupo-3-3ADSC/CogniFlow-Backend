@@ -1,21 +1,44 @@
 package sptech.school.CRUD.dto.Usuario;
 
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import sptech.school.CRUD.Model.CargoModel;
 import sptech.school.CRUD.Model.UsuarioModel;
+import sptech.school.CRUD.dto.Cargo.CargoListagemDto;
 
 import java.util.List;
 
 public class UsuarioMapper {
 
     public static UsuarioListagemDto toListagemDto(UsuarioModel entity){
-
-        if (entity == null){
-            return null;
+        UsuarioListagemDto dto = new UsuarioListagemDto();
+        dto.setId(entity.getId());
+        dto.setNome(entity.getNome());
+        dto.setEmail(entity.getEmail());
+        dto.setAtivo(entity.getAtivo());
+        if (entity.getCargo() != null) {
+            CargoListagemDto cargoDto = new CargoListagemDto();
+            cargoDto.setId(entity.getCargo().getId());
+            cargoDto.setNome(entity.getCargo().getNome());
+            dto.setCargo(cargoDto);
         }
-        return new UsuarioListagemDto(
+        return dto;
+    }
 
-                entity.getNome(),
-                entity.getEmail(),
-                entity.getPassword()
+    public static UsuarioListagemDto toEmailDto(UsuarioModel entity){
+         UsuarioListagemDto dto = new UsuarioListagemDto();
+         dto.setEmail(entity.getEmail());
+
+         return dto;
+    }
+
+    public static UsuarioAtivoDto toActiveDto(UsuarioModel entity){
+
+        if(entity == null){
+            throw new UsernameNotFoundException("Usuario não encontrado");
+        }
+
+        return new UsuarioAtivoDto(
+                entity.getAtivo()
         );
     }
 
@@ -33,6 +56,35 @@ public class UsuarioMapper {
         usuarioTokenDto.setCargo(usuario.getCargo());
 
         return usuarioTokenDto;
+    }
+
+    public static UsuarioFullDto toListagemFullDto(UsuarioModel usuario) {
+
+        if(usuario == null){
+            throw new UsernameNotFoundException("Usuário não encontrado");
+        }
+
+        return UsuarioFullDto.builder()
+                .id(usuario.getId())
+                .nome(usuario.getNome())
+                .email(usuario.getEmail())
+                .ativo(usuario.getAtivo())
+                .foto(usuario.getFoto())
+                .createdAt(usuario.getCreatedAt())
+                .updatedAt(usuario.getUpdatedAt())
+                .cargo(usuario.getCargo())
+                .build();
+    }
+
+
+    public static List<UsuarioFullDto> toListagemFullDto(List<UsuarioModel> entities){
+        if(entities == null){
+            throw new UsernameNotFoundException("Usuário não encontrado");
+        }
+
+        return entities.stream()
+                .map(UsuarioMapper::toListagemFullDto)
+                .toList();
     }
 
     public static UsuarioModel of(UsuarioCadastroDto usuarioParaCadastro) {
@@ -72,9 +124,27 @@ public class UsuarioMapper {
         if (dto == null) {
             return null;
         }
-        UsuarioModel model = new UsuarioModel(dto.getNome(), dto.getEmail(), dto.getPassword());
-        model.setId(id);
-        return model;
-    }
+        UsuarioModel usuario = new UsuarioModel();
+        usuario.setId(id);
+        usuario.setNome(dto.getNome());
+        usuario.setEmail(dto.getEmail());
+        usuario.setPassword(dto.getPassword());
 
+        if (dto.getCargo() == null || dto.getCargo().getId() == null){
+            CargoModel cargoPadrao = new CargoModel();
+            cargoPadrao.setId(1); // Define o cargo padrão com id = 1
+            usuario.setCargo(cargoPadrao);
+        } else {
+            usuario.setCargo(dto.getCargo());
+        }
+
+        return usuario;
+    }
+    public static UsuarioDeleteDto toDeleteDto(UsuarioModel model) {
+        UsuarioDeleteDto dto = new UsuarioDeleteDto();
+        dto.setId(model.getId());
+        dto.setNome(model.getNome());
+        dto.setEmail(model.getEmail());
+        return dto;
+    }
 }

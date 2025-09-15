@@ -14,6 +14,8 @@ public class ContatoModel {
     private Integer id;
     private String telefone;
     private String email;
+    private String responsavel;
+    private String cargo;
 
     @ManyToOne
     @JoinColumn(name = "fornecedor_id")

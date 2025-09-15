@@ -1,6 +1,7 @@
 package sptech.school.CRUD.Controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,16 +15,22 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sptech.school.CRUD.Model.UsuarioModel;
 import sptech.school.CRUD.dto.Usuario.*;
-import sptech.school.CRUD.exception.EntidadeNaoEncontrado;
+import sptech.school.CRUD.exception.RecursoNaoEncontradoException;
 import sptech.school.CRUD.service.UsuarioService;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
+@Tag(name = "Usuario", description = "Endpoints de Usuario")
 @RestController
 @RequestMapping("/usuarios")
+@ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Requisição inválida"),
+        @ApiResponse(responseCode = "404", description = "Entidade relacionada não encontrada"),
+        @ApiResponse(responseCode = "409", description = "Conflito de dados (ex: rastreabilidade duplicada)")
+})
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
@@ -32,17 +39,42 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    @GetMapping
+    @GetMapping("/listarAtivos")
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<List<UsuarioModel>> listar() {
+    public ResponseEntity<List<UsuarioListagemDto>> listarAtivos() {
 
-        List<UsuarioModel> usuariosAtivos = usuarioService.getAll();
+        List<UsuarioModel> usuariosAtivos = usuarioService.getAllByAtivo();
 
         if(usuariosAtivos.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok().body(usuariosAtivos);
+        List<UsuarioListagemDto> lista = UsuarioMapper.toListagemDtos(usuariosAtivos);
+        return ResponseEntity.ok(lista);
+    }
+
+    @GetMapping("/listarInativos")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<List<UsuarioListagemDto>> listarInativos() {
+        List<UsuarioModel> usuarios = usuarioService.getAllByInativo();
+        if (usuarios.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        List<UsuarioListagemDto> dtos = UsuarioMapper.toListagemDtos(usuarios);
+        return ResponseEntity.ok(dtos);
+    }
+
+    @GetMapping("/listarTodos")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<List<UsuarioFullDto>> listarTodos() {
+
+        List<UsuarioFullDto> usuarios = usuarioService.getAll();
+
+        if(usuarios.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok().body(usuarios);
     }
 
     @GetMapping("/{id}")
@@ -55,15 +87,16 @@ public class UsuarioController {
     })
 
 
-//    @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<UsuarioModel> getById(@PathVariable Integer id) {
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<UsuarioListagemDto> getById(@PathVariable Integer id) {
         UsuarioModel usuario = usuarioService.getById(id);
-        if (usuario != null){
 
-            return ResponseEntity.ok(usuario);
+        if (usuario != null){
+            return ResponseEntity.ok(UsuarioMapper.toListagemDto(usuario));
         } else {
             throw new RuntimeException("usuario nao encontrado");
         }
+
     }
 
     @PostMapping
@@ -92,7 +125,7 @@ public class UsuarioController {
 
     @PostMapping("/login")
 
-    public ResponseEntity<UsuarioTokenDto> login(@RequestBody UsuarioLoginDto usuarioLoginDto){
+    public ResponseEntity<UsuarioTokenDto> login(@RequestBody @Valid UsuarioLoginDto usuarioLoginDto){
 
         final UsuarioModel usuario = UsuarioMapper.of(usuarioLoginDto);
         UsuarioTokenDto usuarioTokenDto = this.usuarioService.autenticar(usuario);
@@ -102,12 +135,12 @@ public class UsuarioController {
 
     @PutMapping("/{id}")
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<UsuarioModel> atualizar(
+    public ResponseEntity<UsuarioAtualizadoDto> atualizar(
             @PathVariable Integer id,
-            @RequestBody UsuarioModel usuarioParaAtualizar
+            @RequestBody @Valid UsuarioAtualizadoDto usuarioParaAtualizar
     )
     {
-        UsuarioModel usuario = usuarioService.put(usuarioParaAtualizar, id);
+        UsuarioModel usuario = usuarioService.put(UsuarioMapper.toEntity(usuarioParaAtualizar, id), id);
 
         if(usuario == null) {
             return ResponseEntity.notFound().build();
@@ -118,7 +151,7 @@ public class UsuarioController {
 
     @PatchMapping("/{id}")
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<UsuarioModel> atualizarParcial(
+    public ResponseEntity<Void> atualizarParcial(
             @PathVariable Integer id,
             @RequestBody UsuarioPatchDto campos
             ){
@@ -131,22 +164,9 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{id}")
-    @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<UsuarioModel> deletar(
-            @PathVariable Integer id
-    ){
-        Optional<UsuarioModel> usuario = usuarioService.delete(id);
-
-        if (usuario.isEmpty()){
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.noContent().build();
-
-    }
-
     @PostMapping("/{id}/upload-foto")
-    public ResponseEntity<UsuarioModel> postarFoto (
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<Void> postarFoto (
             @PathVariable Integer id,
             @RequestParam("foto")MultipartFile file
             ) {
@@ -174,9 +194,10 @@ public class UsuarioController {
 
     }
 
-    @PutMapping("/{id}/senha") // Adicione o path completo
+    @PutMapping("/{id}/senha")// Adicione o path completo
+
     public ResponseEntity<Void> atualizarSenha(
-            @PathVariable Integer id, // Corrigido: Integer em vez de String
+            @PathVariable Integer id,
             @RequestBody @Valid UsuarioSenhaAtualizada request // DTO para receber a senha
     ){
         usuarioService.atualizarSenha(id, request.getPassword());
@@ -184,8 +205,35 @@ public class UsuarioController {
     }
 
     @GetMapping("/buscar-por-email/{email}")
-    public ResponseEntity<UsuarioModel> buscarPorEmail(@PathVariable String email) {
+
+    public ResponseEntity<UsuarioListagemDto> buscarPorEmail(@PathVariable String email) {
         UsuarioModel usuario = usuarioService.buscarPorEmail(email);
+        return ResponseEntity.ok(UsuarioMapper.toEmailDto(usuario));
+
+    }
+
+    @PatchMapping("/desativarUsuario/{id}")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<UsuarioAtivoDto> desativarUsuario(
+            @PathVariable Integer id,
+            @RequestBody UsuarioAtivoDto dto
+    ){
+
+        UsuarioAtivoDto usuario = usuarioService.desativarUsuario(id,dto);
+
         return ResponseEntity.ok(usuario);
     }
+
+    @DeleteMapping("/{id}")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<UsuarioDeleteDto> deletarUsuario(@PathVariable Integer id) {
+        Optional<UsuarioDeleteDto> dto = usuarioService.deletarUsuarios(id);
+
+        if (dto.isPresent()) {
+            return ResponseEntity.ok(dto.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }
