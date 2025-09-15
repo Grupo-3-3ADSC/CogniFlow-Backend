@@ -42,40 +42,26 @@ public class UsuarioController {
     @GetMapping("/listarAtivos")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<List<UsuarioListagemDto>> listarAtivos() {
-
         List<UsuarioModel> usuariosAtivos = usuarioService.getAllByAtivo();
-
-        if(usuariosAtivos.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
         List<UsuarioListagemDto> lista = UsuarioMapper.toListagemDtos(usuariosAtivos);
-        return ResponseEntity.ok(lista);
+        return ResponseEntity.ok(lista); // nunca retorna 204, sempre []
     }
 
     @GetMapping("/listarInativos")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<List<UsuarioListagemDto>> listarInativos() {
         List<UsuarioModel> usuarios = usuarioService.getAllByInativo();
-        if (usuarios.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
         List<UsuarioListagemDto> dtos = UsuarioMapper.toListagemDtos(usuarios);
-        return ResponseEntity.ok(dtos);
+        return ResponseEntity.ok(dtos); // idem aqui
     }
 
     @GetMapping("/listarTodos")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<List<UsuarioFullDto>> listarTodos() {
-
         List<UsuarioFullDto> usuarios = usuarioService.getAll();
-
-        if(usuarios.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.ok().body(usuarios);
+        return ResponseEntity.ok(usuarios); // idem
     }
+
 
     @GetMapping("/{id}")
     @Operation(summary = "Busca um usuário pelo ID")
