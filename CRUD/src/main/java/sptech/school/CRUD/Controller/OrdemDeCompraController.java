@@ -89,6 +89,7 @@ public class OrdemDeCompraController {
 
         return ResponseEntity.ok(ordens); // 200
     }
+
     @GetMapping("/material/{estoqueId}")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<List<ListagemOrdemDeCompra>> listarPorMaterial(
