@@ -31,7 +31,7 @@ public interface OrdemDeCompraRepository extends JpaRepository<OrdemDeCompraMode
     List<OrdemDeCompraModel> findByEstoqueIdAndAno(@Param("estoqueId") Integer estoqueId, @Param("ano") Integer ano);
 
     @Query("SELECT new sptech.school.CRUD.dto.OrdemDeCompra.ListagemOrdemDeCompra(" +
-            "o.id, o.prazoEntrega, o.ie, o.condPagamento, o.valorKg, o.rastreabilidade, " +
+            "o.id, o.prazoEntrega, o.condPagamento, o.valorKg, o.rastreabilidade, " +
             "o.valorPeca, o.descricaoMaterial, o.valorUnitario, o.quantidade, o.ipi, " +
             "o.fornecedorId, o.estoqueId, o.usuarioId, f.nomeFantasia, " +
             "CONCAT(o.descricaoMaterial, ' ', e.tipoMaterial), " + // descricaoMaterialCompleta
