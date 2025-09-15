@@ -154,7 +154,7 @@ public class OrdemDeCompraService {
     }
 
 
-    public List<OrdemDeCompraModel> getRelatorioFornecedor(Integer fornecedorId, Integer ano) {
+    public List<ListagemOrdemDeCompra> getRelatorioFornecedor(Integer fornecedorId, Integer ano) {
         // Verifica se o fornecedor existe
         fornecedorRepository.findById(fornecedorId)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Fornecedor não encontrado"));
@@ -165,7 +165,9 @@ public class OrdemDeCompraService {
             System.out.println("Nenhuma ordem encontrada para fornecedor " + fornecedorId + " no ano " + ano);
         }
 
-        return ordens;
+        return ordens.stream()
+                .map(OrdemDeCompraMapper::toListagemDto) // converte para DTO
+                .toList();
     }
 
 

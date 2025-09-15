@@ -77,11 +77,11 @@ public class OrdemDeCompraController {
 
     @GetMapping("/relatorioFornecedor/{fornecedorId}")
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<List<OrdemDeCompraModel>> getRelatorioFornecedor(
+    public ResponseEntity<List<ListagemOrdemDeCompra>> getRelatorioFornecedor(
             @PathVariable Integer fornecedorId,
             @RequestParam Integer ano
     ) {
-        List<OrdemDeCompraModel> ordens = ordemDeCompraService.getRelatorioFornecedor(fornecedorId, ano);
+        List<ListagemOrdemDeCompra> ordens = ordemDeCompraService.getRelatorioFornecedor(fornecedorId, ano);
 
         if (ordens.isEmpty()) {
             return ResponseEntity.noContent().build(); // 204

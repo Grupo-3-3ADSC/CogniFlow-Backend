@@ -46,6 +46,7 @@ public interface OrdemDeCompraRepository extends JpaRepository<OrdemDeCompraMode
 
     @Query("SELECT o FROM OrdemDeCompraModel o " +
             "JOIN FETCH o.fornecedor f " +
+            "JOIN FETCH o.estoque e " +
             "WHERE o.fornecedor.id = :fornecedorId " +
             "AND o.dataDeEmissao IS NOT NULL " +
             "AND FUNCTION('YEAR', o.dataDeEmissao) = :ano")
@@ -53,5 +54,6 @@ public interface OrdemDeCompraRepository extends JpaRepository<OrdemDeCompraMode
             @Param("fornecedorId") Integer fornecedorId,
             @Param("ano") Integer ano
     );
+
 
 }
