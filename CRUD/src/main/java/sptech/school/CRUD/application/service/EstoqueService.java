@@ -8,6 +8,8 @@ import sptech.school.CRUD.domain.entity.EstoqueModel;
 import sptech.school.CRUD.domain.repository.EstoqueRepository;
 import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
 import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
+import sptech.school.CRUD.interfaces.dto.Estoque.*;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +18,9 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class EstoqueService {
+
+
+
 
     @Autowired
     private final EstoqueRepository estoqueRepository;

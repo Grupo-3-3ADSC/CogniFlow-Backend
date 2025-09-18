@@ -13,10 +13,10 @@ import sptech.school.CRUD.domain.repository.CargoRepository;
 import sptech.school.CRUD.domain.repository.UsuarioRepository;
 import sptech.school.CRUD.domain.entity.CargoModel;
 import sptech.school.CRUD.domain.entity.UsuarioModel;
-import sptech.school.CRUD.dto.Usuario.UsuarioAtivoDto;
+import sptech.school.CRUD.interfaces.dto.Usuario.UsuarioAtivoDto;
 import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
 import sptech.school.CRUD.domain.exception.RequisicaoConflitanteException;
-import sptech.school.CRUD.dto.Usuario.UsuarioDeleteDto;
+import sptech.school.CRUD.interfaces.dto.Usuario.UsuarioDeleteDto;
 import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
 
 import static org.mockito.ArgumentMatchers.any;

@@ -19,6 +19,7 @@ import sptech.school.CRUD.infrastructure.config.GerenciadorTokenJwt;
 import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
 import sptech.school.CRUD.domain.exception.RequisicaoConflitanteException;
 import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
+import sptech.school.CRUD.interfaces.dto.Usuario.*;
 
 import java.time.LocalDateTime;
 import java.util.List;

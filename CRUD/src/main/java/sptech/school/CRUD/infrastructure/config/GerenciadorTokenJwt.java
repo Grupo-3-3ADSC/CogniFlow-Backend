@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import sptech.school.CRUD.dto.Usuario.UsuarioDetalhesDto;
+import sptech.school.CRUD.interfaces.dto.Usuario.UsuarioDetalhesDto;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;

@@ -17,8 +17,8 @@ import sptech.school.CRUD.domain.repository.EstoqueRepository;
 import sptech.school.CRUD.domain.repository.FornecedorRepository;
 import sptech.school.CRUD.domain.repository.OrdemDeCompraRepository;
 import sptech.school.CRUD.domain.repository.UsuarioRepository;
-import sptech.school.CRUD.dto.OrdemDeCompra.MudarQuantidadeAtualDto;
-import sptech.school.CRUD.dto.OrdemDeCompra.OrdemDeCompraCadastroDto;
+import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.MudarQuantidadeAtualDto;
+import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.OrdemDeCompraCadastroDto;
 import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
 
 import java.time.LocalDate;

@@ -2,7 +2,7 @@ package sptech.school.CRUD.application.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import sptech.school.CRUD.dto.Cep.EnderecoViaCepDto;
+import sptech.school.CRUD.interfaces.dto.Cep.EnderecoViaCepDto;
 
 @Service
 public class ViaCepService {

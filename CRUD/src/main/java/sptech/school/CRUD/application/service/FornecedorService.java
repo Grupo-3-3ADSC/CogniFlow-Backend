@@ -11,10 +11,10 @@ import sptech.school.CRUD.domain.entity.FornecedorModel;
 import sptech.school.CRUD.domain.repository.ContatoRepository;
 import sptech.school.CRUD.domain.repository.EnderecoRepository;
 import sptech.school.CRUD.domain.repository.FornecedorRepository;
-import sptech.school.CRUD.dto.Fornecedor.FornecedorCadastroDto;
-import sptech.school.CRUD.dto.Fornecedor.FornecedorCompletoDTO;
-import sptech.school.CRUD.dto.Fornecedor.FornecedorMapper;
-import sptech.school.CRUD.dto.Fornecedor.PaginacaoFornecedorDTO;
+import sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorCadastroDto;
+import sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorCompletoDTO;
+import sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorMapper;
+import sptech.school.CRUD.interfaces.dto.Fornecedor.PaginacaoFornecedorDTO;
 import sptech.school.CRUD.domain.exception.RequisicaoConflitanteException;
 import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
 

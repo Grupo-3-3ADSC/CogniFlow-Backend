@@ -4,12 +4,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 import sptech.school.CRUD.domain.entity.FornecedorModel;
-import sptech.school.CRUD.dto.Fornecedor.FornecedorCompletoDTO;
+import sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorCompletoDTO;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface FornecedorRepository extends JpaRepository<FornecedorModel, Integer> {
     Optional<FornecedorModel> findByCnpj(String cnpj);
     @Query(value = """
@@ -24,7 +26,7 @@ public interface FornecedorRepository extends JpaRepository<FornecedorModel, Int
     List<Object[]> findTop5FornecedoresCompletos();
 
     @Query("""
-    SELECT new sptech.school.CRUD.dto.Fornecedor.FornecedorCompletoDTO(
+    SELECT new sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorCompletoDTO(
         f.id, f.cnpj, f.ie, f.razaoSocial, f.nomeFantasia,
         e.id, e.cep, e.numero, e.complemento,
         c.id, c.telefone, c.email, c.responsavel, c.cargo
@@ -38,7 +40,7 @@ public interface FornecedorRepository extends JpaRepository<FornecedorModel, Int
     List<FornecedorCompletoDTO> findFornecedoresCompletos();
 
     @Query("""
-    SELECT DISTINCT new sptech.school.CRUD.dto.Fornecedor.FornecedorCompletoDTO(
+    SELECT DISTINCT new sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorCompletoDTO(
         f.id, f.cnpj, f.ie, f.razaoSocial, f.nomeFantasia,
         e.id, e.cep, e.numero, e.complemento,
         c.id, c.telefone, c.email, f.responsavel,

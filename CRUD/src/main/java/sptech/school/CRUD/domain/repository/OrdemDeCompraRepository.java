@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import sptech.school.CRUD.domain.entity.OrdemDeCompraModel;
-import sptech.school.CRUD.dto.OrdemDeCompra.ListagemOrdemDeCompra;
+import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.ListagemOrdemDeCompra;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +30,7 @@ public interface OrdemDeCompraRepository extends JpaRepository<OrdemDeCompraMode
     @Query("SELECT o FROM OrdemDeCompraModel o WHERE o.estoque.id = :estoqueId AND YEAR(o.dataDeEmissao) = :ano")
     List<OrdemDeCompraModel> findByEstoqueIdAndAno(@Param("estoqueId") Integer estoqueId, @Param("ano") Integer ano);
 
-    @Query("SELECT new sptech.school.CRUD.interface.OrdemDeCompra.dto.ListagemOrdemDeCompra(" +
+    @Query("SELECT new sptech.school.CRUD.interfaces.dto.OrdemDeCompra.ListagemOrdemDeCompra(" +
             "o.id, o.prazoEntrega, o.condPagamento, o.valorKg, o.rastreabilidade, " +
             "o.valorPeca, o.descricaoMaterial, o.valorUnitario, o.quantidade, o.ipi, " +
             "o.fornecedorId, o.estoqueId, o.usuarioId, f.nomeFantasia, " +

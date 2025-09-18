@@ -7,9 +7,9 @@ import org.mockito.*;
 import sptech.school.CRUD.application.service.EstoqueService;
 import sptech.school.CRUD.domain.entity.EstoqueModel;
 import sptech.school.CRUD.domain.repository.EstoqueRepository;
-import sptech.school.CRUD.dto.Estoque.AtualizarEstoqueDto;
-import sptech.school.CRUD.dto.Estoque.EstoqueListagemDto;
-import sptech.school.CRUD.dto.Estoque.RetirarEstoqueDto;
+import sptech.school.CRUD.interfaces.dto.Estoque.AtualizarEstoqueDto;
+import sptech.school.CRUD.interfaces.dto.Estoque.EstoqueListagemDto;
+import sptech.school.CRUD.interfaces.dto.Estoque.RetirarEstoqueDto;
 import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
 import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
 
