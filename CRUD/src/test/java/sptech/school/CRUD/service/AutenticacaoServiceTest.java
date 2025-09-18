@@ -8,11 +8,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import sptech.school.CRUD.Model.UsuarioModel;
-import sptech.school.CRUD.Repository.UsuarioRepository;
+import sptech.school.CRUD.application.service.AutenticacaoService;
+import sptech.school.CRUD.application.service.UsuarioService;
+import sptech.school.CRUD.domain.entity.UsuarioModel;
+import sptech.school.CRUD.domain.repository.UsuarioRepository;
 import static org.mockito.Mockito.*;
 
 import java.util.Optional;

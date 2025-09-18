@@ -4,15 +4,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import sptech.school.CRUD.Model.ContatoModel;
-import sptech.school.CRUD.Model.EnderecoModel;
-import sptech.school.CRUD.Model.FornecedorModel;
-import sptech.school.CRUD.Repository.ContatoRepository;
-import sptech.school.CRUD.Repository.EnderecoRepository;
-import sptech.school.CRUD.Repository.FornecedorRepository;
+import sptech.school.CRUD.application.service.FornecedorService;
+import sptech.school.CRUD.application.service.ViaCepService;
+import sptech.school.CRUD.domain.entity.ContatoModel;
+import sptech.school.CRUD.domain.entity.EnderecoModel;
+import sptech.school.CRUD.domain.entity.FornecedorModel;
+import sptech.school.CRUD.domain.repository.ContatoRepository;
+import sptech.school.CRUD.domain.repository.EnderecoRepository;
+import sptech.school.CRUD.domain.repository.FornecedorRepository;
 import sptech.school.CRUD.dto.Fornecedor.FornecedorCadastroDto;
-import sptech.school.CRUD.exception.RequisicaoInvalidaException;
-import sptech.school.CRUD.exception.RequisicaoConflitanteException;
+import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
+import sptech.school.CRUD.domain.exception.RequisicaoConflitanteException;
 
 import java.util.Optional;
 

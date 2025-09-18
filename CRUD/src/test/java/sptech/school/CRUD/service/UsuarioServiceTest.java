@@ -1,26 +1,23 @@
 package sptech.school.CRUD.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import sptech.school.CRUD.Repository.CargoRepository;
-import sptech.school.CRUD.Repository.UsuarioRepository;
-import sptech.school.CRUD.Model.CargoModel;
-import sptech.school.CRUD.Model.UsuarioModel;
+import sptech.school.CRUD.application.service.UsuarioService;
+import sptech.school.CRUD.domain.repository.CargoRepository;
+import sptech.school.CRUD.domain.repository.UsuarioRepository;
+import sptech.school.CRUD.domain.entity.CargoModel;
+import sptech.school.CRUD.domain.entity.UsuarioModel;
 import sptech.school.CRUD.dto.Usuario.UsuarioAtivoDto;
-import sptech.school.CRUD.exception.RequisicaoInvalidaException;
-import sptech.school.CRUD.exception.RequisicaoConflitanteException;
+import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
+import sptech.school.CRUD.domain.exception.RequisicaoConflitanteException;
 import sptech.school.CRUD.dto.Usuario.UsuarioDeleteDto;
-import sptech.school.CRUD.exception.RecursoNaoEncontradoException;
+import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.junit.jupiter.api.Assertions.*;

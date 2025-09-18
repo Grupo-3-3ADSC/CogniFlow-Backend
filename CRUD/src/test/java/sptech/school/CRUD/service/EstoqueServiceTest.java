@@ -4,13 +4,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import sptech.school.CRUD.Model.EstoqueModel;
-import sptech.school.CRUD.Repository.EstoqueRepository;
+import sptech.school.CRUD.application.service.EstoqueService;
+import sptech.school.CRUD.domain.entity.EstoqueModel;
+import sptech.school.CRUD.domain.repository.EstoqueRepository;
 import sptech.school.CRUD.dto.Estoque.AtualizarEstoqueDto;
 import sptech.school.CRUD.dto.Estoque.EstoqueListagemDto;
 import sptech.school.CRUD.dto.Estoque.RetirarEstoqueDto;
-import sptech.school.CRUD.exception.RecursoNaoEncontradoException;
-import sptech.school.CRUD.exception.RequisicaoInvalidaException;
+import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
+import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
 
 import java.util.Optional;
 

@@ -9,11 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import sptech.school.CRUD.Model.CargoModel;
-import sptech.school.CRUD.Repository.CargoRepository;
+import sptech.school.CRUD.application.service.CargoService;
+import sptech.school.CRUD.domain.entity.CargoModel;
+import sptech.school.CRUD.domain.repository.CargoRepository;
 import sptech.school.CRUD.dto.Cargo.CargoCadastraDto;
 import sptech.school.CRUD.dto.Cargo.CargoListagemDto;
-import sptech.school.CRUD.exception.RequisicaoInvalidaException;
+import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
 
 import java.util.List;
 
