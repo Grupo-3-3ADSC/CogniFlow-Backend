@@ -7,7 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.CRUD.interfaces.dto.Transferencia.TransferenciaDto;
 import sptech.school.CRUD.interfaces.dto.Transferencia.TransferenciaListagemDto;
-import sptech.school.CRUD.application.service.TransferenciaService;
+import sptech.school.CRUD.application.service.transferencia.TransferenciaService;
+import sptech.school.CRUD.application.service.transferencia.RealizarTransferenciaService;
 
 import java.util.List;
 
@@ -17,12 +18,13 @@ import java.util.List;
 public class TransferenciaController {
 
     private final TransferenciaService transferenciaService;
+    private final RealizarTransferenciaService realizarTransferenciaService;
 
     // Criar/realizar transferência
     @PostMapping
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<TransferenciaDto> realizarTransferencia(@RequestBody @Valid TransferenciaDto dto) {
-        TransferenciaDto resposta = transferenciaService.realizarTransferencia(dto);
+        TransferenciaDto resposta = realizarTransferenciaService.realizarTransferencia(dto);
         return ResponseEntity.ok(resposta);
     }
 

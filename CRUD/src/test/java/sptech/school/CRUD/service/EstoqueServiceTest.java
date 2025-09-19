@@ -4,7 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import sptech.school.CRUD.application.service.EstoqueService;
+import sptech.school.CRUD.application.service.estoque.EstoqueService;
 import sptech.school.CRUD.domain.entity.EstoqueModel;
 import sptech.school.CRUD.domain.repository.EstoqueRepository;
 import sptech.school.CRUD.interfaces.dto.Estoque.AtualizarEstoqueDto;

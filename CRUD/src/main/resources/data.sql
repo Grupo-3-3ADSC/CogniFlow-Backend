@@ -1,4 +1,6 @@
 
+
+
 insert into cargo_model
     (created_at,nome,updated_at)
 values

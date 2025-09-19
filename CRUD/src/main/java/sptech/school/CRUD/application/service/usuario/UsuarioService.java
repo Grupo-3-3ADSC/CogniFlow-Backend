@@ -1,4 +1,4 @@
-package sptech.school.CRUD.application.service;
+package sptech.school.CRUD.application.service.usuario;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

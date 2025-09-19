@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.CRUD.domain.entity.OrdemDeCompraModel;
-import sptech.school.CRUD.application.service.OrdemDeCompraService;
+import sptech.school.CRUD.application.service.ordemDeCompra.OrdemDeCompraService;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.*;
 
 import java.util.List;

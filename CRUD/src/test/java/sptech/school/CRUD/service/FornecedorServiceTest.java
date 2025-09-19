@@ -4,7 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import sptech.school.CRUD.application.service.FornecedorService;
+import sptech.school.CRUD.application.service.fornecedor.FornecedorService;
 import sptech.school.CRUD.application.service.ViaCepService;
 import sptech.school.CRUD.domain.entity.ContatoModel;
 import sptech.school.CRUD.domain.entity.EnderecoModel;

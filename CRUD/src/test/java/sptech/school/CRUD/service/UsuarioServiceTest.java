@@ -8,7 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import sptech.school.CRUD.application.service.UsuarioService;
+import sptech.school.CRUD.application.service.usuario.UsuarioService;
 import sptech.school.CRUD.domain.repository.CargoRepository;
 import sptech.school.CRUD.domain.repository.UsuarioRepository;
 import sptech.school.CRUD.domain.entity.CargoModel;

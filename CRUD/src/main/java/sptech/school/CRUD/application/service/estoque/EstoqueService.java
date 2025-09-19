@@ -1,4 +1,4 @@
-package sptech.school.CRUD.application.service;
+package sptech.school.CRUD.application.service.estoque;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

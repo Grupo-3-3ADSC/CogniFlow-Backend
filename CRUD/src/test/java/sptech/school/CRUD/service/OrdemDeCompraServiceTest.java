@@ -8,7 +8,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import sptech.school.CRUD.application.service.OrdemDeCompraService;
+import sptech.school.CRUD.application.service.ordemDeCompra.OrdemDeCompraService;
 import sptech.school.CRUD.domain.entity.EstoqueModel;
 import sptech.school.CRUD.domain.entity.FornecedorModel;
 import sptech.school.CRUD.domain.entity.OrdemDeCompraModel;

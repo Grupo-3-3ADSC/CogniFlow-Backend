@@ -1,4 +1,4 @@
-package sptech.school.CRUD.application.service;
+package sptech.school.CRUD.application.service.cargo;
 
 
 import org.springframework.stereotype.Service;

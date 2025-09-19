@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorCadastroDto;
 import sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorCompletoDTO;
 import sptech.school.CRUD.interfaces.dto.Fornecedor.PaginacaoFornecedorDTO;
-import sptech.school.CRUD.application.service.FornecedorService;
+import sptech.school.CRUD.application.service.fornecedor.FornecedorService;
 
 import java.util.List;
 @Tag(name = "Fornecedor", description = "Endpoints de Fornecedor")

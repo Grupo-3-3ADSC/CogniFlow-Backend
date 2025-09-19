@@ -1,4 +1,4 @@
-package sptech.school.CRUD.application.service;
+package sptech.school.CRUD.application.service.usuario;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.CRUD.interfaces.dto.Cargo.CargoCadastraDto;
 import sptech.school.CRUD.interfaces.dto.Cargo.CargoListagemDto;
-import sptech.school.CRUD.application.service.CargoService;
+import sptech.school.CRUD.application.service.cargo.CargoService;
 
 import java.util.List;
 @Tag(name = "Cargo", description = "Endpoints de Cargo")

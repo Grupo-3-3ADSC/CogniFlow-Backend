@@ -1,10 +1,11 @@
-package sptech.school.CRUD.application.service;
+package sptech.school.CRUD.application.service.fornecedor;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import sptech.school.CRUD.application.service.ViaCepService;
 import sptech.school.CRUD.domain.entity.ContatoModel;
 import sptech.school.CRUD.domain.entity.EnderecoModel;
 import sptech.school.CRUD.domain.entity.FornecedorModel;

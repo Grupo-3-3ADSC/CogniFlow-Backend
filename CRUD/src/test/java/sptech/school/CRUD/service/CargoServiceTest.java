@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import sptech.school.CRUD.application.service.CargoService;
+import sptech.school.CRUD.application.service.cargo.CargoService;
 import sptech.school.CRUD.domain.entity.CargoModel;
 import sptech.school.CRUD.domain.repository.CargoRepository;
 import sptech.school.CRUD.interfaces.dto.Cargo.CargoCadastraDto;

@@ -14,7 +14,7 @@ import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sptech.school.CRUD.domain.entity.UsuarioModel;
-import sptech.school.CRUD.application.service.UsuarioService;
+import sptech.school.CRUD.application.service.usuario.UsuarioService;
 import sptech.school.CRUD.interfaces.dto.Usuario.*;
 
 import java.util.List;

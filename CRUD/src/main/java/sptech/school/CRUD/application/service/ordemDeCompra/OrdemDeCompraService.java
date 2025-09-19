@@ -1,4 +1,4 @@
-package sptech.school.CRUD.application.service;
+package sptech.school.CRUD.application.service.ordemDeCompra;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
