@@ -8,6 +8,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import sptech.school.CRUD.application.service.usuario.AtualizarUsuarioService;
+import sptech.school.CRUD.application.service.usuario.CadastroUsuarioService;
 import sptech.school.CRUD.application.service.usuario.UsuarioService;
 import sptech.school.CRUD.infrastructure.persistence.CargoRepository;
 import sptech.school.CRUD.infrastructure.persistence.UsuarioRepository;
@@ -32,6 +34,10 @@ class UsuarioServiceTest {
 
     @InjectMocks
     private UsuarioService usuarioService;
+    @InjectMocks
+    private CadastroUsuarioService cadastroService;
+    @InjectMocks
+    private AtualizarUsuarioService atualizarService;
 
     @Mock
     private UsuarioRepository usuarioRepository;
@@ -41,7 +47,6 @@ class UsuarioServiceTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
-
 
     @Test
     @DisplayName("Cadastro de funcionário comum - Sucesso")
@@ -77,7 +82,7 @@ class UsuarioServiceTest {
         when(usuarioRepository.save(any())).thenReturn(usuarioSalvo);
 
         // Executar o método
-        UsuarioModel resultado = usuarioService.cadastrarUsuarioComum(usuario);
+        UsuarioModel resultado = cadastroService.cadastrarUsuarioComum(usuario);
 
         //Assert
         // Verificações
@@ -103,7 +108,7 @@ class UsuarioServiceTest {
         // Act & Assert
         RequisicaoConflitanteException exception = assertThrows(
                 RequisicaoConflitanteException.class,
-                () -> usuarioService.cadastrarUsuarioComum(novoUsuario)
+                () -> cadastroService.cadastrarUsuarioComum(novoUsuario)
         );
 
         verify(usuarioRepository, times(1)).existsByEmail(email);
@@ -121,7 +126,7 @@ class UsuarioServiceTest {
         usuario.setPassword("123");
 
         // Act & Assert
-        RequisicaoInvalidaException exception = assertThrows(RequisicaoInvalidaException.class, () -> usuarioService.cadastrarUsuarioGestor(usuario));
+        RequisicaoInvalidaException exception = assertThrows(RequisicaoInvalidaException.class, () -> cadastroService.cadastrarUsuarioGestor(usuario));
 
         assertEquals("Senha deve ter pelo menos 6 caracteres.", exception.getMessage());
     }
@@ -138,7 +143,7 @@ class UsuarioServiceTest {
         // Act & Assert
         RequisicaoInvalidaException exception = assertThrows(
                 RequisicaoInvalidaException.class,
-                () -> usuarioService.cadastrarUsuarioGestor(usuario)
+                () -> cadastroService.cadastrarUsuarioGestor(usuario)
         );
         assertEquals("Senha não pode ser nulo ou vazio.", exception.getMessage());
     }
@@ -205,7 +210,7 @@ class UsuarioServiceTest {
 
         when(cargoRepository.findByNome("comum")).thenReturn(null);
         // Act
-        UsuarioModel resultado = usuarioService.cadastrarUsuarioComum(usuario);
+        UsuarioModel resultado = cadastroService.cadastrarUsuarioComum(usuario);
 
         // Assert
         assertNull(resultado);
@@ -240,7 +245,7 @@ class UsuarioServiceTest {
         when(usuarioRepository.save(any())).thenReturn(usuarioSalvo);
 
         // Act
-        UsuarioModel resultado = usuarioService.cadastrarUsuarioGestor(usuario);
+        UsuarioModel resultado = cadastroService.cadastrarUsuarioGestor(usuario);
 
         // Assert
         assertNotNull(resultado);
@@ -266,7 +271,7 @@ class UsuarioServiceTest {
         // Act & Assert
         RequisicaoConflitanteException exception = assertThrows(
                 RequisicaoConflitanteException.class,
-                () -> usuarioService.cadastrarUsuarioComum(novoUsuario)
+                () -> cadastroService.cadastrarUsuarioComum(novoUsuario)
         );
 
         verify(usuarioRepository, times(1)).existsByEmail(email);
@@ -283,7 +288,7 @@ class UsuarioServiceTest {
         usuario.setPassword("123");
 
         // Act & Assert
-        RequisicaoInvalidaException exception = assertThrows(RequisicaoInvalidaException.class, () -> usuarioService.cadastrarUsuarioGestor(usuario));
+        RequisicaoInvalidaException exception = assertThrows(RequisicaoInvalidaException.class, () -> cadastroService.cadastrarUsuarioGestor(usuario));
 
         assertEquals("Senha deve ter pelo menos 6 caracteres.", exception.getMessage());
     }
@@ -300,7 +305,7 @@ class UsuarioServiceTest {
         // Act & Assert
         RequisicaoInvalidaException exception = assertThrows(
                 RequisicaoInvalidaException.class,
-                () -> usuarioService.cadastrarUsuarioGestor(usuario)
+                () -> cadastroService.cadastrarUsuarioGestor(usuario)
         );
         assertEquals("Senha não pode ser nulo ou vazio.", exception.getMessage());
 
@@ -320,7 +325,7 @@ class UsuarioServiceTest {
         when(cargoRepository.findByNome("gestor")).thenReturn(null);
 
         // Act
-        UsuarioModel resultado = usuarioService.cadastrarUsuarioGestor(usuario);
+        UsuarioModel resultado = cadastroService.cadastrarUsuarioGestor(usuario);
 
         // Assert
         assertNull(resultado);
@@ -347,7 +352,7 @@ class UsuarioServiceTest {
         lenient().when(usuarioRepository.save(any())).thenReturn(usuarioAtualizado);
 
         // Act
-        UsuarioModel resultado = usuarioService.put(usuarioAtualizado, 1);
+        UsuarioModel resultado = atualizarService.put(usuarioAtualizado, 1);
 
         // Assert
         assertNotNull(resultado);
@@ -380,7 +385,7 @@ class UsuarioServiceTest {
         });
 
         // Act
-        UsuarioModel resultado = usuarioService.put(usuarioAtualizado, 1);
+        UsuarioModel resultado = atualizarService.put(usuarioAtualizado, 1);
 
         // Assert
         assertNotNull(resultado);
@@ -401,7 +406,7 @@ class UsuarioServiceTest {
         when(usuarioRepository.existsById(1)).thenReturn(true);
 
         // Act & Assert
-        RequisicaoInvalidaException exception = assertThrows(RequisicaoInvalidaException.class, () -> usuarioService.put(usuarioAtualizado, 1));
+        RequisicaoInvalidaException exception = assertThrows(RequisicaoInvalidaException.class, () -> atualizarService.put(usuarioAtualizado, 1));
 
         System.out.println("Mensagem de erro retornada: " + exception.getMessage());
 
@@ -424,7 +429,7 @@ class UsuarioServiceTest {
         when(usuarioRepository.existsById(anyInt())).thenReturn(false);
 
         // Act & Assert
-        RecursoNaoEncontradoException exception = assertThrows(RecursoNaoEncontradoException.class, () -> usuarioService.put(usuarioAtualizado, 99));
+        RecursoNaoEncontradoException exception = assertThrows(RecursoNaoEncontradoException.class, () -> atualizarService.put(usuarioAtualizado, 99));
 
         assertEquals("Usuario de id 99 não encontrado", exception.getMessage());
         verify(usuarioRepository, never()).save(any());
@@ -483,7 +488,7 @@ class UsuarioServiceTest {
         when(usuarioRepository.findById(idUsuario)).thenReturn(Optional.of(usuario));
         when(usuarioRepository.save(any(UsuarioModel.class))).thenReturn(usuario);
 
-        UsuarioAtivoDto response = usuarioService.desativarUsuario(idUsuario, dto);
+        UsuarioAtivoDto response = atualizarService.desativarUsuario(idUsuario, dto);
 
         assertFalse(response.getAtivo()); // o usuário deve estar inativo
         assertFalse(usuario.getAtivo());  // também vale verificar o model salvo
@@ -503,7 +508,7 @@ class UsuarioServiceTest {
         when(usuarioRepository.findById(idUsuario)).thenReturn(Optional.of(usuario));
         when(usuarioRepository.save(any(UsuarioModel.class))).thenReturn(usuario);
 
-        UsuarioAtivoDto response = usuarioService.desativarUsuario(idUsuario, dto);
+        UsuarioAtivoDto response = atualizarService.desativarUsuario(idUsuario, dto);
 
         assertTrue(response.getAtivo());
         assertTrue(usuario.getAtivo());
@@ -516,7 +521,7 @@ class UsuarioServiceTest {
         when(usuarioRepository.findById(id)).thenReturn(Optional.empty());
 
         assertThrows(UsernameNotFoundException.class, () -> {
-            usuarioService.desativarUsuario(id, dto);
+            atualizarService.desativarUsuario(id, dto);
         });
     }
 

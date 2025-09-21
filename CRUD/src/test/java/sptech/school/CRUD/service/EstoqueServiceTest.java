@@ -4,7 +4,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import sptech.school.CRUD.application.service.estoque.EstoqueService;
+import sptech.school.CRUD.application.service.estoque.AtualizarEstoqueService;
+import sptech.school.CRUD.application.service.estoque.RetirarEstoqueService;
 import sptech.school.CRUD.domain.entity.EstoqueModel;
 import sptech.school.CRUD.infrastructure.persistence.EstoqueRepository;
 import sptech.school.CRUD.interfaces.dto.Estoque.AtualizarEstoqueDto;
@@ -29,7 +30,9 @@ class EstoqueServiceTest {
     private EstoqueRepository estoqueRepository;
 
     @InjectMocks
-    private EstoqueService estoqueService;
+    private RetirarEstoqueService retirarEstoqueService;
+    @InjectMocks
+    private AtualizarEstoqueService atualizarService;
 
     @Test
     @DisplayName("Entrada de Estoque - Material não encontrado")
@@ -40,7 +43,7 @@ class EstoqueServiceTest {
 
         // Act + Assert
         assertThrows(RecursoNaoEncontradoException.class, () -> {
-            estoqueService.atualizarEstoque(dto);
+            atualizarService.atualizarEstoque(dto);
         });
 
         verify(estoqueRepository, never()).save(any());
@@ -61,7 +64,7 @@ class EstoqueServiceTest {
         AtualizarEstoqueDto dto = new AtualizarEstoqueDto("SAE 1020", 50);
 
         // Act + Assert
-        assertThrows(RequisicaoInvalidaException.class, () -> estoqueService.atualizarEstoque(dto));
+        assertThrows(RequisicaoInvalidaException.class, () -> atualizarService.atualizarEstoque(dto));
     }
 
     @Test
@@ -81,7 +84,7 @@ class EstoqueServiceTest {
         when(estoqueRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        EstoqueListagemDto resultado = estoqueService.atualizarEstoque(dto);
+        EstoqueListagemDto resultado = atualizarService.atualizarEstoque(dto);
 
         // Assert
         assertNotNull(resultado);
@@ -103,7 +106,7 @@ class EstoqueServiceTest {
         when(estoqueRepository.findByTipoMaterial("SAE 1045")).thenReturn(Optional.of(estoque));
         when(estoqueRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        EstoqueListagemDto resultado = estoqueService.atualizarEstoque(dto);
+        EstoqueListagemDto resultado = atualizarService.atualizarEstoque(dto);
 
         assertNotNull(resultado);
         assertEquals(10000, resultado.getQuantidadeAtual());
@@ -124,7 +127,7 @@ class EstoqueServiceTest {
         when(estoqueRepository.findByTipoMaterial("HARDOX 450")).thenReturn(Optional.of(estoque));
         when(estoqueRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        EstoqueListagemDto resultado = estoqueService.atualizarEstoque(dto);
+        EstoqueListagemDto resultado = atualizarService.atualizarEstoque(dto);
 
         assertNotNull(resultado);
         assertEquals(10000, resultado.getQuantidadeAtual());
@@ -147,7 +150,7 @@ class EstoqueServiceTest {
         when(estoqueRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
         // Act
-        EstoqueListagemDto resultado = estoqueService.atualizarEstoque(dto);
+        EstoqueListagemDto resultado = atualizarService.atualizarEstoque(dto);
 
         // Assert
         assertNotNull(resultado);
@@ -163,8 +166,6 @@ class EstoqueServiceTest {
         EstoqueModel estoque = new EstoqueModel();
         estoque.setTipoMaterial("SAE 1045");
         estoque.setQuantidadeAtual(100);
-        estoque.setInterno(0);
-        estoque.setExterno(0);
 
         when(estoqueRepository.findByTipoMaterial("SAE 1045")).thenReturn(Optional.of(estoque));
         when(estoqueRepository.save(any())).thenAnswer(i -> i.getArgument(0));
@@ -172,12 +173,11 @@ class EstoqueServiceTest {
         RetirarEstoqueDto dto = new RetirarEstoqueDto("SAE 1045", 20, "Interna");
 
         // Act
-        EstoqueListagemDto resultado = estoqueService.retirarEstoque(dto);
+        EstoqueListagemDto resultado = retirarEstoqueService.retirarEstoque(dto);
 
         // Assert
         assertNotNull(resultado);
         assertEquals(80, estoque.getQuantidadeAtual());
-        assertEquals(1, estoque.getInterno());
     }
 
     @Test
@@ -193,7 +193,7 @@ class EstoqueServiceTest {
         RetirarEstoqueDto dto = new RetirarEstoqueDto("SAE 1020", 20, "Externa");
 
         // Act & Assert
-        RuntimeException e = assertThrows(RuntimeException.class, () -> estoqueService.retirarEstoque(dto));
+        RuntimeException e = assertThrows(RuntimeException.class, () -> retirarEstoqueService.retirarEstoque(dto));
         assertTrue(e.getMessage().contains("insuficiente"));
     }
 
@@ -205,7 +205,7 @@ class EstoqueServiceTest {
         RetirarEstoqueDto dto = new RetirarEstoqueDto("", 10, "Interna");
 
         // Act & Assert
-        assertThrows(RequisicaoInvalidaException.class, () -> estoqueService.retirarEstoque(dto));
+        assertThrows(RequisicaoInvalidaException.class, () -> retirarEstoqueService.retirarEstoque(dto));
     }
 
     @Test
@@ -214,6 +214,6 @@ class EstoqueServiceTest {
         RetirarEstoqueDto dto = new RetirarEstoqueDto("SAE 1020", -5, "Externa");
 
         // Act & Assert
-        assertThrows(RequisicaoInvalidaException.class, () -> estoqueService.retirarEstoque(dto));
+        assertThrows(RequisicaoInvalidaException.class, () -> retirarEstoqueService.retirarEstoque(dto));
     }
 }

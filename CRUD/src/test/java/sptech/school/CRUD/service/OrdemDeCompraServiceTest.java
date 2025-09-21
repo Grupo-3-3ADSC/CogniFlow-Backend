@@ -8,6 +8,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import sptech.school.CRUD.application.service.ordemDeCompra.CadastrarOrdemDeCompraService;
+import sptech.school.CRUD.application.service.ordemDeCompra.MudarQuantidadeAtualService;
 import sptech.school.CRUD.application.service.ordemDeCompra.OrdemDeCompraService;
 import sptech.school.CRUD.domain.entity.EstoqueModel;
 import sptech.school.CRUD.domain.entity.FornecedorModel;
@@ -46,6 +48,10 @@ private FornecedorRepository fornecedorRepository;
 
 @InjectMocks
 private OrdemDeCompraService ordemDeCompraService;
+@InjectMocks
+private MudarQuantidadeAtualService mudarQuantidadeService;
+@InjectMocks
+private CadastrarOrdemDeCompraService cadastroService;
 
 private OrdemDeCompraCadastroDto dto;
 private FornecedorModel fornecedor;
@@ -53,12 +59,11 @@ private EstoqueModel estoque;
 private UsuarioModel usuario;
 private OrdemDeCompraModel ordemDeCompra;
 
-@BeforeEach
+    @BeforeEach
 void setUp() {
     // Configuração dos dados de teste
     dto = new OrdemDeCompraCadastroDto();
     dto.setPrazoEntrega(String.valueOf(LocalDate.now().plusDays(30)));
-    dto.setIe("123456789");
     dto.setCondPagamento("30 dias");
     dto.setValorKg(15.50);
     dto.setRastreabilidade("TRACE123");
@@ -66,7 +71,6 @@ void setUp() {
     dto.setDescricaoMaterial("Material de teste");
     dto.setValorUnitario(10.00);
     dto.setQuantidade(100);
-    dto.setIpi(5.0);
     dto.setFornecedorId(1);
     dto.setEstoqueId(1);
     dto.setUsuarioId(1);
@@ -101,7 +105,7 @@ void testCadastroOrdemDeCompraComSucesso() {
     when(ordemDeCompraRepository.save(any(OrdemDeCompraModel.class))).thenReturn(ordemDeCompra);
 
     // Act
-    OrdemDeCompraModel resultado = ordemDeCompraService.cadastroOrdemDeCompra(dto);
+    OrdemDeCompraModel resultado = cadastroService.cadastroOrdemDeCompra(dto);
 
     // Assert
     assertNotNull(resultado);
@@ -130,7 +134,7 @@ void testCadastroOrdemDeCompraFornecedorNaoEncontrado() {
 
     // Act & Assert
     assertThrows(RecursoNaoEncontradoException.class,
-        () -> ordemDeCompraService.cadastroOrdemDeCompra(dto));
+        () -> cadastroService.cadastroOrdemDeCompra(dto));
 
     
     // Verifica que o save não foi chamado devido ao erro
@@ -148,7 +152,7 @@ void testCadastroOrdemDeCompraEstoqueNaoEncontrado() {
 
     // Act & Assert
     assertThrows(RecursoNaoEncontradoException.class,
-            () -> ordemDeCompraService.cadastroOrdemDeCompra(dto));
+            () -> cadastroService.cadastroOrdemDeCompra(dto));
     
 
     
@@ -167,7 +171,7 @@ void testCadastroOrdemDeCompraUsuarioNaoEncontrado() {
 
     // Act & Assert
     assertThrows(RecursoNaoEncontradoException.class,
-            () -> ordemDeCompraService.cadastroOrdemDeCompra(dto));
+            () -> cadastroService.cadastroOrdemDeCompra(dto));
     
     // Verifica que o save não foi chamado devido ao erro
     verify(ordemDeCompraRepository, never()).save(any(OrdemDeCompraModel.class));
@@ -196,7 +200,7 @@ void testCadastroOrdemDeCompraUsuarioNaoEncontrado() {
         when(ordemDeCompraRepository.save(any(OrdemDeCompraModel.class))).thenReturn(ordemComEstoqueNulo);
 
         // Act
-        OrdemDeCompraModel resultado = ordemDeCompraService.mudarQuantidadeAtual(1, mudarQuantidadeDto);
+        OrdemDeCompraModel resultado = mudarQuantidadeService.mudarQuantidadeAtual(1, mudarQuantidadeDto);
 
         // Assert
         assertNotNull(resultado);

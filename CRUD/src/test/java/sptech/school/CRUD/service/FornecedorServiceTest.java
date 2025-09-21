@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
+import sptech.school.CRUD.application.service.fornecedor.CadastroFornecedorService;
 import sptech.school.CRUD.application.service.fornecedor.FornecedorService;
 import sptech.school.CRUD.application.service.ViaCepService;
 import sptech.school.CRUD.domain.entity.ContatoModel;
@@ -39,7 +40,7 @@ class FornecedorServiceTest {
     private ViaCepService viaCepService;
 
     @InjectMocks
-    private FornecedorService fornecedorService;
+    private CadastroFornecedorService cadastroService;
 
     @Test
     @DisplayName("Cadastro de Fornecedor - Sucesso")
@@ -49,6 +50,7 @@ class FornecedorServiceTest {
         dto.setCnpj("12345678000199");
         dto.setRazaoSocial("Fornecedor X");
         dto.setNomeFantasia("Fornecedor X");
+        dto.setIe("199999888");
         dto.setCep("12345-000");
         dto.setEndereco("Rua XPTO");
         dto.setNumero(123);
@@ -65,7 +67,7 @@ class FornecedorServiceTest {
         when(contatoRepository.save(any())).thenReturn(new ContatoModel());
 
         // Act
-        FornecedorCadastroDto resultado = fornecedorService.cadastroFornecedor(dto);
+        FornecedorCadastroDto resultado = cadastroService.cadastroFornecedor(dto);
 
         // Assert
         assertNotNull(resultado);
@@ -85,7 +87,7 @@ class FornecedorServiceTest {
         dto.setCnpj(null);
 
         // Act & Assert
-        assertThrows(RequisicaoInvalidaException.class, () -> fornecedorService.cadastroFornecedor(dto));
+        assertThrows(RequisicaoInvalidaException.class, () -> cadastroService.cadastroFornecedor(dto));
     }
 
     @Test
@@ -96,7 +98,7 @@ class FornecedorServiceTest {
         dto.setCnpj("123");
 
         // Act & Assert
-        assertThrows(RequisicaoInvalidaException.class, () -> fornecedorService.cadastroFornecedor(dto));
+        assertThrows(RequisicaoInvalidaException.class, () -> cadastroService.cadastroFornecedor(dto));
     }
 
     @Test
@@ -110,6 +112,6 @@ class FornecedorServiceTest {
                 .thenReturn(Optional.of(new FornecedorModel()));
 
         // Act & Assert
-        assertThrows(RequisicaoConflitanteException.class, () -> fornecedorService.cadastroFornecedor(dto));
+        assertThrows(RequisicaoConflitanteException.class, () -> cadastroService.cadastroFornecedor(dto));
     }
 }
