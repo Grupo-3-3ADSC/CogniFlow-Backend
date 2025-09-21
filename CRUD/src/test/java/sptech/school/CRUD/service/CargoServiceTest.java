@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import sptech.school.CRUD.application.service.cargo.CargoService;
 import sptech.school.CRUD.domain.entity.CargoModel;
-import sptech.school.CRUD.domain.repository.CargoRepository;
+import sptech.school.CRUD.infrastructure.persistence.CargoRepository;
 import sptech.school.CRUD.interfaces.dto.Cargo.CargoCadastraDto;
 import sptech.school.CRUD.interfaces.dto.Cargo.CargoListagemDto;
 import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;

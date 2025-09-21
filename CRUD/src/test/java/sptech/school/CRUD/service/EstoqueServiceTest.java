@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import sptech.school.CRUD.application.service.estoque.EstoqueService;
 import sptech.school.CRUD.domain.entity.EstoqueModel;
-import sptech.school.CRUD.domain.repository.EstoqueRepository;
+import sptech.school.CRUD.infrastructure.persistence.EstoqueRepository;
 import sptech.school.CRUD.interfaces.dto.Estoque.AtualizarEstoqueDto;
 import sptech.school.CRUD.interfaces.dto.Estoque.EstoqueListagemDto;
 import sptech.school.CRUD.interfaces.dto.Estoque.RetirarEstoqueDto;

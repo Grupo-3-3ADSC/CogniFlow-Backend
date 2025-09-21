@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import sptech.school.CRUD.domain.entity.UsuarioModel;
-import sptech.school.CRUD.domain.repository.UsuarioRepository;
+import sptech.school.CRUD.infrastructure.persistence.UsuarioRepository;
 import sptech.school.CRUD.interfaces.dto.Usuario.UsuarioDetalhesDto;
 
 import java.util.Optional;

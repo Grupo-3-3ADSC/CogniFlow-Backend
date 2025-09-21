@@ -1,19 +1,12 @@
 package sptech.school.CRUD.application.service.transferencia;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import sptech.school.CRUD.domain.entity.EstoqueModel;
 import sptech.school.CRUD.domain.entity.TransferenciaModel;
-import sptech.school.CRUD.domain.repository.EstoqueRepository;
-import sptech.school.CRUD.domain.repository.TransferenciaRepository;
-import sptech.school.CRUD.interfaces.dto.Transferencia.TransferenciaDto;
+import sptech.school.CRUD.infrastructure.persistence.TransferenciaRepository;
 import sptech.school.CRUD.interfaces.dto.Transferencia.TransferenciaListagemDto;
 import sptech.school.CRUD.interfaces.dto.Transferencia.TransferenciaMapper;
-import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
-import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -5,9 +5,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sptech.school.CRUD.application.service.fornecedor.CadastroFornecedorService;
+import sptech.school.CRUD.application.service.fornecedor.PaginacaoFornecedorService;
 import sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorCadastroDto;
 import sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorCompletoDTO;
 import sptech.school.CRUD.interfaces.dto.Fornecedor.PaginacaoFornecedorDTO;
@@ -23,12 +26,19 @@ import java.util.List;
         @ApiResponse(responseCode = "404", description = "Entidade relacionada não encontrada"),
         @ApiResponse(responseCode = "409", description = "Conflito de dados (ex: rastreabilidade duplicada)")
 })
+
 public class FornecedorController {
 
     private final FornecedorService fornecedorService;
+    private final CadastroFornecedorService cadastroService;
+    private final PaginacaoFornecedorService paginacaoService;
 
-    public FornecedorController(FornecedorService fornecedorService) {
+    public FornecedorController(FornecedorService fornecedorService,
+                                CadastroFornecedorService cadastroService,
+                                PaginacaoFornecedorService paginacaoService) {
         this.fornecedorService = fornecedorService;
+        this.cadastroService = cadastroService;
+        this.paginacaoService = paginacaoService;
     }
 
     @PostMapping
@@ -36,7 +46,7 @@ public class FornecedorController {
     public ResponseEntity<FornecedorCadastroDto> cadastrarFornecedor(@RequestBody @Valid FornecedorCadastroDto fornecedorDto) {
 
         // Chama o service passando o DTO diretamente
-        FornecedorCadastroDto novoFornecedor = fornecedorService.cadastroFornecedor(fornecedorDto);
+        FornecedorCadastroDto novoFornecedor = cadastroService.cadastroFornecedor(fornecedorDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoFornecedor);
     }
 
@@ -58,7 +68,7 @@ public class FornecedorController {
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<PaginacaoFornecedorDTO> getFornecedorPaginado(@RequestParam(defaultValue = "1") Integer pagina,
                                                                         @RequestParam(defaultValue = "6") Integer tamanho){
-        PaginacaoFornecedorDTO fornecedores = fornecedorService.fornecedorPaginado(pagina, tamanho);
+        PaginacaoFornecedorDTO fornecedores = paginacaoService.fornecedorPaginado(pagina, tamanho);
         return ResponseEntity.ok(fornecedores);
     }
 }

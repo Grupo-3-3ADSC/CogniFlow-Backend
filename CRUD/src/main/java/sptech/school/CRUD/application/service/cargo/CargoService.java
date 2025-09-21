@@ -3,7 +3,7 @@ package sptech.school.CRUD.application.service.cargo;
 
 import org.springframework.stereotype.Service;
 import sptech.school.CRUD.domain.entity.CargoModel;
-import sptech.school.CRUD.domain.repository.CargoRepository;
+import sptech.school.CRUD.infrastructure.persistence.CargoRepository;
 import sptech.school.CRUD.interfaces.dto.Cargo.CargoCadastraDto;
 import sptech.school.CRUD.interfaces.dto.Cargo.CargoListagemDto;
 import sptech.school.CRUD.interfaces.dto.Cargo.CargoMapper;

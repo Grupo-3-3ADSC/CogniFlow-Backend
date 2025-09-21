@@ -6,11 +6,11 @@ import sptech.school.CRUD.domain.entity.EstoqueModel;
 import sptech.school.CRUD.domain.entity.TransferenciaModel;
 import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
 import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
-import sptech.school.CRUD.domain.repository.EstoqueRepository;
-import sptech.school.CRUD.domain.repository.TransferenciaRepository;
+import sptech.school.CRUD.infrastructure.persistence.EstoqueRepository;
+import sptech.school.CRUD.infrastructure.persistence.TransferenciaRepository;
 import sptech.school.CRUD.interfaces.dto.Transferencia.TransferenciaDto;
 import sptech.school.CRUD.interfaces.dto.Transferencia.TransferenciaMapper;
-import sptech.school.CRUD.domain.repository.TransferenciaRepository;
+
 import java.time.LocalDateTime;
 @Service
 public class RealizarTransferenciaService {

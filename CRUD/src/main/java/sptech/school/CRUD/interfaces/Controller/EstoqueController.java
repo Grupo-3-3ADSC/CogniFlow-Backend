@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sptech.school.CRUD.application.service.estoque.AtualizarEstoqueService;
 import sptech.school.CRUD.application.service.estoque.EstoqueService;
+import sptech.school.CRUD.application.service.estoque.RetirarEstoqueService;
 import sptech.school.CRUD.interfaces.dto.Estoque.*;
 
 import java.util.List;
@@ -29,7 +31,10 @@ public class EstoqueController {
 
     @Autowired
     private final EstoqueService estoqueService;
-
+    @Autowired
+    private final RetirarEstoqueService retirarEstoqueService;
+    @Autowired
+    private final AtualizarEstoqueService atualizarService;
 
     @GetMapping
     @SecurityRequirement(name = "Bearer")
@@ -41,14 +46,14 @@ public class EstoqueController {
     @PostMapping("/adicionar")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<EstoqueListagemDto> adicionarEstoque(@RequestBody @Valid AtualizarEstoqueDto dto) {
-        EstoqueListagemDto resposta = estoqueService.atualizarEstoque(dto);
+        EstoqueListagemDto resposta = atualizarService.atualizarEstoque(dto);
         return ResponseEntity.ok(resposta);
     }
 
     @PutMapping("/retirar")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<EstoqueListagemDto> retirarEstoque(@RequestBody @Valid RetirarEstoqueDto dto) {
-        EstoqueListagemDto resposta = estoqueService.retirarEstoque(dto);
+        EstoqueListagemDto resposta = retirarEstoqueService.retirarEstoque(dto);
         return ResponseEntity.ok(resposta);
     }
 
@@ -61,7 +66,7 @@ public class EstoqueController {
     @PatchMapping("/atualizarInfo")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<EstoqueListagemDto> atualizarInfo(@RequestBody @Valid AtualizarInfoEstoqueDto dto){
-        EstoqueListagemDto resposta = estoqueService.atualizarInfo(dto);
+        EstoqueListagemDto resposta = atualizarService.atualizarInfo(dto);
         return ResponseEntity.ok(resposta);
     }
 

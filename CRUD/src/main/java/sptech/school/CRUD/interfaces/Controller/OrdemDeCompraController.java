@@ -8,6 +8,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sptech.school.CRUD.application.service.ordemDeCompra.CadastrarOrdemDeCompraService;
+import sptech.school.CRUD.application.service.ordemDeCompra.MudarQuantidadeAtualService;
+import sptech.school.CRUD.application.service.ordemDeCompra.PaginacaoOrdemDeCompraService;
 import sptech.school.CRUD.domain.entity.OrdemDeCompraModel;
 import sptech.school.CRUD.application.service.ordemDeCompra.OrdemDeCompraService;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.*;
@@ -26,12 +29,15 @@ import java.util.List;
 public class OrdemDeCompraController {
 
     private final OrdemDeCompraService ordemDeCompraService;
+    private final CadastrarOrdemDeCompraService cadastroService;
+    private final PaginacaoOrdemDeCompraService paginacaoService;
+    private final MudarQuantidadeAtualService mudarQuantidadeService;
 
     @PostMapping
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<ListagemOrdemDeCompra> cadastrarOrdemDeCompra(@Valid @RequestBody OrdemDeCompraCadastroDto ordemDeCompra){
 
-        OrdemDeCompraModel model = ordemDeCompraService.cadastroOrdemDeCompra(ordemDeCompra);
+        OrdemDeCompraModel model = cadastroService.cadastroOrdemDeCompra(ordemDeCompra);
         ListagemOrdemDeCompra resposta = OrdemDeCompraMapper.toListagemDto(model);
         return ResponseEntity.status(201).body(resposta);
     }
@@ -60,7 +66,7 @@ public class OrdemDeCompraController {
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<ListagemOrdemDeCompra> mudarQuantidadeAtual(@PathVariable Integer id, @Valid @RequestBody MudarQuantidadeAtualDto dto){
 
-        OrdemDeCompraModel ordem = ordemDeCompraService.mudarQuantidadeAtual(id, dto);
+        OrdemDeCompraModel ordem = mudarQuantidadeService.mudarQuantidadeAtual(id, dto);
         return  ResponseEntity.ok(OrdemDeCompraMapper.toListagemDto(ordem));
     }
 
@@ -70,7 +76,7 @@ public class OrdemDeCompraController {
             @RequestParam(defaultValue = "1") Integer pagina,
             @RequestParam(defaultValue = "6") Integer tamanho
     ){
-        PaginacaoHistoricoOrdemDeCompraDTO ordens = ordemDeCompraService.ordemDeCompraPaginada(pagina, tamanho);
+        PaginacaoHistoricoOrdemDeCompraDTO ordens = paginacaoService.ordemDeCompraPaginada(pagina, tamanho);
 
         return ResponseEntity.ok(ordens);
     }

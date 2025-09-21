@@ -13,6 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import sptech.school.CRUD.application.service.usuario.AtualizarUsuarioService;
+import sptech.school.CRUD.application.service.usuario.CadastroUsuarioService;
+import sptech.school.CRUD.application.service.usuario.FotoUsuarioService;
 import sptech.school.CRUD.domain.entity.UsuarioModel;
 import sptech.school.CRUD.application.service.usuario.UsuarioService;
 import sptech.school.CRUD.interfaces.dto.Usuario.*;
@@ -31,9 +34,18 @@ import java.util.Optional;
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
+    private final CadastroUsuarioService cadastroService;
+    private final AtualizarUsuarioService atualizarService;
+    private final FotoUsuarioService fotoService;
 
-    public UsuarioController(UsuarioService usuarioService) {
+    public UsuarioController(UsuarioService usuarioService,
+    CadastroUsuarioService cadastroService,
+    AtualizarUsuarioService atualizarService,
+    FotoUsuarioService fotoService) {
         this.usuarioService = usuarioService;
+        this.cadastroService = cadastroService;
+        this.atualizarService = atualizarService;
+        this.fotoService = fotoService;
     }
 
     @GetMapping("/listarAtivos")
@@ -89,7 +101,7 @@ public class UsuarioController {
     ) {
        final UsuarioModel usuario = UsuarioMapper.of(usuarioParaCadastro);
 
-       this.usuarioService.cadastrarUsuarioComum(usuario);
+       this.cadastroService.cadastrarUsuarioComum(usuario);
 
         return ResponseEntity.status(201).build();
     }
@@ -101,7 +113,7 @@ public class UsuarioController {
     ) {
         final UsuarioModel usuario = UsuarioMapper.of(usuarioParaCadastro);
 
-        this.usuarioService.cadastrarUsuarioGestor(usuario);
+        this.cadastroService.cadastrarUsuarioGestor(usuario);
 
         return ResponseEntity.status(201).build();
     }
@@ -123,7 +135,7 @@ public class UsuarioController {
             @RequestBody @Valid UsuarioAtualizadoDto usuarioParaAtualizar
     )
     {
-        UsuarioModel usuario = usuarioService.put(UsuarioMapper.toEntity(usuarioParaAtualizar, id), id);
+        UsuarioModel usuario = atualizarService.put(UsuarioMapper.toEntity(usuarioParaAtualizar, id), id);
 
         if(usuario == null) {
             return ResponseEntity.notFound().build();
@@ -138,7 +150,7 @@ public class UsuarioController {
             @PathVariable Integer id,
             @RequestBody UsuarioPatchDto campos
             ){
-        UsuarioModel usuario = usuarioService.patch(id,campos);
+        UsuarioModel usuario = atualizarService.patch(id,campos);
 
         if(usuario == null){
             return ResponseEntity.notFound().build();
@@ -153,7 +165,7 @@ public class UsuarioController {
             @PathVariable Integer id,
             @RequestParam("foto")MultipartFile file
             ) {
-        Boolean sucesso = usuarioService.uploadFoto(id, file);
+        Boolean sucesso = fotoService.uploadFoto(id, file);
 
         if(sucesso){
             return ResponseEntity.status(200).build();
@@ -166,7 +178,7 @@ public class UsuarioController {
     @GetMapping("/{id}/foto")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<byte[]> getFoto(@PathVariable Integer id) {
-        return usuarioService.buscarFoto(id)
+        return fotoService.buscarFoto(id)
 
                 .map(foto -> ResponseEntity.ok()
                         .header(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate")
@@ -183,7 +195,7 @@ public class UsuarioController {
             @PathVariable Integer id,
             @RequestBody @Valid UsuarioSenhaAtualizada request // DTO para receber a senha
     ){
-        usuarioService.atualizarSenha(id, request.getPassword());
+        atualizarService.atualizarSenha(id, request.getPassword());
         return ResponseEntity.noContent().build();
     }
 
@@ -202,7 +214,7 @@ public class UsuarioController {
             @RequestBody UsuarioAtivoDto dto
     ){
 
-        UsuarioAtivoDto usuario = usuarioService.desativarUsuario(id,dto);
+        UsuarioAtivoDto usuario = atualizarService.desativarUsuario(id,dto);
 
         return ResponseEntity.ok(usuario);
     }
