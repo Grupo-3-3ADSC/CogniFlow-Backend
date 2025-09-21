@@ -14,6 +14,8 @@ import sptech.school.CRUD.interfaces.dto.Fornecedor.PaginacaoFornecedorDTO;
 import sptech.school.CRUD.application.service.fornecedor.FornecedorService;
 
 import java.util.List;
+import java.util.Optional;
+
 @Tag(name = "Fornecedor", description = "Endpoints de Fornecedor")
 @RestController
 @RequestMapping("/fornecedores")
@@ -60,5 +62,17 @@ public class FornecedorController {
                                                                         @RequestParam(defaultValue = "6") Integer tamanho){
         PaginacaoFornecedorDTO fornecedores = fornecedorService.fornecedorPaginado(pagina, tamanho);
         return ResponseEntity.ok(fornecedores);
+    }
+
+    @DeleteMapping("/{id}")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<FornecedorCompletoDTO> deletarFornecedor(@PathVariable Integer id){
+        Optional<FornecedorCompletoDTO> dto = fornecedorService.deletarFornecedor(id);
+
+        if (dto.isPresent()) {
+            return ResponseEntity.ok(dto.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

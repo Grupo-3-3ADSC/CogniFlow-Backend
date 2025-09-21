@@ -3,6 +3,7 @@ package sptech.school.CRUD.domain.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import sptech.school.CRUD.domain.entity.OrdemDeCompraModel;
@@ -54,6 +55,11 @@ public interface OrdemDeCompraRepository extends JpaRepository<OrdemDeCompraMode
             @Param("fornecedorId") Integer fornecedorId,
             @Param("ano") Integer ano
     );
+
+    @Modifying
+    @Query("DELETE FROM OrdemDeCompraModel o WHERE o.fornecedor.id = :fornecedorId")
+    void deleteByFornecedorId(@Param("fornecedorId") Integer fornecedorId);
+
 
 
 }
