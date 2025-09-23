@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 import sptech.school.CRUD.domain.entity.OrdemDeCompraModel;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.ListagemOrdemDeCompra;
 
@@ -56,6 +57,7 @@ public interface OrdemDeCompraRepository extends JpaRepository<OrdemDeCompraMode
             @Param("ano") Integer ano
     );
 
+    @Transactional
     @Modifying
     @Query("DELETE FROM OrdemDeCompraModel o WHERE o.fornecedor.id = :fornecedorId")
     void deleteByFornecedorId(@Param("fornecedorId") Integer fornecedorId);
