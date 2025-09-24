@@ -65,7 +65,7 @@ jobs:
         run: |
           cd CRUD
           mvn sonar:sonar \
-              -Dsonar.projectKey=backend-crud \
+              -Dsonar.Grupo-3-3ADSC_CogniFlow-Backend \
               -Dsonar.organization=grupo-3-3adsc \
               -Dsonar.host.url=https://sonarcloud.io \
               -Dsonar.login=${{ secrets.SONAR_TOKEN }}
