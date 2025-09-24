@@ -31,7 +31,7 @@ Bem-vindo ao repositório da API de orçamento da Megaplate, desenvolvida pela C
 - **PUT** `/usuarios/{id}` - Atualiza um usuário
 - **DELETE** `/usuarios/{id}` - Remove um usuário
 
-### GESTOR
+### Cargo
 - **GET** `/cargo` - Lista todos os cargos
 - **POST** `/cargo` - Adiciona um novo cargo
 - **PUT** `/cargo/{id}` - Atualiza um cargo
