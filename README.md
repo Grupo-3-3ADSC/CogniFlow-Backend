@@ -7,7 +7,7 @@ Bem-vindo ao repositório da API de orçamento da Megaplate, desenvolvida pela C
 - Java 17
 - Spring Boot
 - Spring Data JPA
-- H2 (banco de dados)
+- MySQL (banco de dados)
 
 ## Instalação
 
