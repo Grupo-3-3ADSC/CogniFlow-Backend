@@ -1,0 +1,70 @@
+name: CI-BackEnd
+
+# 🔹 Quando o pipeline será executado
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+# 🔹 Jobs
+jobs:
+  build:
+    name: Build e Testes
+    runs-on: ubuntu-latest
+    steps:
+      # Pegar o código do repositório
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      # Configurar Java
+      - name: Configurar Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # Build do projeto
+      - name: Build Maven
+        run: |
+          cd CRUD
+          mvn clean install
+
+      # Executar testes unitários
+      - name: Executar Testes
+        run: |
+          cd CRUD
+          mvn test
+
+      # Publicar relatórios de teste (JUnit)
+      - name: Upload Relatórios de Teste
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-report
+          path: CRUD/target/surefire-reports/
+
+  sonar:
+    name: Análise SonarCloud
+    runs-on: ubuntu-latest
+    needs: build   # Só roda se o build terminar com sucesso
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Configurar Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # Análise de qualidade
+      - name: SonarCloud Scan
+        run: |
+          cd CRUD
+          mvn sonar:sonar \
+              -Dsonar.projectKey=backend-crud \
+              -Dsonar.organization=grupo-3-3adsc \
+              -Dsonar.host.url=https://sonarcloud.io \
+              -Dsonar.login=${{ secrets.SONAR_TOKEN }}
