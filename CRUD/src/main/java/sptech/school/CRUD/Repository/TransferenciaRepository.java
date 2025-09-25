@@ -18,8 +18,10 @@ public interface TransferenciaRepository extends JpaRepository<TransferenciaMode
     List<TransferenciaModel> findByTipoMaterial(String tipoMaterial);
 
     // Buscar transferências de um material em um ano específico
-    @Query("SELECT t FROM TransferenciaModel t WHERE t.tipoMaterial = :tipoMaterial AND YEAR(t.ultimaMovimentacao) = :ano")
+    // Buscar transferências de um material em um ano específico, mais recentes primeiro
+    @Query("SELECT t FROM TransferenciaModel t WHERE t.tipoMaterial = :tipoMaterial AND YEAR(t.ultimaMovimentacao) = :ano ORDER BY t.ultimaMovimentacao DESC")
     List<TransferenciaModel> findByTipoMaterialAndAno(@Param("tipoMaterial") String tipoMaterial,
                                                       @Param("ano") Integer ano);
+
 
 }
