@@ -17,5 +17,6 @@ public class UsuarioListagemDto {
     private String nome;
     private String email;
     private CargoListagemDto cargo;
+    private String cargoNome;
     private Boolean ativo;
 }

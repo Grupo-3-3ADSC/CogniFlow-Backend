@@ -59,34 +59,41 @@ public class UsuarioService {
                 .orElseThrow(()-> new RecursoNaoEncontradoException("Usuario de id %d não encontrado".formatted(id)));
     }
 
-    public UsuarioModel cadastrarUsuarioComum(UsuarioModel usuario) {
+    public UsuarioModel cadastrarUsuarioComum(UsuarioModel usuario, Integer cargoId) {
 
         if (usuario == null) {
             throw new RequisicaoInvalidaException("O corpo da requisição está vazio.");
         }
 
-        if (usuario.getNome().length() <= 3){
-            throw new RequisicaoInvalidaException("Senha deve ter pelo menos 3 caracteres");
+        if (usuario.getNome() == null || usuario.getNome().length() <= 3) {
+            throw new RequisicaoInvalidaException("O nome deve ter pelo menos 3 caracteres.");
         }
+
         if (usuarioRepository.existsByEmail(usuario.getEmail())) {
             throw new RequisicaoConflitanteException("Email já cadastrado.");
         }
 
         if (usuario.getPassword() == null || usuario.getPassword().isBlank()) {
-            throw new RequisicaoInvalidaException("Senha não pode ser nulo ou vazio.");
+            throw new RequisicaoInvalidaException("Senha não pode ser nula ou vazia.");
         }
+
         if (usuario.getPassword().length() < 6) {
             throw new RequisicaoInvalidaException("Senha deve ter pelo menos 6 caracteres.");
         }
 
-        CargoModel cargo = cargoRepository.findByNome("comum");
+        // Buscar o cargo pelo ID informado
+        CargoModel cargo = cargoRepository.findById(cargoId)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Cargo não encontrado com id " + cargoId));
 
+        // Criptografar senha
         String senhaCriptografada = passwordEncoder.encode(usuario.getPassword());
 
         usuario.setPassword(senhaCriptografada);
         usuario.setCargo(cargo);
+
         return usuarioRepository.save(usuario);
     }
+
 
     public UsuarioModel cadastrarUsuarioGestor(UsuarioModel usuario) {
 

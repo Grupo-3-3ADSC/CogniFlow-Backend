@@ -87,12 +87,13 @@ public class UsuarioController {
     public ResponseEntity<Void> cadastrarComum(
             @RequestBody @Valid UsuarioCadastroDto usuarioParaCadastro
     ) {
-       final UsuarioModel usuario = UsuarioMapper.of(usuarioParaCadastro);
+        final UsuarioModel usuario = UsuarioMapper.of(usuarioParaCadastro);
 
-       this.usuarioService.cadastrarUsuarioComum(usuario);
+        this.usuarioService.cadastrarUsuarioComum(usuario, usuarioParaCadastro.getCargoId());
 
         return ResponseEntity.status(201).build();
     }
+
 
     @PostMapping("/gestor")
     @SecurityRequirement(name = "Bearer")
