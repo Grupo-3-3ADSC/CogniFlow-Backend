@@ -26,6 +26,8 @@ public class UsuarioModel {
     private byte[] foto;
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
+    private String reset_token;
+    private LocalDateTime reset_token_expira;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cargo_id")

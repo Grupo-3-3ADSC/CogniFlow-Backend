@@ -242,31 +242,37 @@ public class UsuarioService {
         return UsuarioMapper.of(usuarioAutenticado, token);
     }
 
-    public UsuarioModel atualizarSenha(Integer id, String password){
-        // Validação de entrada
-        if (password == null || password.trim().isEmpty()) {
-            throw new IllegalArgumentException("Senha não pode estar vazia");
-        }
+    public UsuarioModel atualizarSenha(String email, String password, String resetToken) {
+        UsuarioModel usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
 
-        // Buscar usuário
-        UsuarioModel usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado com ID: " + id));
-
-        // Verificar se usuário está ativo
         if (!usuario.getAtivo()) {
-            throw new IllegalStateException("Não é possível atualizar senha de usuário inativo");
+            throw new IllegalStateException("Usuário inativo não pode alterar senha");
         }
 
-        // Criptografar a senha (MUITO IMPORTANTE!)
-        String senhaCriptografada = passwordEncoder.encode(password);
+        // valida reset token via JWT util
+        if (!gerenciadorTokenJwt.isResetTokenValid(resetToken, email)) {
+            throw new IllegalStateException("Token inválido ou expirado");
+        }
 
-        // Atualizar senha e timestamp
-        usuario.setPassword(senhaCriptografada);
+        // verifica se bate com o token salvo no usuário
+        if (!resetToken.equals(usuario.getReset_token()) ||
+                usuario.getReset_token_expira() == null ||
+                usuario.getReset_token_expira().isBefore(LocalDateTime.now())) {
+            throw new IllegalStateException("Token inválido ou expirado");
+        }
+
+        // criptografa a senha e atualiza usuário
+        usuario.setPassword(passwordEncoder.encode(password));
         usuario.setUpdatedAt(LocalDateTime.now());
 
-        // Salvar no banco
+        // invalida o token
+        usuario.setReset_token(null);
+        usuario.setReset_token_expira(null);
+
         return usuarioRepository.save(usuario);
     }
+
 
     public UsuarioModel buscarPorEmail(String email) {
         return usuarioRepository.findByEmail(email)

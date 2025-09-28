@@ -8,12 +8,15 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sptech.school.CRUD.Model.UsuarioModel;
+import sptech.school.CRUD.config.GerenciadorTokenJwt;
 import sptech.school.CRUD.dto.Usuario.*;
 import sptech.school.CRUD.exception.RecursoNaoEncontradoException;
 import sptech.school.CRUD.service.UsuarioService;
@@ -22,6 +25,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 @Tag(name = "Usuario", description = "Endpoints de Usuario")
 @RestController
 @RequestMapping("/usuarios")
@@ -34,6 +40,9 @@ import java.util.Optional;
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
+
+    @Autowired
+    private GerenciadorTokenJwt gerenciadorTokenJwt;
 
     public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
@@ -180,13 +189,18 @@ public class UsuarioController {
 
     }
 
-    @PutMapping("/{id}/senha")// Adicione o path completo
-
+    @PutMapping("/{email}/senha")
     public ResponseEntity<Void> atualizarSenha(
-            @PathVariable Integer id,
-            @RequestBody @Valid UsuarioSenhaAtualizada request // DTO para receber a senha
+            @PathVariable String email,
+            @RequestBody @Valid UsuarioSenhaAtualizada request, // DTO para receber a senha
+            @RequestHeader(value = "Authorization", required = false) String resetTokenHeader
     ){
-        usuarioService.atualizarSenha(id, request.getPassword());
+        if (resetTokenHeader == null || !resetTokenHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String resetToken = resetTokenHeader.substring(7); // remove "Bearer "
+        usuarioService.atualizarSenha(email, request.getPassword(), resetToken);
         return ResponseEntity.noContent().build();
     }
 

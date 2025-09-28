@@ -15,4 +15,6 @@ public class UsuarioSenhaAtualizada {
     @NotBlank(message = "A senha não pode ser nulo ou vazio.")
     @Size(min = 6, message = "Precisa ter mais de 5 caracter")
     private String password;
+    @NotBlank(message = "E-mail não pode ser nulo ou vazio")
+    private String email;
 }
