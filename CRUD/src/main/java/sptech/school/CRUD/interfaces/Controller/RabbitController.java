@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sptech.school.CRUD.infrastructure.adapter.Rabbit.RabbitProducer;
+import sptech.school.CRUD.interfaces.dto.Eventos.EventRequest;
 
 @RestController
 @RequestMapping("/rabbit")
@@ -19,8 +20,13 @@ public class RabbitController {
 
     @PostMapping
     @SecurityRequirement(name = "Bearer")
-    public String send(@RequestBody String mensagem) {
-        producer.sendMessage(mensagem);
-        return "Mensagem enviada: " + mensagem;
+    public String send(@RequestBody EventRequest request) {
+        producer.sendEvent(
+                request.getEntity(),
+                request.getEventType(),
+                request.getEntityId()
+        );
+        return "Evento enviado: " + request;
     }
+
 }
