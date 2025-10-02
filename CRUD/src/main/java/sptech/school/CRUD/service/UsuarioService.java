@@ -250,27 +250,47 @@ public class UsuarioService {
             throw new IllegalStateException("Usuário inativo não pode alterar senha");
         }
 
-        // valida reset token via JWT util
         if (!gerenciadorTokenJwt.isResetTokenValid(resetToken, email)) {
             throw new IllegalStateException("Token inválido ou expirado");
         }
 
-        // verifica se bate com o token salvo no usuário
-        if (!resetToken.equals(usuario.getReset_token()) ||
-                usuario.getReset_token_expira() == null ||
-                usuario.getReset_token_expira().isBefore(LocalDateTime.now())) {
-            throw new IllegalStateException("Token inválido ou expirado");
+        if (!resetToken.equals(usuario.getReset_token())) {
+            throw new IllegalStateException("Token não corresponde ao registrado");
         }
 
-        // criptografa a senha e atualiza usuário
+        if (usuario.getReset_token_expira() == null ||
+                usuario.getReset_token_expira().isBefore(LocalDateTime.now())) {
+            throw new IllegalStateException("Token expirado");
+        }
+
+        String jti = gerenciadorTokenJwt.extractJti(resetToken);
+
         usuario.setPassword(passwordEncoder.encode(password));
         usuario.setUpdatedAt(LocalDateTime.now());
 
-        // invalida o token
         usuario.setReset_token(null);
         usuario.setReset_token_expira(null);
 
         return usuarioRepository.save(usuario);
+    }
+
+    public void salvarResetToken(String email, String resetToken, String jti) {
+        UsuarioModel usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
+
+        if (!usuario.getAtivo()) {
+            throw new IllegalStateException("Usuário inativo não pode receber token de reset");
+        }
+
+        // Extrai a expiração do token JWT
+        LocalDateTime expiracao = gerenciadorTokenJwt.extrairExpiracao(resetToken);
+
+        // Salva o token no banco
+        usuario.setReset_token(resetToken);
+        usuario.setReset_token_expira(expiracao);
+        usuario.setUpdatedAt(LocalDateTime.now());
+
+        usuarioRepository.save(usuario);
     }
 
 

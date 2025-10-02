@@ -31,6 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Tag(name = "Usuario", description = "Endpoints de Usuario")
 @RestController
 @RequestMapping("/usuarios")
+@CrossOrigin(origins = "http://localhost:3001")
 @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso"),
         @ApiResponse(responseCode = "400", description = "Requisição inválida"),
@@ -204,12 +205,21 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/buscar-por-email/{email}")
+    @PostMapping("/{email}/reset-token")
+    @CrossOrigin(origins = "http://localhost:3001")
+    public ResponseEntity<Void> salvarResetToken(
+            @PathVariable String email,
+            @RequestBody @Valid ResetTokenRequest request
+    ) {
 
+        usuarioService.salvarResetToken(email, request.getResetToken(), request.getJti());
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/buscar-por-email/{email}")
     public ResponseEntity<UsuarioListagemDto> buscarPorEmail(@PathVariable String email) {
         UsuarioModel usuario = usuarioService.buscarPorEmail(email);
         return ResponseEntity.ok(UsuarioMapper.toEmailDto(usuario));
-
     }
 
     @PatchMapping("/desativarUsuario/{id}")

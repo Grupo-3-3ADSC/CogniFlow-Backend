@@ -55,6 +55,7 @@ public class SecurityConfiguracao {
             new AntPathRequestMatcher("/h2-console/**/**"),
             new AntPathRequestMatcher("/error/**"),
             new AntPathRequestMatcher("/usuarios/buscar-por-email/{email}"),
+            new AntPathRequestMatcher("/usuarios/{email}/reset-token")
     };
 
     @Bean

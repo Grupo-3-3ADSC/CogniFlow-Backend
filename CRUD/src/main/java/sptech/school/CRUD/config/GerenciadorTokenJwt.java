@@ -13,6 +13,8 @@ import sptech.school.CRUD.dto.Usuario.UsuarioDetalhesDto;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -115,6 +117,19 @@ public class GerenciadorTokenJwt {
                 .parseClaimsJws(jwt)
                 .getBody()
                 .getId();
+    }
+
+    public LocalDateTime extrairExpiracao(String jwt) {
+        Date expiracao = Jwts.parserBuilder()
+                .setSigningKey(parseSecret())
+                .build()
+                .parseClaimsJws(jwt)
+                .getBody()
+                .getExpiration();
+
+        return expiracao.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
     }
 
     private SecretKey parseSecret() {return Keys.hmacShaKeyFor(this.secret.getBytes(StandardCharsets.UTF_8));}
