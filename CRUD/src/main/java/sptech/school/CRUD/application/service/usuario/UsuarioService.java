@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import sptech.school.CRUD.domain.entity.UsuarioModel;
-import sptech.school.CRUD.infrastructure.persistence.UsuarioRepository;
+import sptech.school.CRUD.infrastructure.persistence.UsuarioJpaRepository;
 import sptech.school.CRUD.infrastructure.config.GerenciadorTokenJwt;
 import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
 import sptech.school.CRUD.interfaces.dto.Usuario.*;
@@ -22,7 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UsuarioService {
 
-    private final UsuarioRepository usuarioRepository;
+    private final UsuarioJpaRepository usuarioJpaRepository;
 
     @Autowired
     private GerenciadorTokenJwt gerenciadorTokenJwt;
@@ -31,22 +31,22 @@ public class UsuarioService {
     private AuthenticationManager authenticationManager;
 
     public List<UsuarioModel> getAllByAtivo() {
-        return usuarioRepository.findByAtivoTrueComCargo();
+        return usuarioJpaRepository.findByAtivoTrue();
     }
 
     public List<UsuarioModel> getAllByInativo() {
-        return usuarioRepository.findByAtivoFalseComCargo();
+        return usuarioJpaRepository.findByInativoTrue();
     }
 
     public List<UsuarioFullDto> getAll() {
 
-        List<UsuarioModel> usuarios = usuarioRepository.findAll();
+        List<UsuarioModel> usuarios = usuarioJpaRepository.findAll();
 
         return UsuarioMapper.toListagemFullDto(usuarios);
     }
 
     public UsuarioModel getById(int id) {
-        return usuarioRepository.findById(id)
+        return usuarioJpaRepository.findById(id)
                 .orElseThrow(()-> new RecursoNaoEncontradoException("Usuario de id %d não encontrado".formatted(id)));
     }
 
@@ -59,7 +59,7 @@ public class UsuarioService {
         final Authentication authentication = this.authenticationManager.authenticate(credentials);
 
         UsuarioModel usuarioAutenticado =
-                usuarioRepository.findByEmail(usuario.getEmail())
+                usuarioJpaRepository.findByEmail(usuario.getEmail())
                         .orElseThrow(
                                 () -> new ResponseStatusException(404, "Email do usuário não cadastrado", null)
                         );
@@ -77,12 +77,12 @@ public class UsuarioService {
     }
 
     public UsuarioModel buscarPorEmail(String email) {
-        return usuarioRepository.findByEmail(email)
+        return usuarioJpaRepository.findByEmail(email)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
     }
 
     public Optional<UsuarioDeleteDto> deletarUsuarios(Integer id) {
-        Optional<UsuarioModel> usuarioOpt = usuarioRepository.findById(id);
+        Optional<UsuarioModel> usuarioOpt = usuarioJpaRepository.findById(id);
 
         if (usuarioOpt.isEmpty()) {
             return Optional.empty();
@@ -90,7 +90,7 @@ public class UsuarioService {
 
         UsuarioModel usuario = usuarioOpt.get();
 
-        usuarioRepository.delete(usuario);
+        usuarioJpaRepository.delete(usuario);
 
         UsuarioDeleteDto dto = UsuarioDeleteDto.builder()
                 .id(usuario.getId())

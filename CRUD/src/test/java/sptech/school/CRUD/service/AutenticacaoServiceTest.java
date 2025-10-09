@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import sptech.school.CRUD.application.service.usuario.AutenticacaoService;
 import sptech.school.CRUD.application.service.usuario.UsuarioService;
 import sptech.school.CRUD.domain.entity.UsuarioModel;
-import sptech.school.CRUD.infrastructure.persistence.UsuarioRepository;
+import sptech.school.CRUD.infrastructure.persistence.UsuarioJpaRepository;
 import static org.mockito.Mockito.*;
 
 import java.util.Optional;
@@ -32,7 +32,7 @@ class AutenticacaoServiceTest {
     private AutenticacaoService autenticacaoService;
 
     @Mock
-    private UsuarioRepository usuarioRepository;
+    private UsuarioJpaRepository usuarioJpaRepository;
 
     @Mock
     private AuthenticationManager authenticationManager;
@@ -47,7 +47,7 @@ class AutenticacaoServiceTest {
         usuario.setEmail("carlos@email.com");
         usuario.setPassword("senhaCriptografada");
 
-        when(usuarioRepository.findByEmail("carlos@email.com")).thenReturn(Optional.of(usuario));
+        when(usuarioJpaRepository.findByEmail("carlos@email.com")).thenReturn(Optional.of(usuario));
 
         // Act
         UserDetails resultado = autenticacaoService.loadUserByUsername("carlos@email.com");
@@ -56,19 +56,19 @@ class AutenticacaoServiceTest {
         assertNotNull(resultado);
         assertEquals("carlos@email.com", resultado.getUsername());
         assertEquals("senhaCriptografada", resultado.getPassword());
-        verify(usuarioRepository).findByEmail("carlos@email.com");
+        verify(usuarioJpaRepository).findByEmail("carlos@email.com");
     }
 
     @Test
     @DisplayName("Autenticação - E-mail não cadastrado")
     void testeLoginEmailNaoEncontrado() {
         // Arrange
-        when(usuarioRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+        when(usuarioJpaRepository.findByEmail(anyString())).thenReturn(Optional.empty());
         // Act & Assert
         Exception exception = assertThrows(UsernameNotFoundException.class, () -> autenticacaoService.loadUserByUsername("emailInexistente@email.com"));
 
         assertEquals("usuario: emailInexistente@email.com não encontrado", exception.getMessage());
-        verify(usuarioRepository).findByEmail("emailInexistente@email.com");
+        verify(usuarioJpaRepository).findByEmail("emailInexistente@email.com");
     }
     
 

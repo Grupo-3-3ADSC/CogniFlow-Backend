@@ -18,7 +18,7 @@ import sptech.school.CRUD.domain.entity.UsuarioModel;
 import sptech.school.CRUD.infrastructure.persistence.EstoqueRepository;
 import sptech.school.CRUD.infrastructure.persistence.FornecedorRepository;
 import sptech.school.CRUD.infrastructure.persistence.OrdemDeCompraRepository;
-import sptech.school.CRUD.infrastructure.persistence.UsuarioRepository;
+import sptech.school.CRUD.infrastructure.persistence.UsuarioJpaRepository;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.MudarQuantidadeAtualDto;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.OrdemDeCompraCadastroDto;
 import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
@@ -41,7 +41,7 @@ private OrdemDeCompraRepository ordemDeCompraRepository;
 private EstoqueRepository estoqueRepository;
 
 @Mock
-private UsuarioRepository usuarioRepository;
+private UsuarioJpaRepository usuarioJpaRepository;
 
 @Mock
 private FornecedorRepository fornecedorRepository;
@@ -101,7 +101,7 @@ void testCadastroOrdemDeCompraComSucesso() {
     // Arrange
     when(fornecedorRepository.findById(1)).thenReturn(Optional.of(fornecedor));
     when(estoqueRepository.findById(1)).thenReturn(Optional.of(estoque));
-    when(usuarioRepository.findById(1)).thenReturn(Optional.of(usuario));
+    when(usuarioJpaRepository.findById(1)).thenReturn(Optional.of(usuario));
     when(ordemDeCompraRepository.save(any(OrdemDeCompraModel.class))).thenReturn(ordemDeCompra);
 
     // Act
@@ -121,7 +121,7 @@ void testCadastroOrdemDeCompraComSucesso() {
     // Verifica se todas as entidades foram buscadas
     verify(fornecedorRepository).findById(1);
     verify(estoqueRepository).findById(1);
-    verify(usuarioRepository).findById(1);
+    verify(usuarioJpaRepository).findById(1);
     verify(ordemDeCompraRepository).save(any(OrdemDeCompraModel.class));
 }
 
@@ -167,7 +167,7 @@ void testCadastroOrdemDeCompraUsuarioNaoEncontrado() {
     // Arrange
     when(fornecedorRepository.findById(1)).thenReturn(Optional.of(fornecedor));
     when(estoqueRepository.findById(1)).thenReturn(Optional.of(estoque));
-    when(usuarioRepository.findById(1)).thenReturn(Optional.empty());
+    when(usuarioJpaRepository.findById(1)).thenReturn(Optional.empty());
 
     // Act & Assert
     assertThrows(RecursoNaoEncontradoException.class,

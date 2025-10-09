@@ -10,7 +10,7 @@ import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
 import sptech.school.CRUD.domain.exception.RequisicaoConflitanteException;
 import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
 import sptech.school.CRUD.infrastructure.persistence.CargoRepository;
-import sptech.school.CRUD.infrastructure.persistence.UsuarioRepository;
+import sptech.school.CRUD.infrastructure.persistence.UsuarioJpaRepository;
 import sptech.school.CRUD.interfaces.dto.Usuario.UsuarioAtivoDto;
 import sptech.school.CRUD.interfaces.dto.Usuario.UsuarioMapper;
 import sptech.school.CRUD.interfaces.dto.Usuario.UsuarioPatchDto;
@@ -22,7 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AtualizarUsuarioService {
 
-    private final UsuarioRepository usuarioRepository;
+    private final UsuarioJpaRepository usuarioJpaRepository;
     private final PasswordEncoder passwordEncoder;
     private final CargoRepository cargoRepository;
 
@@ -33,7 +33,7 @@ public class AtualizarUsuarioService {
         }
 
         // Buscar usuário
-        UsuarioModel usuario = usuarioRepository.findById(id)
+        UsuarioModel usuario = usuarioJpaRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado com ID: " + id));
 
         // Verificar se usuário está ativo
@@ -49,11 +49,11 @@ public class AtualizarUsuarioService {
         usuario.setUpdatedAt(LocalDateTime.now());
 
         // Salvar no banco
-        return usuarioRepository.save(usuario);
+        return usuarioJpaRepository.save(usuario);
     }
 
     public UsuarioAtivoDto desativarUsuario(Integer id, UsuarioAtivoDto dto){
-        Optional<UsuarioModel> usuarioOpt = usuarioRepository.findById(id);
+        Optional<UsuarioModel> usuarioOpt = usuarioJpaRepository.findById(id);
 
         if(usuarioOpt.isEmpty()){
             throw new UsernameNotFoundException("Usuário não encontrado");
@@ -68,14 +68,14 @@ public class AtualizarUsuarioService {
             usuario.setAtivo(true);
         }
 
-        UsuarioModel usuarioAtualizado = usuarioRepository.save(usuario);
+        UsuarioModel usuarioAtualizado = usuarioJpaRepository.save(usuario);
 
         return UsuarioMapper.toActiveDto(usuarioAtualizado);
 
     }
 
     public UsuarioModel put(UsuarioModel usuarioParaAtualizar, int id) {
-        if (usuarioRepository.existsById(id)) {
+        if (usuarioJpaRepository.existsById(id)) {
             // Validações de dados obrigatórios
 //            boolean nomeVazio = usuarioParaAtualizar.getNome() == null || usuarioParaAtualizar.getNome().trim().isEmpty();
 //            boolean emailVazio = usuarioParaAtualizar.getEmail() == null || usuarioParaAtualizar.getEmail().trim().isEmpty();
@@ -93,7 +93,7 @@ public class AtualizarUsuarioService {
                 throw new RequisicaoInvalidaException("Email não pode estar vazio");
             }
 
-            if (usuarioRepository.existsByEmail(usuarioParaAtualizar.getEmail())) {
+            if (usuarioJpaRepository.existsByEmail(usuarioParaAtualizar.getEmail())) {
                 throw new RequisicaoConflitanteException("Email já cadastrado.");
             }
             if (usuarioParaAtualizar.getPassword() != null) {
@@ -108,7 +108,7 @@ public class AtualizarUsuarioService {
 
             usuarioParaAtualizar.setId(id);
             usuarioParaAtualizar.setUpdatedAt(LocalDateTime.now());
-            UsuarioModel usuario = usuarioRepository.save(usuarioParaAtualizar);
+            UsuarioModel usuario = usuarioJpaRepository.save(usuarioParaAtualizar);
             return usuario;
         }else {
             throw new RecursoNaoEncontradoException("Usuario de id %d não encontrado".formatted(id));
@@ -116,7 +116,7 @@ public class AtualizarUsuarioService {
     }
 
     public UsuarioModel patch(int id, UsuarioPatchDto dto){
-        Optional<UsuarioModel> usuarioOpt = usuarioRepository.findById(id);
+        Optional<UsuarioModel> usuarioOpt = usuarioJpaRepository.findById(id);
 
         if(usuarioOpt.isEmpty()){
             return null;
@@ -138,6 +138,6 @@ public class AtualizarUsuarioService {
             usuario.setCargo(cargo);
         }
 
-        return usuarioRepository.save(usuario);
+        return usuarioJpaRepository.save(usuario);
     }
 }

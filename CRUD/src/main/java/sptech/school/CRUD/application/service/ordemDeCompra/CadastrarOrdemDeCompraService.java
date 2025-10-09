@@ -12,7 +12,7 @@ import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
 import sptech.school.CRUD.infrastructure.persistence.EstoqueRepository;
 import sptech.school.CRUD.infrastructure.persistence.FornecedorRepository;
 import sptech.school.CRUD.infrastructure.persistence.OrdemDeCompraRepository;
-import sptech.school.CRUD.infrastructure.persistence.UsuarioRepository;
+import sptech.school.CRUD.infrastructure.persistence.UsuarioJpaRepository;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.OrdemDeCompraCadastroDto;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.OrdemDeCompraMapper;
 
@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 public class CadastrarOrdemDeCompraService {
     private final OrdemDeCompraRepository ordemDeCompraRepository;
     private final EstoqueRepository estoqueRepository;
-    private final UsuarioRepository usuarioRepository;
+    private final UsuarioJpaRepository usuarioJpaRepository;
     private final FornecedorRepository fornecedorRepository;
 
     public OrdemDeCompraModel cadastroOrdemDeCompra(OrdemDeCompraCadastroDto dto) {
@@ -39,7 +39,7 @@ public class CadastrarOrdemDeCompraService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Estoque não encontrado"));
         ordemDeCompra.setEstoque(estoque);
 
-        UsuarioModel usuario = usuarioRepository.findById(dto.getUsuarioId())
+        UsuarioModel usuario = usuarioJpaRepository.findById(dto.getUsuarioId())
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
         ordemDeCompra.setUsuario(usuario);
 

@@ -8,13 +8,13 @@ import sptech.school.CRUD.domain.entity.UsuarioModel;
 import sptech.school.CRUD.domain.exception.RequisicaoConflitanteException;
 import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
 import sptech.school.CRUD.infrastructure.persistence.CargoRepository;
-import sptech.school.CRUD.infrastructure.persistence.UsuarioRepository;
+import sptech.school.CRUD.infrastructure.persistence.UsuarioJpaRepository;
 
 @Service
 @RequiredArgsConstructor
 public class CadastroUsuarioService {
 
-    private final UsuarioRepository usuarioRepository;
+    private final UsuarioJpaRepository usuarioJpaRepository;
     private final CargoRepository cargoRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -27,7 +27,7 @@ public class CadastroUsuarioService {
         if (usuario.getNome().length() <= 3){
             throw new RequisicaoInvalidaException("Senha deve ter pelo menos 3 caracteres");
         }
-        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
+        if (usuarioJpaRepository.existsByEmail(usuario.getEmail())) {
             throw new RequisicaoConflitanteException("Email já cadastrado.");
         }
 
@@ -44,7 +44,7 @@ public class CadastroUsuarioService {
 
         usuario.setPassword(senhaCriptografada);
         usuario.setCargo(cargo);
-        return usuarioRepository.save(usuario);
+        return usuarioJpaRepository.save(usuario);
     }
 
     public UsuarioModel cadastrarUsuarioGestor(UsuarioModel usuario) {
@@ -54,7 +54,7 @@ public class CadastroUsuarioService {
             throw new RequisicaoInvalidaException("O corpo da requisição está vazio.");
         }
 
-        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
+        if (usuarioJpaRepository.existsByEmail(usuario.getEmail())) {
             throw new RequisicaoConflitanteException("Email já cadastrado.");
         }
         if (usuario.getNome().length() <= 3){
@@ -79,6 +79,6 @@ public class CadastroUsuarioService {
 
         usuario.setPassword(senhaCriptografada);
         usuario.setCargo(cargo);
-        return usuarioRepository.save(usuario);
+        return usuarioJpaRepository.save(usuario);
     }
 }

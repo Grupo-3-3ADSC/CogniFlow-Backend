@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import sptech.school.CRUD.domain.entity.UsuarioModel;
-import sptech.school.CRUD.infrastructure.persistence.UsuarioRepository;
+import sptech.school.CRUD.infrastructure.persistence.UsuarioJpaRepository;
 
 import java.util.Optional;
 
@@ -12,14 +12,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FotoUsuarioService {
 
-    private final UsuarioRepository usuarioRepository;
+    private final UsuarioJpaRepository usuarioJpaRepository;
 
     public Boolean uploadFoto(Integer id, MultipartFile file){
         if(file == null || file.isEmpty()){
             return false;
         }
 
-        Optional<UsuarioModel> usuarioOpt = usuarioRepository.findById(id);
+        Optional<UsuarioModel> usuarioOpt = usuarioJpaRepository.findById(id);
 
         if (usuarioOpt.isPresent()){
             UsuarioModel usuario = usuarioOpt.get();
@@ -28,7 +28,7 @@ public class FotoUsuarioService {
             }catch (Exception e){
                 return false;
             }
-            usuarioRepository.save(usuario);
+            usuarioJpaRepository.save(usuario);
             return true;
         }
 
@@ -36,7 +36,7 @@ public class FotoUsuarioService {
     }
 
     public Optional<byte[]> buscarFoto(Integer id){
-        return usuarioRepository.findById(id)
+        return usuarioJpaRepository.findById(id)
                 .map(UsuarioModel::getFoto);
     }
 }

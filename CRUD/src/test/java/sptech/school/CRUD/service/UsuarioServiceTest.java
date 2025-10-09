@@ -12,7 +12,7 @@ import sptech.school.CRUD.application.service.usuario.AtualizarUsuarioService;
 import sptech.school.CRUD.application.service.usuario.CadastroUsuarioService;
 import sptech.school.CRUD.application.service.usuario.UsuarioService;
 import sptech.school.CRUD.infrastructure.persistence.CargoRepository;
-import sptech.school.CRUD.infrastructure.persistence.UsuarioRepository;
+import sptech.school.CRUD.infrastructure.persistence.UsuarioJpaRepository;
 import sptech.school.CRUD.domain.entity.CargoModel;
 import sptech.school.CRUD.domain.entity.UsuarioModel;
 import sptech.school.CRUD.interfaces.dto.Usuario.UsuarioAtivoDto;
@@ -40,7 +40,7 @@ class UsuarioServiceTest {
     private AtualizarUsuarioService atualizarService;
 
     @Mock
-    private UsuarioRepository usuarioRepository;
+    private UsuarioJpaRepository usuarioJpaRepository;
 
     @Mock
     private CargoRepository cargoRepository;
@@ -79,7 +79,7 @@ class UsuarioServiceTest {
         usuarioSalvo.setCreatedAt(LocalDateTime.now());
 
         // Simular o save
-        when(usuarioRepository.save(any())).thenReturn(usuarioSalvo);
+        when(usuarioJpaRepository.save(any())).thenReturn(usuarioSalvo);
 
         // Executar o método
         UsuarioModel resultado = cadastroService.cadastrarUsuarioComum(usuario);
@@ -88,7 +88,7 @@ class UsuarioServiceTest {
         // Verificações
         assertNotNull(resultado);
         assertEquals("Bianca", resultado.getNome());
-        verify(usuarioRepository).save(any());
+        verify(usuarioJpaRepository).save(any());
     }
 
     @Test
@@ -97,7 +97,7 @@ class UsuarioServiceTest {
         // Arrange
         String email = "usuario@email.com";
 
-        when(usuarioRepository.existsByEmail(email))
+        when(usuarioJpaRepository.existsByEmail(email))
                 .thenReturn(true);
 
         UsuarioModel novoUsuario = new UsuarioModel();
@@ -111,7 +111,7 @@ class UsuarioServiceTest {
                 () -> cadastroService.cadastrarUsuarioComum(novoUsuario)
         );
 
-        verify(usuarioRepository, times(1)).existsByEmail(email);
+        verify(usuarioJpaRepository, times(1)).existsByEmail(email);
         assertEquals("Email já cadastrado.", exception.getMessage());
     }
 
@@ -160,7 +160,7 @@ class UsuarioServiceTest {
         usuario.setPassword("senhaCriptografada");
         usuario.setAtivo(true);
 
-        when(usuarioRepository.findById(1)).thenReturn(Optional.of(usuario));
+        when(usuarioJpaRepository.findById(1)).thenReturn(Optional.of(usuario));
 
         // Act
         UsuarioModel resultado = usuarioService.getById(1);
@@ -169,33 +169,33 @@ class UsuarioServiceTest {
         assertNotNull(resultado);
         assertEquals(1, resultado.getId());
         assertEquals("Isaias", resultado.getNome());
-        verify(usuarioRepository).findById(1);
+        verify(usuarioJpaRepository).findById(1);
     }
 
     @Test
     @DisplayName("Buscar usuário por ID - Usuário não encontrado")
     void testeGetByIdErro() {
         // Arrange
-        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.empty());
+        when(usuarioJpaRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         // Act & Assert
         RecursoNaoEncontradoException exception = assertThrows(RecursoNaoEncontradoException.class, () -> usuarioService.getById(99));
 
         assertEquals("Usuario de id 99 não encontrado", exception.getMessage());
-        verify(usuarioRepository).findById(99);
+        verify(usuarioJpaRepository).findById(99);
     }
 
     @Test
     @DisplayName("Buscar usuário por ID - ID inválido")
     void testeBuscarUsuarioIdInvalido() {
         // Arrange
-        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.empty());
+        when(usuarioJpaRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         // Act & Assert
         RecursoNaoEncontradoException exception = assertThrows(RecursoNaoEncontradoException.class, () -> usuarioService.getById(-1));
 
         assertEquals("Usuario de id -1 não encontrado", exception.getMessage());
-        verify(usuarioRepository).findById(-1);
+        verify(usuarioJpaRepository).findById(-1);
     }
 
     @Test
@@ -242,7 +242,7 @@ class UsuarioServiceTest {
         usuarioSalvo.setAtivo(true);
         usuarioSalvo.setCreatedAt(LocalDateTime.now());
 
-        when(usuarioRepository.save(any())).thenReturn(usuarioSalvo);
+        when(usuarioJpaRepository.save(any())).thenReturn(usuarioSalvo);
 
         // Act
         UsuarioModel resultado = cadastroService.cadastrarUsuarioGestor(usuario);
@@ -250,7 +250,7 @@ class UsuarioServiceTest {
         // Assert
         assertNotNull(resultado);
         assertEquals("Carlos", resultado.getNome());
-        verify(usuarioRepository).save(any());
+        verify(usuarioJpaRepository).save(any());
         verify(passwordEncoder, times(1)).encode(anyString());
     }
 
@@ -260,7 +260,7 @@ class UsuarioServiceTest {
         // Arrange
         String email = "diego@email.com";
 
-        when(usuarioRepository.existsByEmail(email))
+        when(usuarioJpaRepository.existsByEmail(email))
                 .thenReturn(true);
 
         UsuarioModel novoUsuario = new UsuarioModel();
@@ -274,7 +274,7 @@ class UsuarioServiceTest {
                 () -> cadastroService.cadastrarUsuarioComum(novoUsuario)
         );
 
-        verify(usuarioRepository, times(1)).existsByEmail(email);
+        verify(usuarioJpaRepository, times(1)).existsByEmail(email);
         assertEquals("Email já cadastrado.", exception.getMessage());
     }
 
@@ -347,9 +347,9 @@ class UsuarioServiceTest {
         usuarioAtualizado.setEmail("matheussouza@email.com");
         usuarioAtualizado.setPassword("senhaNova");
 
-        lenient().when(usuarioRepository.existsById(1)).thenReturn(true);
-        lenient().when(usuarioRepository.findById(1)).thenReturn(Optional.of(usuarioExistente));
-        lenient().when(usuarioRepository.save(any())).thenReturn(usuarioAtualizado);
+        lenient().when(usuarioJpaRepository.existsById(1)).thenReturn(true);
+        lenient().when(usuarioJpaRepository.findById(1)).thenReturn(Optional.of(usuarioExistente));
+        lenient().when(usuarioJpaRepository.save(any())).thenReturn(usuarioAtualizado);
 
         // Act
         UsuarioModel resultado = atualizarService.put(usuarioAtualizado, 1);
@@ -359,7 +359,7 @@ class UsuarioServiceTest {
         assertEquals(1, resultado.getId());
         assertEquals("Matheus Souza", resultado.getNome());
         assertEquals("matheussouza@email.com", resultado.getEmail());
-        verify(usuarioRepository).save(any());
+        verify(usuarioJpaRepository).save(any());
     }
 
     @Test
@@ -372,14 +372,14 @@ class UsuarioServiceTest {
         usuarioExistente.setEmail("email@email.com");
         usuarioExistente.setPassword("senha@2025");
 
-        lenient().when(usuarioRepository.existsById(1)).thenReturn(true);
-        lenient().when(usuarioRepository.findById(1)).thenReturn(Optional.of(usuarioExistente));
+        lenient().when(usuarioJpaRepository.existsById(1)).thenReturn(true);
+        lenient().when(usuarioJpaRepository.findById(1)).thenReturn(Optional.of(usuarioExistente));
 
         UsuarioModel usuarioAtualizado = new UsuarioModel();
         usuarioAtualizado.setNome("Novo Nome");
         usuarioAtualizado.setEmail("emailnovo@email.com");
 
-        when(usuarioRepository.save(any())).thenAnswer(invocation -> {
+        when(usuarioJpaRepository.save(any())).thenAnswer(invocation -> {
             UsuarioModel usuarioSalvo = invocation.getArgument(0);
             return usuarioSalvo; // Retorna o objeto atualizado
         });
@@ -390,7 +390,7 @@ class UsuarioServiceTest {
         // Assert
         assertNotNull(resultado);
         assertEquals("Novo Nome", resultado.getNome());
-        verify(usuarioRepository).save(any());
+        verify(usuarioJpaRepository).save(any());
     }
 
 
@@ -403,7 +403,7 @@ class UsuarioServiceTest {
         usuarioAtualizado.setEmail("");
         usuarioAtualizado.setPassword("senhaVali123");
 
-        when(usuarioRepository.existsById(1)).thenReturn(true);
+        when(usuarioJpaRepository.existsById(1)).thenReturn(true);
 
         // Act & Assert
         RequisicaoInvalidaException exception = assertThrows(RequisicaoInvalidaException.class, () -> atualizarService.put(usuarioAtualizado, 1));
@@ -426,13 +426,13 @@ class UsuarioServiceTest {
         usuarioAtualizado.setEmail("guilhermesouza@email.com");
         usuarioAtualizado.setPassword("senhaNova");
 
-        when(usuarioRepository.existsById(anyInt())).thenReturn(false);
+        when(usuarioJpaRepository.existsById(anyInt())).thenReturn(false);
 
         // Act & Assert
         RecursoNaoEncontradoException exception = assertThrows(RecursoNaoEncontradoException.class, () -> atualizarService.put(usuarioAtualizado, 99));
 
         assertEquals("Usuario de id 99 não encontrado", exception.getMessage());
-        verify(usuarioRepository, never()).save(any());
+        verify(usuarioJpaRepository, never()).save(any());
     }
 
     @Test
@@ -446,7 +446,7 @@ class UsuarioServiceTest {
         usuario.setPassword("senhaCriptografada");
         usuario.setAtivo(true);
 
-        when(usuarioRepository.findById(1)).thenReturn(Optional.of(usuario));
+        when(usuarioJpaRepository.findById(1)).thenReturn(Optional.of(usuario));
 
         // Act
         Optional<UsuarioDeleteDto> resultado = usuarioService.deletarUsuarios(1);
@@ -456,22 +456,22 @@ class UsuarioServiceTest {
         assertEquals("Bruna", resultado.get().getNome());
         assertEquals("bruna@email.com", resultado.get().getEmail());
 
-        verify(usuarioRepository).delete(usuario);
-        verify(usuarioRepository, never()).save(any());
+        verify(usuarioJpaRepository).delete(usuario);
+        verify(usuarioJpaRepository, never()).save(any());
     }
 
     @Test
     @DisplayName("Excluir usuário - Usuário não encontrado")
     void testeDeleteUsuarioNaoEncontrado() {
         // Arrange
-        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.empty());
+        when(usuarioJpaRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         // Act
         Optional<UsuarioDeleteDto> resultado = usuarioService.deletarUsuarios(99);
 
         // Assert
         assertTrue(resultado.isEmpty());
-        verify(usuarioRepository, never()).save(any());
+        verify(usuarioJpaRepository, never()).save(any());
     }
 
     @Test
@@ -485,8 +485,8 @@ class UsuarioServiceTest {
         UsuarioAtivoDto dto = new UsuarioAtivoDto();
         dto.setAtivo(false); // queremos desativar
 
-        when(usuarioRepository.findById(idUsuario)).thenReturn(Optional.of(usuario));
-        when(usuarioRepository.save(any(UsuarioModel.class))).thenReturn(usuario);
+        when(usuarioJpaRepository.findById(idUsuario)).thenReturn(Optional.of(usuario));
+        when(usuarioJpaRepository.save(any(UsuarioModel.class))).thenReturn(usuario);
 
         UsuarioAtivoDto response = atualizarService.desativarUsuario(idUsuario, dto);
 
@@ -505,8 +505,8 @@ class UsuarioServiceTest {
         UsuarioAtivoDto dto = new UsuarioAtivoDto();
         dto.setAtivo(true);
 
-        when(usuarioRepository.findById(idUsuario)).thenReturn(Optional.of(usuario));
-        when(usuarioRepository.save(any(UsuarioModel.class))).thenReturn(usuario);
+        when(usuarioJpaRepository.findById(idUsuario)).thenReturn(Optional.of(usuario));
+        when(usuarioJpaRepository.save(any(UsuarioModel.class))).thenReturn(usuario);
 
         UsuarioAtivoDto response = atualizarService.desativarUsuario(idUsuario, dto);
 
@@ -518,7 +518,7 @@ class UsuarioServiceTest {
         UsuarioAtivoDto dto = new UsuarioAtivoDto();
         dto.setAtivo(ativo);
 
-        when(usuarioRepository.findById(id)).thenReturn(Optional.empty());
+        when(usuarioJpaRepository.findById(id)).thenReturn(Optional.empty());
 
         assertThrows(UsernameNotFoundException.class, () -> {
             atualizarService.desativarUsuario(id, dto);
