@@ -98,6 +98,7 @@ jobs:
               -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
               -Dsonar.java.binaries=target/classes
 
+
   deploy:
     name: Deploy para AWS (preparado)
     runs-on: ubuntu-latest
