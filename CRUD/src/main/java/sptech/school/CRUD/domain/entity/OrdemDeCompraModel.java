@@ -1,10 +1,13 @@
 package sptech.school.CRUD.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
         import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -50,4 +53,11 @@ public class OrdemDeCompraModel {
     @ManyToOne
     @JoinColumn(name = "usuario_id", insertable = false, updatable = false)
     private UsuarioModel usuario;
+
+    @ManyToOne
+    @JoinColumn(name = "conjunto_id")
+    @JsonBackReference
+    private ConjuntoOrdemDeCompraModel conjuntoOrdemDeCompra;
+
+
 }
