@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import sptech.school.CRUD.domain.entity.EstoqueModel;
 import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
 import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
-import sptech.school.CRUD.infrastructure.persistence.EstoqueRepository;
+import sptech.school.CRUD.infrastructure.persistence.estoque.EstoqueRepository;
 import sptech.school.CRUD.interfaces.dto.Estoque.AtualizarEstoqueDto;
 import sptech.school.CRUD.interfaces.dto.Estoque.AtualizarInfoEstoqueDto;
 import sptech.school.CRUD.interfaces.dto.Estoque.EstoqueListagemDto;

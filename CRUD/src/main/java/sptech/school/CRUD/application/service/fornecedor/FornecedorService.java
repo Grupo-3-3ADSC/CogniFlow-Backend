@@ -2,7 +2,7 @@ package sptech.school.CRUD.application.service.fornecedor;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import sptech.school.CRUD.infrastructure.persistence.FornecedorRepository;
+import sptech.school.CRUD.infrastructure.persistence.fornecedor.FornecedorRepository;
 import sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorCompletoDTO;
 import sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorMapper;
 

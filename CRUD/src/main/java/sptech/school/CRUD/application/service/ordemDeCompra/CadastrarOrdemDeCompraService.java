@@ -9,10 +9,10 @@ import sptech.school.CRUD.domain.entity.UsuarioModel;
 import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
 import sptech.school.CRUD.domain.exception.RequisicaoConflitanteException;
 import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
-import sptech.school.CRUD.infrastructure.persistence.EstoqueRepository;
-import sptech.school.CRUD.infrastructure.persistence.FornecedorRepository;
-import sptech.school.CRUD.infrastructure.persistence.OrdemDeCompraRepository;
-import sptech.school.CRUD.infrastructure.persistence.UsuarioRepository;
+import sptech.school.CRUD.infrastructure.persistence.estoque.EstoqueRepository;
+import sptech.school.CRUD.infrastructure.persistence.fornecedor.FornecedorRepository;
+import sptech.school.CRUD.infrastructure.persistence.ordemDeCompra.OrdemDeCompraRepository;
+import sptech.school.CRUD.infrastructure.persistence.usuario.UsuarioRepository;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.OrdemDeCompraCadastroDto;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.OrdemDeCompraMapper;
 

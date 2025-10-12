@@ -6,7 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import sptech.school.CRUD.domain.entity.OrdemDeCompraModel;
-import sptech.school.CRUD.infrastructure.persistence.OrdemDeCompraRepository;
+import sptech.school.CRUD.infrastructure.persistence.ordemDeCompra.OrdemDeCompraRepository;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.ListagemOrdemDeCompra;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.OrdemDeCompraMapper;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.PaginacaoHistoricoOrdemDeCompraDTO;

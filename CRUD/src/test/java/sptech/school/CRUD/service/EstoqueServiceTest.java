@@ -7,7 +7,7 @@ import org.mockito.*;
 import sptech.school.CRUD.application.service.estoque.AtualizarEstoqueService;
 import sptech.school.CRUD.application.service.estoque.RetirarEstoqueService;
 import sptech.school.CRUD.domain.entity.EstoqueModel;
-import sptech.school.CRUD.infrastructure.persistence.EstoqueRepository;
+import sptech.school.CRUD.infrastructure.persistence.estoque.EstoqueRepository;
 import sptech.school.CRUD.interfaces.dto.Estoque.AtualizarEstoqueDto;
 import sptech.school.CRUD.interfaces.dto.Estoque.EstoqueListagemDto;
 import sptech.school.CRUD.interfaces.dto.Estoque.RetirarEstoqueDto;

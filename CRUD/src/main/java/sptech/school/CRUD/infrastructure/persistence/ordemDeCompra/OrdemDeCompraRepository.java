@@ -1,4 +1,4 @@
-package sptech.school.CRUD.infrastructure.persistence;
+package sptech.school.CRUD.infrastructure.persistence.ordemDeCompra;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,8 +11,12 @@ import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.ListagemOrdemDeCompra;
 import java.util.List;
 import java.util.Optional;
 
-public interface OrdemDeCompraRepository extends JpaRepository<OrdemDeCompraModel, Integer> {
+public interface OrdemDeCompraRepository extends OrdemDeCompraJpaRepository,
+OrdemDeCompraPaginadoRepository,
+OrdemDeCompraQueryRepository
+{
 
+    @Override
     boolean existsByRastreabilidadeAndEstoqueId( String rastreabilidade,Integer estoqueId);
 
     @Query("SELECT o FROM OrdemDeCompraModel o " +
@@ -25,6 +29,7 @@ public interface OrdemDeCompraRepository extends JpaRepository<OrdemDeCompraMode
     @Query("SELECT o FROM OrdemDeCompraModel o ORDER BY o.id ASC")
     Page<OrdemDeCompraModel> findOrdensDeCompraPaginadas(Pageable pageable);
 
+    @Override
     List<OrdemDeCompraModel> findByEstoqueId(Integer estoqueId);
 
     @Query("SELECT o FROM OrdemDeCompraModel o WHERE o.estoque.id = :estoqueId AND YEAR(o.dataDeEmissao) = :ano")
@@ -54,6 +59,4 @@ public interface OrdemDeCompraRepository extends JpaRepository<OrdemDeCompraMode
             @Param("fornecedorId") Integer fornecedorId,
             @Param("ano") Integer ano
     );
-
-
 }

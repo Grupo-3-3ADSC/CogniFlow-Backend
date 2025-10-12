@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import sptech.school.CRUD.infrastructure.persistence.FornecedorRepository;
+import sptech.school.CRUD.infrastructure.persistence.fornecedor.FornecedorRepository;
 import sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorCompletoDTO;
 import sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorMapper;
 import sptech.school.CRUD.interfaces.dto.Fornecedor.PaginacaoFornecedorDTO;

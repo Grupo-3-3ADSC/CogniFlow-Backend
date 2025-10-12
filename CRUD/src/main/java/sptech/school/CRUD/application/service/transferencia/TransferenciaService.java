@@ -3,7 +3,7 @@ package sptech.school.CRUD.application.service.transferencia;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sptech.school.CRUD.domain.entity.TransferenciaModel;
-import sptech.school.CRUD.infrastructure.persistence.TransferenciaRepository;
+import sptech.school.CRUD.infrastructure.persistence.transferencia.TransferenciaRepository;
 import sptech.school.CRUD.interfaces.dto.Transferencia.TransferenciaListagemDto;
 import sptech.school.CRUD.interfaces.dto.Transferencia.TransferenciaMapper;
 

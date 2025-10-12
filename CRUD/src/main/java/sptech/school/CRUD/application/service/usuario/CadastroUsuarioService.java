@@ -7,8 +7,8 @@ import sptech.school.CRUD.domain.entity.CargoModel;
 import sptech.school.CRUD.domain.entity.UsuarioModel;
 import sptech.school.CRUD.domain.exception.RequisicaoConflitanteException;
 import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
-import sptech.school.CRUD.infrastructure.persistence.CargoRepository;
-import sptech.school.CRUD.infrastructure.persistence.UsuarioRepository;
+import sptech.school.CRUD.infrastructure.persistence.cargo.CargoRepository;
+import sptech.school.CRUD.infrastructure.persistence.usuario.UsuarioRepository;
 
 @Service
 @RequiredArgsConstructor
