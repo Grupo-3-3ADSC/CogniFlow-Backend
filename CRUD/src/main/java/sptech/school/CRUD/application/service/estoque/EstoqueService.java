@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sptech.school.CRUD.domain.entity.EstoqueModel;
-import sptech.school.CRUD.infrastructure.persistence.EstoqueRepository;
+import sptech.school.CRUD.infrastructure.persistence.estoque.EstoqueRepository;
 import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
 import sptech.school.CRUD.interfaces.dto.Estoque.*;
 

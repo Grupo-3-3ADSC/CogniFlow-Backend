@@ -1,4 +1,4 @@
-package sptech.school.CRUD.infrastructure.persistence;
+package sptech.school.CRUD.infrastructure.persistence.transferencia;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,11 +10,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface TransferenciaRepository extends JpaRepository<TransferenciaModel, Integer> {
+public interface TransferenciaRepository extends TransferenciaMaterial,TransferenciaQuery,TransferenciaSetor {
+    @Override
     Optional<TransferenciaModel> findBySetor(String setor);
 
 //    Optional<TransferenciaModel> findByTipoMaterial(String tipoMaterial);
 
+    @Override
     List<TransferenciaModel> findByTipoMaterial(String tipoMaterial);
 
     // Buscar transferências de um material em um ano específico

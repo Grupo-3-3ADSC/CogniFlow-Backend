@@ -1,8 +1,7 @@
-package sptech.school.CRUD.infrastructure.persistence;
+package sptech.school.CRUD.infrastructure.persistence.fornecedor;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import sptech.school.CRUD.domain.entity.FornecedorModel;
@@ -12,7 +11,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface FornecedorRepository extends JpaRepository<FornecedorModel, Integer> {
+public interface FornecedorRepository extends FornecedorCNPJRepository, FornecedorCompletoRepository, FornecedorPaginadoRepository{
+    @Override
     Optional<FornecedorModel> findByCnpj(String cnpj);
     @Query(value = """
         SELECT f.id as fornecedor_id, f.cnpj, f.ie, f.razao_social, f.nome_fantasia, 

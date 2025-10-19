@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import sptech.school.CRUD.application.service.usuario.AutenticacaoService;
 import sptech.school.CRUD.application.service.usuario.UsuarioService;
 import sptech.school.CRUD.domain.entity.UsuarioModel;
-import sptech.school.CRUD.infrastructure.persistence.UsuarioRepository;
+import sptech.school.CRUD.infrastructure.persistence.usuario.UsuarioRepository;
 import static org.mockito.Mockito.*;
 
 import java.util.Optional;

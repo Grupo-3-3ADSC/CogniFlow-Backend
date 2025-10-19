@@ -8,9 +8,9 @@ import sptech.school.CRUD.domain.entity.EnderecoModel;
 import sptech.school.CRUD.domain.entity.FornecedorModel;
 import sptech.school.CRUD.domain.exception.RequisicaoConflitanteException;
 import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
-import sptech.school.CRUD.infrastructure.persistence.ContatoRepository;
-import sptech.school.CRUD.infrastructure.persistence.EnderecoRepository;
-import sptech.school.CRUD.infrastructure.persistence.FornecedorRepository;
+import sptech.school.CRUD.infrastructure.persistence.contato.ContatoRepository;
+import sptech.school.CRUD.infrastructure.persistence.endereco.EnderecoRepository;
+import sptech.school.CRUD.infrastructure.persistence.fornecedor.FornecedorRepository;
 import sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorCadastroDto;
 import sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorMapper;
 

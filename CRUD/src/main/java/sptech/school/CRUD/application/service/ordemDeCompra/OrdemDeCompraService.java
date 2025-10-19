@@ -3,8 +3,8 @@ package sptech.school.CRUD.application.service.ordemDeCompra;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sptech.school.CRUD.domain.entity.OrdemDeCompraModel;
-import sptech.school.CRUD.infrastructure.persistence.FornecedorRepository;
-import sptech.school.CRUD.infrastructure.persistence.OrdemDeCompraRepository;
+import sptech.school.CRUD.infrastructure.persistence.fornecedor.FornecedorRepository;
+import sptech.school.CRUD.infrastructure.persistence.ordemDeCompra.OrdemDeCompraRepository;
 import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.*;
 
