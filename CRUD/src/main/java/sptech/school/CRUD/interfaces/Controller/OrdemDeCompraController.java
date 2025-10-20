@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.CRUD.application.service.ordemDeCompra.CadastrarOrdemDeCompraService;
@@ -40,6 +41,13 @@ public class OrdemDeCompraController {
         OrdemDeCompraModel model = cadastroService.cadastroOrdemDeCompra(ordemDeCompra);
         ListagemOrdemDeCompra resposta = OrdemDeCompraMapper.toListagemDto(model);
         return ResponseEntity.status(201).body(resposta);
+    }
+
+    @PostMapping
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<List<OrdemDeCompraModel>> cadastrarMultiplasOrdens(@RequestBody List<OrdemDeCompraCadastroDto> dtos) {
+        List<OrdemDeCompraModel> ordensCadastradas = ordemDeCompraService.cadastrarMultiplasOrdens(dtos);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ordensCadastradas);
     }
 
     @GetMapping

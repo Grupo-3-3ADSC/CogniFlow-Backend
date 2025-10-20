@@ -24,7 +24,7 @@ public class UsuarioCadastroDto {
     @Size(min = 6)
     private String password;
     @NotNull(message = "Cargo não pode ser nulo ou vazio")
-    private CargoModel cargo;
+    private Integer cargoId;
 
 
 }

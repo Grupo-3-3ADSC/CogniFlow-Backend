@@ -3,8 +3,10 @@ package sptech.school.CRUD.infrastructure.persistence.ordemDeCompra;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 import sptech.school.CRUD.domain.entity.OrdemDeCompraModel;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.ListagemOrdemDeCompra;
 
@@ -59,4 +61,12 @@ OrdemDeCompraQueryRepository
             @Param("fornecedorId") Integer fornecedorId,
             @Param("ano") Integer ano
     );
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM OrdemDeCompraModel o WHERE o.fornecedor.id = :fornecedorId")
+    void deleteByFornecedorId(@Param("fornecedorId") Integer fornecedorId);
+
+
+
 }

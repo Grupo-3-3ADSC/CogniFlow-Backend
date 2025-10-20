@@ -1,0 +1,139 @@
+# Crie um pipeline de CI/CD no GitHub Actions para o meu projeto
+
+# que inclua as seguintes etapas:
+# 1. Verificação de sintaxe do código
+# 2. Execução de testes unitários
+# 3. Build do projeto
+# 4. Implantação em um ambiente de staging
+# 5. Aprovação manual para implantação em produção
+# 6. Implantação em produção
+# O pipeline deve ser acionado em push para a branch main e em pull requests.
+
+name: CI-BackEnd
+
+# 🔹 Quando o pipeline será executado
+on:
+  push:
+    branches:
+      - main
+      - feature/ordemDeCompraV2
+  pull_request:
+    branches:
+      - main
+
+# 🔹 Jobs
+jobs:
+  build:
+    name: Build e Testes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build Maven
+        run: |
+          cd CRUD
+          mvn clean install
+
+      - name: Executar Testes
+        run: |
+          cd CRUD
+          mvn test
+
+      - name: Upload Relatórios de Teste
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: CRUD/target/surefire-reports/
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: crud-target
+          path: CRUD/target
+
+  sonar:
+    name: Análise SonarCloud
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: crud-target
+          path: CRUD/target
+
+      - name: Build para Sonar
+        run: |
+          cd CRUD
+          mvn verify -DskipTests
+
+      - name: SonarCloud Scan
+        run: |
+          cd CRUD
+          mvn sonar:sonar \
+              -Dsonar.projectKey=Grupo-3-3ADSC_CogniFlow-Backend \
+              -Dsonar.organization=grupo-3-3adsc \
+              -Dsonar.host.url=https://sonarcloud.io \
+              -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+              -Dsonar.java.binaries=target/classes
+
+
+  deploy:
+    name: Deploy para AWS (preparado)
+    runs-on: ubuntu-latest
+    needs: build
+    if: false # não roda até você liberar
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: crud-target
+          path: CRUD/target
+
+      - name: Configurar AWS CLI
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Deploy jar no EC2 (exemplo)
+        run: |
+          echo "Preparado para copiar o jar para o EC2 quando acesso estiver liberado"
+          # scp target/*.jar usuario@ec2-ip:/home/usuario/app/
+          # ssh usuario@ec2-ip 'systemctl restart app'
