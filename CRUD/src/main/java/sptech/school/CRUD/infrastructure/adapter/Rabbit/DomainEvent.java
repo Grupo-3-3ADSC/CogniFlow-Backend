@@ -12,4 +12,5 @@ public class DomainEvent {
     private String eventType;
     private String entityId;
     private String timestamp;
+    private String mensagem;
 }
