@@ -14,6 +14,7 @@ import sptech.school.CRUD.application.service.ordemDeCompra.MudarQuantidadeAtual
 import sptech.school.CRUD.application.service.ordemDeCompra.PaginacaoOrdemDeCompraService;
 import sptech.school.CRUD.domain.entity.OrdemDeCompraModel;
 import sptech.school.CRUD.application.service.ordemDeCompra.OrdemDeCompraService;
+import sptech.school.CRUD.infrastructure.adapter.Rabbit.RabbitProducer;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.*;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class OrdemDeCompraController {
     private final OrdemDeCompraService ordemDeCompraService;
     private final CadastrarOrdemDeCompraService cadastroService;
     private final PaginacaoOrdemDeCompraService paginacaoService;
+    private final RabbitProducer rabbitProducer;
     private final MudarQuantidadeAtualService mudarQuantidadeService;
 
     @PostMapping
@@ -40,6 +42,9 @@ public class OrdemDeCompraController {
 
         OrdemDeCompraModel model = cadastroService.cadastroOrdemDeCompra(ordemDeCompra);
         ListagemOrdemDeCompra resposta = OrdemDeCompraMapper.toListagemDto(model);
+
+        String mensagem = "Ordem de compra realizada: " + resposta.getId();
+        rabbitProducer.sendEvent("ordemDeCompra", "CRIADO", String.valueOf(resposta.getId()), mensagem);
         return ResponseEntity.status(201).body(resposta);
     }
 

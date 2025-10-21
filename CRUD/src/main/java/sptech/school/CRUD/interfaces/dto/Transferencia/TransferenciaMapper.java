@@ -41,6 +41,7 @@ public class TransferenciaMapper {
         if (entity == null) return null;
 
         return TransferenciaDto.builder()
+                .id(entity.getId())
                 .tipoMaterial(entity.getEstoque() != null ? entity.getEstoque().getTipoMaterial() : null)
                 .quantidadeTransferida(entity.getQuantidadeTransferida())
                 .setor(entity.getSetor())

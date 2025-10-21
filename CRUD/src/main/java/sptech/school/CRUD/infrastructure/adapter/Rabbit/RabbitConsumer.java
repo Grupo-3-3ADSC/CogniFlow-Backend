@@ -16,8 +16,8 @@ public class RabbitConsumer {
     private SimpMessagingTemplate messagingTemplate;
 
     @RabbitListener(queues = RabbitConfig.QUEUE)
-    public void receiveMessage(String mensagem) {
+    public void receiveMessage(DomainEvent event) {
         // envia em tempo real para o front
-        messagingTemplate.convertAndSend("/topic/notificacoes", Map.of("message", mensagem));
+        messagingTemplate.convertAndSend("/topic/notificacoes", Map.of("message", event.getMensagem()));
     }
 }

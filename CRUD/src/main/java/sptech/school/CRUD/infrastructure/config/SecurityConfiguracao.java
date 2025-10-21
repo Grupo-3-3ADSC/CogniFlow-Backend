@@ -106,7 +106,7 @@ public class SecurityConfiguracao {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuracao = new CorsConfiguration();
-        configuracao.applyPermitDefaultValues();
+        configuracao.setAllowedOrigins(List.of("http://localhost:5173"));
         configuracao.setAllowedMethods(
                 Arrays.asList(
                         HttpMethod.GET.name(),
@@ -118,6 +118,8 @@ public class SecurityConfiguracao {
                         HttpMethod.HEAD.name(),
                         HttpMethod.TRACE.name()));
 
+        configuracao.setAllowCredentials(true); // MUITO IMPORTANTE
+        configuracao.setAllowedHeaders(List.of("*"));
         configuracao.setExposedHeaders(List.of(HttpHeaders.CONTENT_DISPOSITION));
 
         UrlBasedCorsConfigurationSource origem = new UrlBasedCorsConfigurationSource();

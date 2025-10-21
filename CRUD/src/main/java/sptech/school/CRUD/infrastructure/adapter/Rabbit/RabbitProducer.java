@@ -14,12 +14,13 @@ public class RabbitProducer {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void sendEvent(String entity, String eventType, String entityId) {
+    public void sendEvent(String entity, String eventType, String entityId, String mensagem) {
         DomainEvent event = new DomainEvent(
                 entity,
                 eventType,
                 entityId,
-                LocalDateTime.now().toString()
+                LocalDateTime.now().toString(),
+                mensagem
         );
 
         rabbitTemplate.convertAndSend(
@@ -28,6 +29,6 @@ public class RabbitProducer {
                 event
         );
 
-        System.out.println("📤 Evento enviado: " + event);
+        System.out.println("Evento enviado: " + event);
     }
 }

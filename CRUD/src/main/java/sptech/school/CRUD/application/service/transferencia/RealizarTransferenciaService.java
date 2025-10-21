@@ -56,6 +56,7 @@ public class RealizarTransferenciaService {
         transferencia.setQuantidadeTransferida(quantidadeTransferida);
         transferencia.setSetor(dto.getSetor());
         transferencia.setUltimaMovimentacao(LocalDateTime.now());
+        transferencia.setTipoMaterial(tipoMaterial);
 
         // Salvar a transferência
         TransferenciaModel salvo = transferenciaRepository.save(transferencia);

@@ -24,7 +24,8 @@ public class RabbitController {
         producer.sendEvent(
                 request.getEntity(),
                 request.getEventType(),
-                request.getEntityId()
+                request.getEntityId(),
+                request.getMensagem()
         );
         return "Evento enviado: " + request;
     }

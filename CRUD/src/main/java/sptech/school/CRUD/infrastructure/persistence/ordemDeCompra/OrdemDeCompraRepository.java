@@ -28,7 +28,7 @@ OrdemDeCompraQueryRepository
             "WHERE o.id = :id")
     Optional<OrdemDeCompraModel> findByIdComJoins(@Param("id") Integer id);
 
-    @Query("SELECT o FROM OrdemDeCompraModel o ORDER BY o.id ASC")
+    @Query("SELECT o FROM OrdemDeCompraModel o ORDER BY o.id DESC")
     Page<OrdemDeCompraModel> findOrdensDeCompraPaginadas(Pageable pageable);
 
     @Override
