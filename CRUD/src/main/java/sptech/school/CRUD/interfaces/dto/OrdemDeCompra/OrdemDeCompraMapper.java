@@ -1,78 +1,92 @@
 package sptech.school.CRUD.interfaces.dto.OrdemDeCompra;
 
+import sptech.school.CRUD.domain.entity.EstoqueModel;
+import sptech.school.CRUD.domain.entity.FornecedorModel;
+import sptech.school.CRUD.domain.entity.ItemOrdemCompraModel;
 import sptech.school.CRUD.domain.entity.OrdemDeCompraModel;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrdemDeCompraMapper {
 
+    // Converte OrdemDeCompraModel → ListagemOrdemDeCompra (DTO)
     public static ListagemOrdemDeCompra toListagemDto(OrdemDeCompraModel entity) {
-        if (entity == null) {
-            return null;
-        }
+        if (entity == null) return null;
+
+        // Converte os itens para DTO
+        List<ItemOrdemCompraDto> itensDto = entity.getItens() != null ?
+                entity.getItens().stream().map(item -> ItemOrdemCompraDto.builder()
+                                .estoqueId(item.getEstoque() != null ? item.getEstoque().getId() : null)
+                                .quantidade(item.getQuantidade())
+                                .valorUnitario(item.getValorUnitario())
+                                .ipi(item.getIpi())
+                                .descricaoMaterial(item.getDescricaoMaterial())
+                                .valorKg(item.getValorKg())
+                                .valorPeca(item.getValorPeca())
+                                .rastreabilidade(item.getRastreabilidade())
+                                .build())
+                        .collect(Collectors.toList())
+                : null;
+
         return ListagemOrdemDeCompra.builder()
-                .id(Integer.valueOf(entity.getId()))
-                .prazoEntrega(String.valueOf(entity.getPrazoEntrega()))
-//                .ie(entity.getIe())
+                .id(entity.getId())
+                .prazoEntrega(entity.getPrazoEntrega())
                 .condPagamento(entity.getCondPagamento())
-                .valorKg(entity.getValorKg())
-                .rastreabilidade(entity.getRastreabilidade())
-                .valorPeca(entity.getValorPeca())
-                .descricaoMaterial(entity.getDescricaoMaterial())
-                .valorUnitario(entity.getValorUnitario())
-                .quantidade(entity.getQuantidade())
-                .fornecedorId(entity.getFornecedorId())
-                .estoqueId(entity.getEstoqueId())
-                .usuarioId(entity.getUsuarioId())
+                .fornecedorId(entity.getFornecedor() != null ? entity.getFornecedor().getId() : null)
+                .usuarioId(entity.getUsuario() != null ? entity.getUsuario().getId() : null)
                 .nomeFornecedor(entity.getFornecedor() != null ? entity.getFornecedor().getNomeFantasia() : "Fornecedor não encontrado")
-                .descricaoMaterialCompleta(entity.getEstoque() != null ? entity.getEstoque().getTipoMaterial() : "Material não encontrado")
                 .dataDeEmissao(entity.getDataDeEmissao())
                 .pendenciaAlterada(Boolean.TRUE.equals(entity.getPendenciaAlterada()))
-                .tipoMaterial(entity.getEstoque() != null ? entity.getEstoque().getTipoMaterial() : null)
+                .itens(itensDto)
                 .build();
     }
 
+    // Converte OrdemDeCompraCadastroDto → OrdemDeCompraModel (entity)
     public static OrdemDeCompraModel toEntity(OrdemDeCompraCadastroDto dto) {
+        if (dto == null) return null;
 
         OrdemDeCompraModel ordem = new OrdemDeCompraModel();
-        if (dto == null) {
-            return null;
-        }
         ordem.setPrazoEntrega(dto.getPrazoEntrega());
-//        ordem.setIe(dto.getIe());
         ordem.setCondPagamento(dto.getCondPagamento());
-        ordem.setValorKg(dto.getValorKg());
-        ordem.setRastreabilidade(dto.getRastreabilidade());
-        ordem.setValorPeca(dto.getValorPeca());
-        ordem.setDescricaoMaterial(dto.getDescricaoMaterial());
-        ordem.setValorUnitario(dto.getValorUnitario());
-        ordem.setQuantidade(dto.getQuantidade());
+        if (dto.getFornecedorId() != null) {
+            FornecedorModel fornecedor = new FornecedorModel();
+            fornecedor.setId(dto.getFornecedorId());
+            ordem.setFornecedor(fornecedor);
+        } else {
+            ordem.setFornecedor(null);
+        }
         ordem.setDataDeEmissao(LocalDateTime.now());
-        ordem.setFornecedorId(dto.getFornecedorId());
-        ordem.setEstoqueId(dto.getEstoqueId());
-        ordem.setUsuarioId(dto.getUsuarioId());
+
+
+        // Converte os itens do DTO para ItemOrdemCompraModel
+        if (dto.getItens() != null && !dto.getItens().isEmpty()) {
+            List<ItemOrdemCompraModel> itens = dto.getItens().stream().map(itemDto -> {
+                ItemOrdemCompraModel item = new ItemOrdemCompraModel();
+
+                // Cria o EstoqueModel e seta no item
+                EstoqueModel estoque = new EstoqueModel();
+                estoque.setId(itemDto.getEstoqueId());
+                item.setEstoque(estoque);
+
+                item.setQuantidade(itemDto.getQuantidade());
+                item.setValorUnitario(itemDto.getValorUnitario());
+                item.setIpi(itemDto.getIpi());
+                item.setDescricaoMaterial(itemDto.getDescricaoMaterial());
+                item.setValorKg(itemDto.getValorKg());
+                item.setValorPeca(itemDto.getValorPeca());
+                item.setRastreabilidade(itemDto.getRastreabilidade());
+
+                // Conecta o item à ordem
+                item.setOrdem(ordem);
+
+                return item;
+            }).collect(Collectors.toList());
+
+            ordem.setItens(itens);
+        }
 
         return ordem;
     }
-
-//    public static OrdemDeCompraModel toEntity(MudarQuantidadeAtualDto dto) {
-//        if (dto == null) return null;
-//
-//        OrdemDeCompraModel ordem = new OrdemDeCompraModel();
-//        ordem.setPendentes(dto.getPendentes());
-//        // adicione outros campos conforme necessário
-//        return ordem;
-//    }
-//    public static ListagemOrdemDeCompra toDto(OrdemDeCompraModel model) {
-//        if (model == null) return null;
-//
-//        return ListagemOrdemDeCompra.builder()
-//                .id(model.getId())
-//                .quantidade(model.getQuantidade())
-//                .pendentes(model.getPendentes())
-//                .estoqueId(model.getEstoqueId())
-//                .pendenciaAlterada(model.getPendenciaAlterada())
-//                .build();
-//    }
-
 }

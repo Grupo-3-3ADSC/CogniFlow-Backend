@@ -3,6 +3,7 @@ package sptech.school.CRUD.interfaces.dto.OrdemDeCompra;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -28,4 +29,5 @@ public class ListagemOrdemDeCompra {
     private LocalDateTime dataDeEmissao;
     private String tipoMaterial;
     private Boolean pendenciaAlterada;
+    private List<ItemOrdemCompraDto> itens;
 }

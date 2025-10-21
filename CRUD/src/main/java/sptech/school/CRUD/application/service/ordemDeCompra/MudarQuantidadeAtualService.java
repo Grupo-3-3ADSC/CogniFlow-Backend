@@ -3,6 +3,7 @@ package sptech.school.CRUD.application.service.ordemDeCompra;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sptech.school.CRUD.domain.entity.EstoqueModel;
+import sptech.school.CRUD.domain.entity.ItemOrdemCompraModel;
 import sptech.school.CRUD.domain.entity.OrdemDeCompraModel;
 import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
 import sptech.school.CRUD.infrastructure.persistence.estoque.EstoqueRepository;
@@ -27,8 +28,13 @@ public class MudarQuantidadeAtualService {
         //ordemDeCompra.setPendentes(dto.getPendentes());
 
         // Atualizar o estoque, se necessário
-        EstoqueModel estoque = estoqueRepository.findById(ordemDeCompra.getEstoqueId())
+        // Pega o primeiro item da ordem (ou você pode filtrar por algum critério)
+        ItemOrdemCompraModel item = ordemDeCompra.getItens().stream().findFirst()
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Nenhum item encontrado na ordem"));
+
+        EstoqueModel estoque = estoqueRepository.findById(item.getEstoque().getId())
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Estoque não encontrado"));
+
 
         Integer quantidadeAtual = Optional.ofNullable(estoque.getQuantidadeAtual()).orElse(0);
 
