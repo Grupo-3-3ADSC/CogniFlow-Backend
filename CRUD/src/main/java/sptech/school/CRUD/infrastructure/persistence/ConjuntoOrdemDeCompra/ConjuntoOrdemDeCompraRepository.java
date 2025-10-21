@@ -1,4 +1,4 @@
-package sptech.school.CRUD.domain.repository;
+package sptech.school.CRUD.infrastructure.persistence.ConjuntoOrdemDeCompra;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

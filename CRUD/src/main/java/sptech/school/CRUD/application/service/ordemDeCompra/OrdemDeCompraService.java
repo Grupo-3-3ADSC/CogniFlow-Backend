@@ -3,20 +3,21 @@ package sptech.school.CRUD.application.service.ordemDeCompra;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sptech.school.CRUD.domain.entity.OrdemDeCompraModel;
+import sptech.school.CRUD.infrastructure.persistence.ConjuntoOrdemDeCompra.ConjuntoOrdemDeCompraRepository;
+import sptech.school.CRUD.infrastructure.persistence.estoque.EstoqueRepository;
 import sptech.school.CRUD.infrastructure.persistence.fornecedor.FornecedorRepository;
 import sptech.school.CRUD.infrastructure.persistence.ordemDeCompra.OrdemDeCompraRepository;
 import org.springframework.transaction.annotation.Transactional;
 import sptech.school.CRUD.domain.entity.*;
-import sptech.school.CRUD.domain.repository.*;
 import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
 import sptech.school.CRUD.domain.exception.RequisicaoConflitanteException;
 import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
+import sptech.school.CRUD.infrastructure.persistence.usuario.UsuarioRepository;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +27,8 @@ public class OrdemDeCompraService {
     private final OrdemDeCompraRepository ordemDeCompraRepository;
     private final FornecedorRepository fornecedorRepository;
     private final ConjuntoOrdemDeCompraRepository conjuntoRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final EstoqueRepository estoqueRepository;
 
     public List<ListagemOrdemDeCompra> getAll() {
         return ordemDeCompraRepository.findAll()

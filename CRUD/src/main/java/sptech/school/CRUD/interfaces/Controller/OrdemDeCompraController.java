@@ -43,7 +43,7 @@ public class OrdemDeCompraController {
         return ResponseEntity.status(201).body(resposta);
     }
 
-    @PostMapping
+    @PostMapping("/multiplas-ordens")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<List<OrdemDeCompraModel>> cadastrarMultiplasOrdens(@RequestBody List<OrdemDeCompraCadastroDto> dtos) {
         List<OrdemDeCompraModel> ordensCadastradas = ordemDeCompraService.cadastrarMultiplasOrdens(dtos);

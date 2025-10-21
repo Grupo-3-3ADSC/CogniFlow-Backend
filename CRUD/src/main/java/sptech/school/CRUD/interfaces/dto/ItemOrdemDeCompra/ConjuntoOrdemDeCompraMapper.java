@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import sptech.school.CRUD.domain.entity.EstoqueModel;
 import sptech.school.CRUD.domain.entity.ConjuntoOrdemDeCompraModel;
 import sptech.school.CRUD.domain.entity.OrdemDeCompraModel;
-import sptech.school.CRUD.domain.repository.EstoqueRepository;
+import sptech.school.CRUD.infrastructure.persistence.estoque.EstoqueRepository;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.OrdemDeCompraMapper;
 
 import java.util.List;

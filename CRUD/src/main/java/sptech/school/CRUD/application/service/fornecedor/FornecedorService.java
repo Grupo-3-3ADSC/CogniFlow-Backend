@@ -1,27 +1,16 @@
 package sptech.school.CRUD.application.service.fornecedor;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sptech.school.CRUD.application.service.ViaCepService;
-import sptech.school.CRUD.domain.entity.ContatoModel;
-import sptech.school.CRUD.domain.entity.EnderecoModel;
 import sptech.school.CRUD.domain.entity.FornecedorModel;
-import sptech.school.CRUD.domain.entity.OrdemDeCompraModel;
-import sptech.school.CRUD.domain.repository.ContatoRepository;
-import sptech.school.CRUD.domain.repository.EnderecoRepository;
-import sptech.school.CRUD.domain.repository.FornecedorRepository;
-import sptech.school.CRUD.domain.repository.OrdemDeCompraRepository;
-import sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorCadastroDto;
+import sptech.school.CRUD.infrastructure.persistence.contato.ContatoRepository;
+import sptech.school.CRUD.infrastructure.persistence.endereco.EnderecoRepository;
 import sptech.school.CRUD.infrastructure.persistence.fornecedor.FornecedorRepository;
+import sptech.school.CRUD.infrastructure.persistence.ordemDeCompra.OrdemDeCompraRepository;
 import sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorCompletoDTO;
 import sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorMapper;
-import sptech.school.CRUD.interfaces.dto.Fornecedor.PaginacaoFornecedorDTO;
-import sptech.school.CRUD.domain.exception.RequisicaoConflitanteException;
-import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +23,7 @@ public class FornecedorService {
     private final FornecedorRepository fornecedorRepository;
     private final EnderecoRepository enderecoRepository;
     private final ContatoRepository contatoRepository;
+    private final OrdemDeCompraRepository ordemDeCompraRepository;
     private final ViaCepService viaCepService;
 
 
