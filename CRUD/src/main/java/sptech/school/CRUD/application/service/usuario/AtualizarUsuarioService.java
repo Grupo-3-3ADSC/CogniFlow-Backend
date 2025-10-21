@@ -1,6 +1,7 @@
 package sptech.school.CRUD.application.service.usuario;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import sptech.school.CRUD.domain.entity.UsuarioModel;
 import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
 import sptech.school.CRUD.domain.exception.RequisicaoConflitanteException;
 import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
+import sptech.school.CRUD.infrastructure.config.GerenciadorTokenJwt;
 import sptech.school.CRUD.infrastructure.persistence.cargo.CargoRepository;
 import sptech.school.CRUD.infrastructure.persistence.usuario.UsuarioRepository;
 import sptech.school.CRUD.interfaces.dto.Usuario.UsuarioAtivoDto;
@@ -22,33 +24,42 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AtualizarUsuarioService {
 
+    @Autowired
+    private GerenciadorTokenJwt gerenciadorTokenJwt;
+
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
     private final CargoRepository cargoRepository;
 
-    public UsuarioModel atualizarSenha(Integer id, String password){
-        // Validação de entrada
-        if (password == null || password.trim().isEmpty()) {
-            throw new IllegalArgumentException("Senha não pode estar vazia");
-        }
+    public UsuarioModel atualizarSenha(String email, String password, String resetToken) {
+        UsuarioModel usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
 
-        // Buscar usuário
-        UsuarioModel usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado com ID: " + id));
-
-        // Verificar se usuário está ativo
         if (!usuario.getAtivo()) {
-            throw new IllegalStateException("Não é possível atualizar senha de usuário inativo");
+            throw new IllegalStateException("Usuário inativo não pode alterar senha");
         }
 
-        // Criptografar a senha (MUITO IMPORTANTE!)
-        String senhaCriptografada = passwordEncoder.encode(password);
+        if (!gerenciadorTokenJwt.isResetTokenValid(resetToken, email)) {
+            throw new IllegalStateException("Token inválido ou expirado");
+        }
 
-        // Atualizar senha e timestamp
-        usuario.setPassword(senhaCriptografada);
+        if (!resetToken.equals(usuario.getReset_token())) {
+            throw new IllegalStateException("Token não corresponde ao registrado");
+        }
+
+        if (usuario.getReset_token_expira() == null ||
+                usuario.getReset_token_expira().isBefore(LocalDateTime.now())) {
+            throw new IllegalStateException("Token expirado");
+        }
+
+        String jti = gerenciadorTokenJwt.extractJti(resetToken);
+
+        usuario.setPassword(passwordEncoder.encode(password));
         usuario.setUpdatedAt(LocalDateTime.now());
 
-        // Salvar no banco
+        usuario.setReset_token(null);
+        usuario.setReset_token_expira(null);
+
         return usuarioRepository.save(usuario);
     }
 

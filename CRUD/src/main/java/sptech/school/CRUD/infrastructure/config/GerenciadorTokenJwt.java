@@ -1,6 +1,7 @@
 package sptech.school.CRUD.infrastructure.config;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,8 @@ import sptech.school.CRUD.interfaces.dto.Usuario.UsuarioDetalhesDto;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -71,6 +74,61 @@ public class GerenciadorTokenJwt {
                 .setSigningKey(parseSecret())
                 .build()
                 .parseClaimsJws(token).getBody();
+    }
+
+    public boolean isResetTokenValid(String jwt, String email){
+        Jws<Claims> parsed = Jwts.parserBuilder()
+                .setSigningKey(parseSecret())
+                .build()
+                .parseClaimsJws(jwt);
+
+        Claims c = parsed.getBody();
+
+        String purpose = c.get("purpose", String.class);
+        if(purpose == null || !purpose.equals("password_reset"))
+        {
+            return false;
+        }
+
+        String sub = c.getSubject();
+        if (sub == null || !sub.equals(email)) {
+            return false;
+        }
+
+        // não pode estar expirado
+        Date exp = c.getExpiration();
+        if (exp == null || exp.before(new Date())) {
+            return false;
+        }
+
+        String jti = c.getId();
+        if (jti == null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public String extractJti(String jwt) {
+        return Jwts.parserBuilder()
+                .setSigningKey(parseSecret())
+                .build()
+                .parseClaimsJws(jwt)
+                .getBody()
+                .getId();
+    }
+
+    public LocalDateTime extrairExpiracao(String jwt) {
+        Date expiracao = Jwts.parserBuilder()
+                .setSigningKey(parseSecret())
+                .build()
+                .parseClaimsJws(jwt)
+                .getBody()
+                .getExpiration();
+
+        return expiracao.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
     }
 
     private SecretKey parseSecret() {return Keys.hmacShaKeyFor(this.secret.getBytes(StandardCharsets.UTF_8));}

@@ -8,7 +8,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +20,16 @@ import sptech.school.CRUD.application.service.usuario.CadastroUsuarioService;
 import sptech.school.CRUD.application.service.usuario.FotoUsuarioService;
 import sptech.school.CRUD.domain.entity.UsuarioModel;
 import sptech.school.CRUD.application.service.usuario.UsuarioService;
+import sptech.school.CRUD.infrastructure.config.GerenciadorTokenJwt;
 import sptech.school.CRUD.interfaces.dto.Usuario.*;
 
 import java.util.List;
 import java.util.Optional;
+
 @Tag(name = "Usuario", description = "Endpoints de Usuario")
 @RestController
 @RequestMapping("/usuarios")
+@CrossOrigin(origins = "http://localhost:3001")
 @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso"),
         @ApiResponse(responseCode = "400", description = "Requisição inválida"),
@@ -37,6 +42,9 @@ public class UsuarioController {
     private final CadastroUsuarioService cadastroService;
     private final AtualizarUsuarioService atualizarService;
     private final FotoUsuarioService fotoService;
+
+    @Autowired
+    private GerenciadorTokenJwt gerenciadorTokenJwt;
 
     public UsuarioController(UsuarioService usuarioService,
     CadastroUsuarioService cadastroService,
@@ -189,22 +197,36 @@ public class UsuarioController {
 
     }
 
-    @PutMapping("/{id}/senha")// Adicione o path completo
-
+    @PutMapping("/{email}/senha")
     public ResponseEntity<Void> atualizarSenha(
-            @PathVariable Integer id,
-            @RequestBody @Valid UsuarioSenhaAtualizada request // DTO para receber a senha
+            @PathVariable String email,
+            @RequestBody @Valid UsuarioSenhaAtualizada request, // DTO para receber a senha
+            @RequestHeader(value = "Authorization", required = false) String resetTokenHeader
     ){
-        atualizarService.atualizarSenha(id, request.getPassword());
+        if (resetTokenHeader == null || !resetTokenHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String resetToken = resetTokenHeader.substring(7); // remove "Bearer "
+        atualizarService.atualizarSenha(email, request.getPassword(), resetToken);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/buscar-por-email/{email}")
+    @PostMapping("/{email}/reset-token")
+    @CrossOrigin(origins = "http://localhost:3001")
+    public ResponseEntity<Void> salvarResetToken(
+            @PathVariable String email,
+            @RequestBody @Valid ResetTokenRequest request
+    ) {
 
+        usuarioService.salvarResetToken(email, request.getResetToken(), request.getJti());
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/buscar-por-email/{email}")
     public ResponseEntity<UsuarioListagemDto> buscarPorEmail(@PathVariable String email) {
         UsuarioModel usuario = usuarioService.buscarPorEmail(email);
         return ResponseEntity.ok(UsuarioMapper.toEmailDto(usuario));
-
     }
 
     @PatchMapping("/desativarUsuario/{id}")

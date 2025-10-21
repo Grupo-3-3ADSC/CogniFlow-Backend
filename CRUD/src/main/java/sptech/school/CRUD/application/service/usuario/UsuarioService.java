@@ -15,6 +15,7 @@ import sptech.school.CRUD.infrastructure.config.GerenciadorTokenJwt;
 import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
 import sptech.school.CRUD.interfaces.dto.Usuario.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -100,6 +101,25 @@ public class UsuarioService {
                 .build();
 
         return Optional.of(dto);
+    }
+
+    public void salvarResetToken(String email, String resetToken, String jti) {
+        UsuarioModel usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
+
+        if (!usuario.getAtivo()) {
+            throw new IllegalStateException("Usuário inativo não pode receber token de reset");
+        }
+
+        // Extrai a expiração do token JWT
+        LocalDateTime expiracao = gerenciadorTokenJwt.extrairExpiracao(resetToken);
+
+        // Salva o token no banco
+        usuario.setReset_token(resetToken);
+        usuario.setReset_token_expira(expiracao);
+        usuario.setUpdatedAt(LocalDateTime.now());
+
+        usuarioRepository.save(usuario);
     }
 
 }
