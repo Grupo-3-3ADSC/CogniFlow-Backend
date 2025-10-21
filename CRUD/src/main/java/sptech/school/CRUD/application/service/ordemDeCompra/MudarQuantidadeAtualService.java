@@ -28,13 +28,8 @@ public class MudarQuantidadeAtualService {
         //ordemDeCompra.setPendentes(dto.getPendentes());
 
         // Atualizar o estoque, se necessário
-        // Pega o primeiro item da ordem (ou você pode filtrar por algum critério)
-        ItemOrdemCompraModel item = ordemDeCompra.getItens().stream().findFirst()
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Nenhum item encontrado na ordem"));
-
-        EstoqueModel estoque = estoqueRepository.findById(item.getEstoque().getId())
+        EstoqueModel estoque = estoqueRepository.findById(ordemDeCompra.getEstoqueId())
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Estoque não encontrado"));
-
 
         Integer quantidadeAtual = Optional.ofNullable(estoque.getQuantidadeAtual()).orElse(0);
 

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sptech.school.CRUD.application.service.ItemOrdemDeCompra.CadastrarMultiplasOrdensService;
 import sptech.school.CRUD.application.service.ordemDeCompra.CadastrarOrdemDeCompraService;
 import sptech.school.CRUD.application.service.ordemDeCompra.MudarQuantidadeAtualService;
 import sptech.school.CRUD.application.service.ordemDeCompra.PaginacaoOrdemDeCompraService;
@@ -35,6 +36,7 @@ public class OrdemDeCompraController {
     private final PaginacaoOrdemDeCompraService paginacaoService;
     private final RabbitProducer rabbitProducer;
     private final MudarQuantidadeAtualService mudarQuantidadeService;
+    private final CadastrarMultiplasOrdensService cadastrarMultiplasOrdensService;
 
     @PostMapping
     @SecurityRequirement(name = "Bearer")
@@ -51,7 +53,7 @@ public class OrdemDeCompraController {
     @PostMapping("/multiplas-ordens")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<List<OrdemDeCompraModel>> cadastrarMultiplasOrdens(@RequestBody List<OrdemDeCompraCadastroDto> dtos) {
-        List<OrdemDeCompraModel> ordensCadastradas = ordemDeCompraService.cadastrarMultiplasOrdens(dtos);
+        List<OrdemDeCompraModel> ordensCadastradas = cadastrarMultiplasOrdensService.cadastrarMultiplasOrdens(dtos);
         return ResponseEntity.status(HttpStatus.CREATED).body(ordensCadastradas);
     }
 

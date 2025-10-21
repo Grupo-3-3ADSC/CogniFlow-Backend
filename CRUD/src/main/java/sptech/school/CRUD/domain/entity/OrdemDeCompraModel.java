@@ -53,10 +53,6 @@ public class OrdemDeCompraModel {
     @JoinColumn(name = "usuario_id", insertable = false, updatable = false)
     private UsuarioModel usuario;
 
-    @OneToMany(mappedBy = "ordem", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemOrdemCompraModel> itens = new ArrayList<>();
-
-
     @ManyToOne
     @JoinColumn(name = "conjunto_id")
     @JsonBackReference

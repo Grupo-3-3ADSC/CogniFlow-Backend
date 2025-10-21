@@ -49,8 +49,4 @@ public class OrdemDeCompraCadastroDto {
     @NotNull(message = "Quantidade não pode ser nulo ou vazio")
     @Min(value = 1, message = "Quantidade deve ser no mínimo 1")
     private Integer quantidade;
-
-    @NotEmpty(message = "Deve haver pelo menos um item na ordem")
-    private List<ItemOrdemCompraDto> itens;
-
 }

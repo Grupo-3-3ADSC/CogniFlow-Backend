@@ -26,66 +26,42 @@ public class CadastrarOrdemDeCompraService {
     private final FornecedorRepository fornecedorRepository;
 
     public OrdemDeCompraModel cadastroOrdemDeCompra(OrdemDeCompraCadastroDto dto) {
+        // Usa o Mapper para construir a entidade
+        OrdemDeCompraModel ordemDeCompra = OrdemDeCompraMapper.toEntity(dto);
 
-        // Busca entidades relacionadas
+        // Busca e seta as entidades relacionadas
         FornecedorModel fornecedor = fornecedorRepository.findById(dto.getFornecedorId())
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Fornecedor não encontrado"));
+        ordemDeCompra.setFornecedor(fornecedor);
+
+        EstoqueModel estoque = estoqueRepository.findById(dto.getEstoqueId())
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Estoque não encontrado"));
+        ordemDeCompra.setEstoque(estoque);
 
         UsuarioModel usuario = usuarioRepository.findById(dto.getUsuarioId())
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
+        ordemDeCompra.setUsuario(usuario);
 
-        // Cria a ordem
-        OrdemDeCompraModel ordem = new OrdemDeCompraModel();
-        ordem.setPrazoEntrega(dto.getPrazoEntrega());
-        ordem.setCondPagamento(dto.getCondPagamento());
-        ordem.setUsuario(usuario);
-        ordem.setFornecedor(fornecedor);
-        ordem.setPendenciaAlterada(false);
-        ordem.setDataDeEmissao(LocalDateTime.now());
-
-        // Itera sobre os itens do DTO
-        for (ItemOrdemCompraDto itemDto : dto.getItens()) {
-
-            EstoqueModel estoque = estoqueRepository.findById(itemDto.getEstoqueId())
-                    .orElseThrow(() -> new RecursoNaoEncontradoException(
-                            "Estoque não encontrado para ID: " + itemDto.getEstoqueId()));
-
-            // Checa rastreabilidade duplicada
-            if (ordemDeCompraRepository.existsByRastreabilidadeAndEstoqueId(itemDto.getRastreabilidade(), estoque.getId())) {
-                throw new RequisicaoConflitanteException(
-                        "Rastreabilidade já cadastrada para este estoque: " + itemDto.getRastreabilidade());
-            }
-
-            // Checa quantidade máxima
-            Integer novaQuantidade = (itemDto.getQuantidade() != null ? itemDto.getQuantidade() : 0)
-                    + (estoque.getQuantidadeAtual() != null ? estoque.getQuantidadeAtual() : 0);
-            if (estoque.getQuantidadeMaxima() != null && novaQuantidade > estoque.getQuantidadeMaxima()) {
-                throw new RequisicaoInvalidaException(
-                        "A quantidade do item " + itemDto.getDescricaoMaterial() +
-                                " ultrapassa o limite máximo do estoque.");
-            }
-
-            // Atualiza estoque
-            estoque.setQuantidadeAtual(novaQuantidade);
-            estoque.setUltimaMovimentacao(LocalDateTime.now());
-            estoqueRepository.save(estoque);
-
-            // Cria item e associa à ordem
-            ItemOrdemCompraModel item = new ItemOrdemCompraModel();
-            item.setOrdem(ordem);
-            item.setEstoque(estoque);
-            item.setQuantidade(itemDto.getQuantidade());
-            item.setValorUnitario(itemDto.getValorUnitario());
-            item.setValorKg(itemDto.getValorKg());
-            item.setValorPeca(itemDto.getValorPeca());
-            item.setDescricaoMaterial(itemDto.getDescricaoMaterial());
-            item.setRastreabilidade(itemDto.getRastreabilidade());
-            item.setIpi(itemDto.getIpi());
-
-            ordem.getItens().add(item);
+        if (ordemDeCompraRepository.existsByRastreabilidadeAndEstoqueId(dto.getRastreabilidade(), dto.getEstoqueId())) {
+            throw new RequisicaoConflitanteException("Rastreabilidade já cadastrada para este estoque");
         }
 
-        // Salva ordem + itens
-        return ordemDeCompraRepository.save(ordem);
+
+        ordemDeCompra.setPendenciaAlterada(false);
+
+        OrdemDeCompraModel ordemSalva = ordemDeCompraRepository.save(ordemDeCompra);
+
+        // Atualiza a quantidade no estoque
+        Integer novaQuantidade = (dto.getQuantidade() != null ? dto.getQuantidade() : 0)
+                + ordemSalva.getQuantidade();
+        if (estoque.getQuantidadeMaxima() != null && novaQuantidade > estoque.getQuantidadeMaxima()) {
+            throw new RequisicaoInvalidaException("A quantidade comprada ultrapassa o limite máximo de estoque permitido.");
+        }
+        //estoque.setQuantidadeAtual(novaQuantidade);
+        dto.setQuantidade(novaQuantidade);
+        estoque.setUltimaMovimentacao(LocalDateTime.now());
+        estoqueRepository.save(estoque);
+
+        return ordemSalva;
     }
 }
