@@ -51,6 +51,10 @@ public class UsuarioService {
                 .orElseThrow(()-> new RecursoNaoEncontradoException("Usuario de id %d não encontrado".formatted(id)));
     }
 
+    public Optional<UsuarioModel> buscarPorId(int id) {
+        return usuarioRepository.findById(id);
+    }
+
     public UsuarioTokenDto autenticar(UsuarioModel usuario){
 
         final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(

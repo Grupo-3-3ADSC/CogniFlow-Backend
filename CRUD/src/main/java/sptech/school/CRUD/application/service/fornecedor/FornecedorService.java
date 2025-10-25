@@ -26,6 +26,9 @@ public class FornecedorService {
     private final OrdemDeCompraRepository ordemDeCompraRepository;
     private final ViaCepService viaCepService;
 
+    public Optional<FornecedorModel> buscarFornecedor(Integer id){
+       return fornecedorRepository.findById(id);
+    }
 
     public  List<FornecedorCompletoDTO> fornecedorCompleto(){
         List<FornecedorCompletoDTO> fornecedores = fornecedorRepository.findFornecedoresCompletos();

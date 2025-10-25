@@ -11,10 +11,23 @@ public class LogMapper {
 
         return LogDto.builder()
                 .id(entity.getId())
-                .usuarioId(entity.getUsuarioId())
-                .fornecedorId(entity.getFornecedorId())
+                .username(entity.getUsername())
                 .mensagem(entity.getMensagem())
+                .data(entity.getData())
                 .build();
+    }
+
+    public static LogModel toEntity(LogDto dto){
+
+        LogModel log = new LogModel();
+        if(dto == null){
+            return null;
+        }
+
+        log.setMensagem(dto.getMensagem());
+        log.setData(dto.getData());
+
+        return log;
     }
 
     public static LogMensagemDto toMensagemDto(LogModel entity){
@@ -24,6 +37,7 @@ public class LogMapper {
 
         return LogMensagemDto.builder()
                 .mensagem(entity.getMensagem())
+                .data(entity.getData())
                 .build();
     }
 }

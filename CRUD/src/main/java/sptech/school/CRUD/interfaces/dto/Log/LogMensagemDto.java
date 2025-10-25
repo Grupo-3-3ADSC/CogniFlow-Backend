@@ -2,6 +2,8 @@ package sptech.school.CRUD.interfaces.dto.Log;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Builder
@@ -10,4 +12,5 @@ import lombok.*;
 public class LogMensagemDto {
     private Long id;
     private String mensagem;
+    private LocalDateTime data;
 }

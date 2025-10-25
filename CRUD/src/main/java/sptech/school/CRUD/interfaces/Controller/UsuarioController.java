@@ -12,15 +12,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import sptech.school.CRUD.application.service.log.DeleteLogService;
+import sptech.school.CRUD.application.service.log.LogService;
 import sptech.school.CRUD.application.service.usuario.AtualizarUsuarioService;
 import sptech.school.CRUD.application.service.usuario.CadastroUsuarioService;
 import sptech.school.CRUD.application.service.usuario.FotoUsuarioService;
+import sptech.school.CRUD.domain.entity.LogModel;
 import sptech.school.CRUD.domain.entity.UsuarioModel;
 import sptech.school.CRUD.application.service.usuario.UsuarioService;
 import sptech.school.CRUD.infrastructure.config.GerenciadorTokenJwt;
+import sptech.school.CRUD.interfaces.dto.Log.LogDto;
 import sptech.school.CRUD.interfaces.dto.Usuario.*;
 
 import java.util.List;
@@ -42,6 +48,8 @@ public class UsuarioController {
     private final CadastroUsuarioService cadastroService;
     private final AtualizarUsuarioService atualizarService;
     private final FotoUsuarioService fotoService;
+    private final LogService logService;
+    private final DeleteLogService deleteLogService;
 
     @Autowired
     private GerenciadorTokenJwt gerenciadorTokenJwt;
@@ -49,11 +57,15 @@ public class UsuarioController {
     public UsuarioController(UsuarioService usuarioService,
     CadastroUsuarioService cadastroService,
     AtualizarUsuarioService atualizarService,
-    FotoUsuarioService fotoService) {
+    FotoUsuarioService fotoService,
+    LogService logService,
+    DeleteLogService deleteLogService) {
         this.usuarioService = usuarioService;
         this.cadastroService = cadastroService;
         this.atualizarService = atualizarService;
         this.fotoService = fotoService;
+        this.logService = logService;
+        this.deleteLogService = deleteLogService;
     }
 
     @GetMapping("/listarAtivos")
@@ -243,10 +255,14 @@ public class UsuarioController {
 
     @DeleteMapping("/{id}")
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<UsuarioDeleteDto> deletarUsuario(@PathVariable Integer id) {
+    public ResponseEntity<UsuarioDeleteDto> deletarUsuario(@PathVariable Integer id, Authentication authentication) {
+        UserDetails usuarioLogado = (UserDetails) authentication.getPrincipal();
+
+        Optional<UsuarioModel> usr = usuarioService.buscarPorId(id);
         Optional<UsuarioDeleteDto> dto = usuarioService.deletarUsuarios(id);
 
         if (dto.isPresent()) {
+            deleteLogService.postarLogDeleteUsuario(usr, usuarioLogado.getUsername());
             return ResponseEntity.ok(dto.get());
         } else {
             return ResponseEntity.notFound().build();

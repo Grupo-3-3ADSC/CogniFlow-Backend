@@ -41,6 +41,7 @@ public class FornecedorMapper {
 
         return dto;
     }
+
     public static FornecedorCompletoDTO fornecedorCompleto(FornecedorCompletoDTO dto){
         if (dto == null){
             return null;
@@ -63,6 +64,7 @@ public class FornecedorMapper {
         entity.setIe(dto.getIe());
         return entity;
     }
+
 //    public static FornecedorPaginadoDTO fornecedorPaginado(FornecedorPaginadoDTO dto){
 //        if(dto == null){
 //            return null;

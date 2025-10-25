@@ -8,9 +8,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.CRUD.application.service.fornecedor.CadastroFornecedorService;
 import sptech.school.CRUD.application.service.fornecedor.PaginacaoFornecedorService;
+import sptech.school.CRUD.application.service.log.DeleteLogService;
+import sptech.school.CRUD.domain.entity.FornecedorModel;
 import sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorCadastroDto;
 import sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorCompletoDTO;
 import sptech.school.CRUD.interfaces.dto.Fornecedor.PaginacaoFornecedorDTO;
@@ -34,13 +38,16 @@ public class FornecedorController {
     private final FornecedorService fornecedorService;
     private final CadastroFornecedorService cadastroService;
     private final PaginacaoFornecedorService paginacaoService;
+    private final DeleteLogService deleteLogService;
 
     public FornecedorController(FornecedorService fornecedorService,
                                 CadastroFornecedorService cadastroService,
-                                PaginacaoFornecedorService paginacaoService) {
+                                PaginacaoFornecedorService paginacaoService,
+                                DeleteLogService deleteLogService) {
         this.fornecedorService = fornecedorService;
         this.cadastroService = cadastroService;
         this.paginacaoService = paginacaoService;
+        this.deleteLogService = deleteLogService;
     }
 
     @PostMapping
@@ -76,10 +83,14 @@ public class FornecedorController {
 
     @DeleteMapping("/{id}")
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<FornecedorCompletoDTO> deletarFornecedor(@PathVariable Integer id){
+    public ResponseEntity<FornecedorCompletoDTO> deletarFornecedor(@PathVariable Integer id, Authentication authentication){
+        UserDetails usuarioLogado = (UserDetails) authentication.getPrincipal();
+
+        Optional<FornecedorModel> opt = fornecedorService.buscarFornecedor(id);
         Optional<FornecedorCompletoDTO> dto = fornecedorService.deletarFornecedor(id);
 
         if (dto.isPresent()) {
+            deleteLogService.postarLogDeleteFornecedor(opt, usuarioLogado.getUsername());
             return ResponseEntity.ok(dto.get());
         } else {
             return ResponseEntity.notFound().build();
