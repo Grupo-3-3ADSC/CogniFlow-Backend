@@ -27,17 +27,9 @@ public class ConjuntoOrdemDeCompraController {
 
     @GetMapping("/{id}")
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<ConjuntoOrdemDeCompraDTO> buscarPorId(@PathVariable Integer id) {
+    public ResponseEntity<ConjuntoOrdemDeCompraModel> buscarPorId(@PathVariable Integer id) {
         ConjuntoOrdemDeCompraModel conjunto = service.buscarPorId(id);
-
-        ConjuntoOrdemDeCompraDTO dto = new ConjuntoOrdemDeCompraDTO(
-                conjunto.getId(),
-                conjunto.getOrdensDeCompra().stream()
-                        .map(ordem -> ordem.getId())
-                        .collect(Collectors.toList())
-        );
-
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(conjunto);
     }
 
 
