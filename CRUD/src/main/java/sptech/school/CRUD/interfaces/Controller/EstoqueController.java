@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import sptech.school.CRUD.application.service.estoque.AtualizarEstoqueService;
 import sptech.school.CRUD.application.service.estoque.EstoqueService;
 import sptech.school.CRUD.application.service.estoque.RetirarEstoqueService;
+import sptech.school.CRUD.application.service.notificacao.NotificationService;
 import sptech.school.CRUD.interfaces.dto.Estoque.*;
 
 import java.util.List;
@@ -35,6 +36,8 @@ public class EstoqueController {
     private final RetirarEstoqueService retirarEstoqueService;
     @Autowired
     private final AtualizarEstoqueService atualizarService;
+    @Autowired
+    private final NotificationService notificationService;
 
     @GetMapping
     @SecurityRequirement(name = "Bearer")
@@ -47,6 +50,20 @@ public class EstoqueController {
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<EstoqueListagemDto> adicionarEstoque(@RequestBody @Valid AtualizarEstoqueDto dto) {
         EstoqueListagemDto resposta = atualizarService.atualizarEstoque(dto);
+
+        String mensagemToast = "Ordem de compra confirmada";
+        String mensagemEmail = "Novos materiais adicionados no estoque:\n\n" +
+                "Tipo de material: " + resposta.getTipoMaterial() + "\n";
+
+        notificationService.notificar(
+                "cadastro_estoque",
+                "CRIADO",
+                String.valueOf(resposta.getTipoMaterial()),
+                mensagemToast,
+                "Novos materias no estoque",
+                mensagemEmail,
+                "isaiasoliveirabjj@gmail.com"
+        );
         return ResponseEntity.ok(resposta);
     }
 

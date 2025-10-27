@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sptech.school.CRUD.application.service.notificacao.NotificationService;
 import sptech.school.CRUD.interfaces.dto.Cargo.CargoCadastraDto;
 import sptech.school.CRUD.interfaces.dto.Cargo.CargoListagemDto;
 import sptech.school.CRUD.application.service.cargo.CargoService;
@@ -24,9 +25,11 @@ import java.util.List;
 public class CargoController {
 
     private final CargoService cargoService;
+    private final NotificationService notificationService;
 
-    public CargoController(CargoService cargoService) {
+    public CargoController(CargoService cargoService, NotificationService notificationService) {
         this.cargoService = cargoService;
+        this.notificationService = notificationService;
     }
 
     @GetMapping
@@ -41,9 +44,23 @@ public class CargoController {
 
         CargoListagemDto cargoPost = cargoService.post(cargo);
 
-        if(cargoPost == null) {
+        if (cargoPost == null) {
             return ResponseEntity.badRequest().build();
         }
+
+        String mensagemToast = "Novo cargo cadastrado no sistema!";
+        String mensagemEmail = "Novo cargo adicionado no sistema:\n\n" +
+                "Cargo: " + cargoPost.getNome() + "\n";
+
+        notificationService.notificar(
+                "cadastro_cargo",
+                "CRIADO",
+                String.valueOf(cargoPost.getNome()),
+                mensagemToast,
+                "Novos materias no estoque",
+                mensagemEmail,
+                "isaiasoliveirabjj@gmail.com"
+        );
 
         return ResponseEntity.status(201).body(cargoPost);
     }

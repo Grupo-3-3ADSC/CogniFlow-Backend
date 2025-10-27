@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.CRUD.application.service.ItemOrdemDeCompra.CadastrarMultiplasOrdensService;
+import sptech.school.CRUD.application.service.notificacao.NotificationService;
 import sptech.school.CRUD.application.service.ordemDeCompra.CadastrarOrdemDeCompraService;
 import sptech.school.CRUD.application.service.ordemDeCompra.MudarQuantidadeAtualService;
 import sptech.school.CRUD.application.service.ordemDeCompra.PaginacaoOrdemDeCompraService;
@@ -37,6 +38,7 @@ public class OrdemDeCompraController {
     private final RabbitProducer rabbitProducer;
     private final MudarQuantidadeAtualService mudarQuantidadeService;
     private final CadastrarMultiplasOrdensService cadastrarMultiplasOrdensService;
+    private final NotificationService notificationService;
 
     @PostMapping
     @SecurityRequirement(name = "Bearer")
@@ -45,8 +47,15 @@ public class OrdemDeCompraController {
         OrdemDeCompraModel model = cadastroService.cadastroOrdemDeCompra(ordemDeCompra);
         ListagemOrdemDeCompra resposta = OrdemDeCompraMapper.toListagemDto(model);
 
-        String mensagem = "Ordem de compra realizada: " + resposta.getId();
-        rabbitProducer.sendEvent("ordemDeCompra", "CRIADO", String.valueOf(resposta.getId()), mensagem);
+        notificationService.notificar(
+                "ordem_compra",
+                "CRIADO",
+                String.valueOf(resposta.getId()),
+                "Ordem de compra criada com sucesso!",
+                "Nova Ordem de Compra Criada",
+                "Uma nova ordem de compra foi registrada:\n\nID: " + resposta.getId() + "\nFornecedor: " + resposta.getNomeFornecedor(),
+                "isaiasoliveirabjj@gmail.com"
+        );
         return ResponseEntity.status(201).body(resposta);
     }
 
@@ -54,13 +63,19 @@ public class OrdemDeCompraController {
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<List<OrdemDeCompraModel>> cadastrarMultiplasOrdens(@RequestBody List<OrdemDeCompraCadastroDto> dtos) {
         List<OrdemDeCompraModel> ordensCadastradas = cadastrarMultiplasOrdensService.cadastrarMultiplasOrdens(dtos);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ordensCadastradas);
-    }
 
-    @GetMapping
-    @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<List<ListagemOrdemDeCompra>> listarOrdemDeCompra() {
-        return ResponseEntity.ok(ordemDeCompraService.getAll());
+        // Adiciona notificação
+        notificationService.notificar(
+                "ordem_compra",
+                "CRIADO",
+                ordensCadastradas.size() + " ordens",
+                ordensCadastradas.size() + " ordem(ns) de compra criada(s) com sucesso!",
+                "Novas Ordens de Compra Criadas",
+                ordensCadastradas.size() + " ordens de compra foram registradas.",
+                "isaiasoliveirabjj@gmail.com"
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(ordensCadastradas);
     }
 
     @GetMapping("/{id}")

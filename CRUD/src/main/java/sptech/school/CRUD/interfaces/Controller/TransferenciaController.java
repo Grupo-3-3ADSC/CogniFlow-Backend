@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sptech.school.CRUD.application.service.notificacao.NotificationService;
 import sptech.school.CRUD.application.service.transferencia.PaginacaoTransferenciaService;
 import sptech.school.CRUD.infrastructure.adapter.Rabbit.RabbitProducer;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.PaginacaoHistoricoOrdemDeCompraDTO;
@@ -25,6 +26,7 @@ public class TransferenciaController {
     private final RealizarTransferenciaService realizarTransferenciaService;
     private final RabbitProducer rabbitProducer;
     private final PaginacaoTransferenciaService paginacaoTransferenciaService;
+    private final NotificationService notificationService;
 
     // Criar/realizar transferência
     @PostMapping
@@ -32,8 +34,25 @@ public class TransferenciaController {
     public ResponseEntity<TransferenciaDto> realizarTransferencia(@RequestBody @Valid TransferenciaDto dto) {
         TransferenciaDto resposta = realizarTransferenciaService.realizarTransferencia(dto);
 
-        String mensagem = "Transferência realizada: " + resposta.getId();
-        rabbitProducer.sendEvent("transferencia", "CRIADO", String.valueOf(resposta.getId()), mensagem);
+        // Mensagem simples para o toast
+        String mensagemToast = "Uma transferência foi realizada!";
+
+        // Mensagem completa para o e-mail
+        String mensagemEmail = "Uma nova transferência foi realizada:\n\n" +
+                "ID: " + resposta.getId() + "\n" +
+                "Setor: " + resposta.getSetor() + "\n" +
+                "Quantidade: " + resposta.getQuantidadeTransferida() + "\n" +
+                "Tipo de Material: " + resposta.getTipoMaterial();
+
+        notificationService.notificar(
+                "transferencia",
+                "CRIADO",
+                String.valueOf(resposta.getId()),
+                mensagemToast,
+                "Nova Transferência Realizada",
+                mensagemEmail,
+                "isaiasoliveirabjj@gmail.com"
+        );
 
         return ResponseEntity.ok(resposta);
     }

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import sptech.school.CRUD.application.service.fornecedor.CadastroFornecedorService;
 import sptech.school.CRUD.application.service.fornecedor.PaginacaoFornecedorService;
 import sptech.school.CRUD.application.service.log.DeleteLogService;
+import sptech.school.CRUD.application.service.notificacao.NotificationService;
 import sptech.school.CRUD.domain.entity.FornecedorModel;
 import sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorCadastroDto;
 import sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorCompletoDTO;
@@ -39,15 +41,19 @@ public class FornecedorController {
     private final CadastroFornecedorService cadastroService;
     private final PaginacaoFornecedorService paginacaoService;
     private final DeleteLogService deleteLogService;
+    private final NotificationService notificationService;
 
     public FornecedorController(FornecedorService fornecedorService,
                                 CadastroFornecedorService cadastroService,
                                 PaginacaoFornecedorService paginacaoService,
-                                DeleteLogService deleteLogService) {
+                                DeleteLogService deleteLogService,
+                                NotificationService notificationService
+    ) {
         this.fornecedorService = fornecedorService;
         this.cadastroService = cadastroService;
         this.paginacaoService = paginacaoService;
         this.deleteLogService = deleteLogService;
+        this.notificationService = notificationService;
     }
 
     @PostMapping
@@ -56,6 +62,23 @@ public class FornecedorController {
 
         // Chama o service passando o DTO diretamente
         FornecedorCadastroDto novoFornecedor = cadastroService.cadastroFornecedor(fornecedorDto);
+
+        String mensagemToast = "Novo fornecedor cadastrado com sucesso!";
+        String mensagemEmail = "Um novo fornecedor foi cadastrado no sistema:\n\n" +
+                "Nome: " + novoFornecedor.getNomeFantasia() + "\n" +
+                "CNPJ: " + novoFornecedor.getCnpj() + "\n" +
+                "E-mail: " + novoFornecedor.getEmail();
+
+        notificationService.notificar(
+                "cadastro_fornecedor",
+                "CRIADO",
+                String.valueOf(novoFornecedor.getRazaoSocial()),
+                mensagemToast,
+                "Novo Fornecedor Cadastrado",
+                mensagemEmail,
+                "isaiasoliveirabjj@gmail.com"
+        );
+
         return ResponseEntity.status(HttpStatus.CREATED).body(novoFornecedor);
     }
 

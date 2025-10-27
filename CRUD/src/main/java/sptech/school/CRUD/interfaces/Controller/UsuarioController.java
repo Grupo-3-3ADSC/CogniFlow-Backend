@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sptech.school.CRUD.application.service.log.DeleteLogService;
 import sptech.school.CRUD.application.service.log.LogService;
+import sptech.school.CRUD.application.service.notificacao.NotificationService;
 import sptech.school.CRUD.application.service.usuario.AtualizarUsuarioService;
 import sptech.school.CRUD.application.service.usuario.CadastroUsuarioService;
 import sptech.school.CRUD.application.service.usuario.FotoUsuarioService;
@@ -50,6 +51,7 @@ public class UsuarioController {
     private final FotoUsuarioService fotoService;
     private final LogService logService;
     private final DeleteLogService deleteLogService;
+    private final NotificationService notificationService;
 
     @Autowired
     private GerenciadorTokenJwt gerenciadorTokenJwt;
@@ -59,13 +61,16 @@ public class UsuarioController {
     AtualizarUsuarioService atualizarService,
     FotoUsuarioService fotoService,
     LogService logService,
-    DeleteLogService deleteLogService) {
+    DeleteLogService deleteLogService,
+                             NotificationService notificationService
+                             ) {
         this.usuarioService = usuarioService;
         this.cadastroService = cadastroService;
         this.atualizarService = atualizarService;
         this.fotoService = fotoService;
         this.logService = logService;
         this.deleteLogService = deleteLogService;
+        this.notificationService = notificationService;
     }
 
     @GetMapping("/listarAtivos")
@@ -119,9 +124,25 @@ public class UsuarioController {
     public ResponseEntity<Void> cadastrarComum(
             @RequestBody @Valid UsuarioCadastroDto usuarioParaCadastro
     ) {
-       final UsuarioModel usuario = UsuarioMapper.of(usuarioParaCadastro);
+        final UsuarioModel usuario = UsuarioMapper.of(usuarioParaCadastro);
 
-       this.cadastroService.cadastrarUsuarioComum(usuario);
+        this.cadastroService.cadastrarUsuarioComum(usuario);
+
+        String mensagemToast = "Novo usuário cadastrado com sucesso!";
+        String mensagemEmail = "Um novo usuário foi cadastrado no sistema:\n\n" +
+                "Nome: " + usuario.getNome() + "\n" +
+                "Cargo: " + usuario.getCargo().getNome() + "\n" +
+                "E-mail: " + usuario.getEmail();
+
+        notificationService.notificar(
+                "cadastro_usuario",
+                "CRIADO",
+                String.valueOf(usuario.getNome()),
+                mensagemToast,
+                "Novo usuário cadastrado",
+                mensagemEmail,
+                "isaiasoliveirabjj@gmail.com"
+        );
 
         return ResponseEntity.status(201).build();
     }
@@ -134,6 +155,22 @@ public class UsuarioController {
         final UsuarioModel usuario = UsuarioMapper.of(usuarioParaCadastro);
 
         this.cadastroService.cadastrarUsuarioGestor(usuario);
+
+        String mensagemToast = "Novo usuário cadastrado com sucesso!";
+        String mensagemEmail = "Um novo usuário foi cadastrado no sistema:\n\n" +
+                "Nome: " + usuario.getNome() + "\n" +
+                "Cargo: " + usuario.getCargo() + "\n" +
+                "E-mail: " + usuario.getEmail();
+
+        notificationService.notificar(
+                "cadastro_usuario",
+                "CRIADO",
+                String.valueOf(usuario.getNome()),
+                mensagemToast,
+                "Novo usuário cadastrado",
+                mensagemEmail,
+                "isaiasoliveirabjj@gmail.com"
+        );
 
         return ResponseEntity.status(201).build();
     }
