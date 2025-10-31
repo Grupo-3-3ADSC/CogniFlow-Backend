@@ -3,7 +3,6 @@ package sptech.school.CRUD.application.service.ordemDeCompra;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sptech.school.CRUD.domain.entity.EstoqueModel;
-import sptech.school.CRUD.domain.entity.ItemOrdemCompraModel;
 import sptech.school.CRUD.domain.entity.OrdemDeCompraModel;
 import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
 import sptech.school.CRUD.infrastructure.persistence.estoque.EstoqueRepository;

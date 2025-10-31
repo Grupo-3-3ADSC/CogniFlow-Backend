@@ -3,7 +3,6 @@ package sptech.school.CRUD.interfaces.dto.OrdemDeCompra;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter

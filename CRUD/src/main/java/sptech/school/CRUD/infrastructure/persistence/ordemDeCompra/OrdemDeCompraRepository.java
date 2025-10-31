@@ -17,8 +17,9 @@ public interface OrdemDeCompraRepository extends OrdemDeCompraJpaRepository,
 OrdemDeCompraPaginadoRepository,
 OrdemDeCompraQueryRepository
 {
-    boolean existsByRastreabilidadeAndEstoqueId( String rastreabilidade,Integer estoqueId);
 
+    @Override
+    boolean existsByRastreabilidadeAndEstoqueId( String rastreabilidade,Integer estoqueId);
 
     @Query("SELECT o FROM OrdemDeCompraModel o " +
             "LEFT JOIN FETCH o.fornecedor " +
@@ -27,9 +28,10 @@ OrdemDeCompraQueryRepository
             "WHERE o.id = :id")
     Optional<OrdemDeCompraModel> findByIdComJoins(@Param("id") Integer id);
 
-    @Query("SELECT o FROM OrdemDeCompraModel o ORDER BY o.id ASC")
+    @Query("SELECT o FROM OrdemDeCompraModel o ORDER BY o.id DESC")
     Page<OrdemDeCompraModel> findOrdensDeCompraPaginadas(Pageable pageable);
 
+    @Override
     List<OrdemDeCompraModel> findByEstoqueId(Integer estoqueId);
 
     @Query("SELECT o FROM OrdemDeCompraModel o WHERE o.estoque.id = :estoqueId AND YEAR(o.dataDeEmissao) = :ano")

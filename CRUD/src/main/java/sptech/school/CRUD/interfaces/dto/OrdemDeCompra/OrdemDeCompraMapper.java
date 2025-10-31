@@ -1,13 +1,8 @@
 package sptech.school.CRUD.interfaces.dto.OrdemDeCompra;
 
-import sptech.school.CRUD.domain.entity.EstoqueModel;
-import sptech.school.CRUD.domain.entity.FornecedorModel;
-import sptech.school.CRUD.domain.entity.ItemOrdemCompraModel;
 import sptech.school.CRUD.domain.entity.OrdemDeCompraModel;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class OrdemDeCompraMapper {
 

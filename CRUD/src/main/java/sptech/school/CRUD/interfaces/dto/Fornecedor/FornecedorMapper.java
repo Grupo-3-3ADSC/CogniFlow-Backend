@@ -2,7 +2,6 @@ package sptech.school.CRUD.interfaces.dto.Fornecedor;
 
 import sptech.school.CRUD.domain.entity.FornecedorModel;
 
-
 public class FornecedorMapper {
 
     public static FornecedorModel toCadastroModel(FornecedorCadastroDto dto) {

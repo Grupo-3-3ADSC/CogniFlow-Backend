@@ -18,6 +18,7 @@ public class OrdemDeCompraModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String prazoEntrega;
+//    private String ie;
     private String condPagamento;
     private Double valorKg;
     private String rastreabilidade;
@@ -60,4 +61,3 @@ public class OrdemDeCompraModel {
 
 
 }
-

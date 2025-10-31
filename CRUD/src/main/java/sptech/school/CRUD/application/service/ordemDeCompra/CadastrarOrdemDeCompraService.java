@@ -2,7 +2,10 @@ package sptech.school.CRUD.application.service.ordemDeCompra;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import sptech.school.CRUD.domain.entity.*;
+import sptech.school.CRUD.domain.entity.EstoqueModel;
+import sptech.school.CRUD.domain.entity.FornecedorModel;
+import sptech.school.CRUD.domain.entity.OrdemDeCompraModel;
+import sptech.school.CRUD.domain.entity.UsuarioModel;
 import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
 import sptech.school.CRUD.domain.exception.RequisicaoConflitanteException;
 import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
@@ -12,14 +15,12 @@ import sptech.school.CRUD.infrastructure.persistence.ordemDeCompra.OrdemDeCompra
 import sptech.school.CRUD.infrastructure.persistence.usuario.UsuarioRepository;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.OrdemDeCompraCadastroDto;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.OrdemDeCompraMapper;
-import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.ItemOrdemCompraDto;
 
 import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
 public class CadastrarOrdemDeCompraService {
-
     private final OrdemDeCompraRepository ordemDeCompraRepository;
     private final EstoqueRepository estoqueRepository;
     private final UsuarioRepository usuarioRepository;
@@ -45,7 +46,6 @@ public class CadastrarOrdemDeCompraService {
         if (ordemDeCompraRepository.existsByRastreabilidadeAndEstoqueId(dto.getRastreabilidade(), dto.getEstoqueId())) {
             throw new RequisicaoConflitanteException("Rastreabilidade já cadastrada para este estoque");
         }
-
 
         ordemDeCompra.setPendenciaAlterada(false);
 
