@@ -126,7 +126,7 @@ public class UsuarioController {
     ) {
         final UsuarioModel usuario = UsuarioMapper.of(usuarioParaCadastro);
 
-        this.cadastroService.cadastrarUsuarioComum(usuario);
+        this.cadastroService.cadastrarUsuarioComum(usuario, usuarioParaCadastro.getCargoId());
 
         String mensagemToast = "Novo usuário cadastrado com sucesso!";
         String mensagemEmail = "Um novo usuário foi cadastrado no sistema:\n\n" +
