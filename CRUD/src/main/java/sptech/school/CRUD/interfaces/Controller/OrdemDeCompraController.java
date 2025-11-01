@@ -44,7 +44,7 @@ public class OrdemDeCompraController {
 
 
     // CORRIGIDO: Remover o caminho duplicado
-    @PostMapping("/ordemDeCompra")
+    @PostMapping("/multiplas-ordens")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<List<ListagemOrdemDeCompra>> cadastrarOrdemDeCompra(
             @Valid @RequestBody List<OrdemDeCompraCadastroDto> cadastroDtos) {
@@ -55,20 +55,20 @@ public class OrdemDeCompraController {
                 .collect(Collectors.toList());
 
         // Opcional: Adicionar notificações
-        /*
-        respostas.forEach(resposta -> {
-            notificationService.notificar(
-                "ordem_compra",
-                "CRIADO",
-                String.valueOf(resposta.getId()),
-                "Ordem de compra criada com sucesso!",
-                "Nova Ordem de Compra Criada",
-                "Uma nova ordem de compra foi registrada:\n\nID: " + resposta.getId() +
-                "\nFornecedor: " + resposta.getNomeFornecedor(),
-                "isaiasoliveirabjj@gmail.com"
-            );
-        });
-        */
+
+//        respostas.forEach(resposta -> {
+//            notificationService.notificar(
+//                "ordem_compra",
+//                "CRIADO",
+//                String.valueOf(resposta.getId()),
+//                "Ordem de compra criada com sucesso!",
+//                "Nova Ordem de Compra Criada",
+//                "Uma nova ordem de compra foi registrada:\n\nID: " + resposta.getId() +
+//                "\nFornecedor: " + resposta.getNomeFornecedor(),
+//                "isaiasoliveirabjj@gmail.com"
+//            );
+//        });
+
 
         return ResponseEntity.status(HttpStatus.CREATED).body(respostas);
     }
