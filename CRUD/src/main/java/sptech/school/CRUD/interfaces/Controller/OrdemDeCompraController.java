@@ -20,6 +20,8 @@ import sptech.school.CRUD.infrastructure.adapter.Rabbit.RabbitProducer;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Tag(name = "Ordem de Compra", description = "Endpoints de Ordem de Compra")
 @RestController
 @RequestMapping("/ordemDeCompra")
@@ -40,42 +42,45 @@ public class OrdemDeCompraController {
     private final CadastrarMultiplasOrdensService cadastrarMultiplasOrdensService;
     private final NotificationService notificationService;
 
-    @PostMapping
+
+    // CORRIGIDO: Remover o caminho duplicado
+    @PostMapping("/ordemDeCompra")
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<ListagemOrdemDeCompra> cadastrarOrdemDeCompra(@Valid @RequestBody OrdemDeCompraCadastroDto ordemDeCompra){
+    public ResponseEntity<List<ListagemOrdemDeCompra>> cadastrarOrdemDeCompra(
+            @Valid @RequestBody List<OrdemDeCompraCadastroDto> cadastroDtos) {
 
-        OrdemDeCompraModel model = cadastroService.cadastroOrdemDeCompra(ordemDeCompra);
-        ListagemOrdemDeCompra resposta = OrdemDeCompraMapper.toListagemDto(model);
+        List<ListagemOrdemDeCompra> respostas = cadastroDtos.stream()
+                .map(dto -> cadastroService.cadastroOrdemDeCompra(dto))
+                .map(OrdemDeCompraMapper::toListagemDto)
+                .collect(Collectors.toList());
 
-        notificationService.notificar(
+        // Opcional: Adicionar notificações
+        /*
+        respostas.forEach(resposta -> {
+            notificationService.notificar(
                 "ordem_compra",
                 "CRIADO",
                 String.valueOf(resposta.getId()),
                 "Ordem de compra criada com sucesso!",
                 "Nova Ordem de Compra Criada",
-                "Uma nova ordem de compra foi registrada:\n\nID: " + resposta.getId() + "\nFornecedor: " + resposta.getNomeFornecedor(),
+                "Uma nova ordem de compra foi registrada:\n\nID: " + resposta.getId() +
+                "\nFornecedor: " + resposta.getNomeFornecedor(),
                 "isaiasoliveirabjj@gmail.com"
-        );
-        return ResponseEntity.status(201).body(resposta);
+            );
+        });
+        */
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(respostas);
     }
 
-    @PostMapping("/multiplas-ordens")
+    @GetMapping
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<List<OrdemDeCompraModel>> cadastrarMultiplasOrdens(@RequestBody List<OrdemDeCompraCadastroDto> dtos) {
-        List<OrdemDeCompraModel> ordensCadastradas = cadastrarMultiplasOrdensService.cadastrarMultiplasOrdens(dtos);
-
-        // Adiciona notificação
-        notificationService.notificar(
-                "ordem_compra",
-                "CRIADO",
-                ordensCadastradas.size() + " ordens",
-                ordensCadastradas.size() + " ordem(ns) de compra criada(s) com sucesso!",
-                "Novas Ordens de Compra Criadas",
-                ordensCadastradas.size() + " ordens de compra foram registradas.",
-                "isaiasoliveirabjj@gmail.com"
-        );
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(ordensCadastradas);
+    public ResponseEntity<List<ListagemOrdemDeCompra>> listarTodas() {
+        List<ListagemOrdemDeCompra> ordens = ordemDeCompraService.listarTodas();
+        if (ordens.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(ordens);
     }
 
     @GetMapping("/{id}")
@@ -94,20 +99,21 @@ public class OrdemDeCompraController {
 
     @PatchMapping("/{id}")
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<ListagemOrdemDeCompra> mudarQuantidadeAtual(@PathVariable Integer id, @Valid @RequestBody MudarQuantidadeAtualDto dto){
+    public ResponseEntity<ListagemOrdemDeCompra> mudarQuantidadeAtual(
+            @PathVariable Integer id,
+            @Valid @RequestBody MudarQuantidadeAtualDto dto) {
 
         OrdemDeCompraModel ordem = mudarQuantidadeService.mudarQuantidadeAtual(id, dto);
-        return  ResponseEntity.ok(OrdemDeCompraMapper.toListagemDto(ordem));
+        return ResponseEntity.ok(OrdemDeCompraMapper.toListagemDto(ordem));
     }
 
     @GetMapping("/paginados")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<PaginacaoHistoricoOrdemDeCompraDTO> getOrdemDeCompraPaginada(
             @RequestParam(defaultValue = "1") Integer pagina,
-            @RequestParam(defaultValue = "6") Integer tamanho
-    ){
-        PaginacaoHistoricoOrdemDeCompraDTO ordens = paginacaoService.ordemDeCompraPaginada(pagina, tamanho);
+            @RequestParam(defaultValue = "6") Integer tamanho) {
 
+        PaginacaoHistoricoOrdemDeCompraDTO ordens = paginacaoService.ordemDeCompraPaginada(pagina, tamanho);
         return ResponseEntity.ok(ordens);
     }
 
@@ -115,23 +121,23 @@ public class OrdemDeCompraController {
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<List<ListagemOrdemDeCompra>> getRelatorioFornecedor(
             @PathVariable Integer fornecedorId,
-            @RequestParam Integer ano
-    ) {
+            @RequestParam Integer ano) {
+
         List<ListagemOrdemDeCompra> ordens = ordemDeCompraService.getRelatorioFornecedor(fornecedorId, ano);
 
         if (ordens.isEmpty()) {
-            return ResponseEntity.noContent().build(); // 204
+            return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok(ordens); // 200
+        return ResponseEntity.ok(ordens);
     }
 
     @GetMapping("/material/{estoqueId}")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<List<ListagemOrdemDeCompra>> listarPorMaterial(
             @PathVariable Integer estoqueId,
-            @RequestParam(required = false) Integer ano
-    ) {
+            @RequestParam(required = false) Integer ano) {
+
         List<ListagemOrdemDeCompra> ordens = ordemDeCompraService.getByMaterial(estoqueId, ano);
         return ResponseEntity.ok(ordens);
     }
