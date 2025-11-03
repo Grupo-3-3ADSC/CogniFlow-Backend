@@ -8,10 +8,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.CRUD.application.service.estoque.AtualizarEstoqueService;
 import sptech.school.CRUD.application.service.estoque.EstoqueService;
 import sptech.school.CRUD.application.service.estoque.RetirarEstoqueService;
+import sptech.school.CRUD.application.service.log.AtualizarInfoService;
 import sptech.school.CRUD.application.service.notificacao.NotificationService;
 import sptech.school.CRUD.interfaces.dto.Estoque.*;
 
@@ -38,6 +41,8 @@ public class EstoqueController {
     private final AtualizarEstoqueService atualizarService;
     @Autowired
     private final NotificationService notificationService;
+    @Autowired
+    private final AtualizarInfoService atualizarInfoService;
 
     @GetMapping
     @SecurityRequirement(name = "Bearer")
@@ -82,8 +87,11 @@ public class EstoqueController {
 
     @PatchMapping("/atualizarInfo")
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<EstoqueListagemDto> atualizarInfo(@RequestBody @Valid AtualizarInfoEstoqueDto dto){
+    public ResponseEntity<EstoqueListagemDto> atualizarInfo(@RequestBody @Valid AtualizarInfoEstoqueDto dto, Authentication authentication){
+        UserDetails usuarioLogado = (UserDetails) authentication.getPrincipal();
+
         EstoqueListagemDto resposta = atualizarService.atualizarInfo(dto);
+        atualizarInfoService.postarLogInfo(dto, usuarioLogado.getUsername());
         return ResponseEntity.ok(resposta);
     }
 
