@@ -28,4 +28,5 @@ public class ListagemOrdemDeCompra {
     private LocalDateTime dataDeEmissao;
     private String tipoMaterial;
     private Boolean pendenciaAlterada;
+    private String espessura;
 }

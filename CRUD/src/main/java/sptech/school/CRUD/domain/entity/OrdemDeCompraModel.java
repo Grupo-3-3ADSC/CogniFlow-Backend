@@ -31,6 +31,8 @@ public class OrdemDeCompraModel {
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
     private Boolean pendenciaAlterada;
     private LocalDateTime dataDeEmissao;
+    private String espessura;
+
     @Column(name = "fornecedor_id")
     private Integer fornecedorId;
 
@@ -39,8 +41,6 @@ public class OrdemDeCompraModel {
 
     @Column(name = "usuario_id")
     private Integer usuarioId;
-
-
 
     @ManyToOne
     @JoinColumn(name = "fornecedor_id", insertable = false, updatable = false)
@@ -59,5 +59,6 @@ public class OrdemDeCompraModel {
     @JsonBackReference
     private ConjuntoOrdemDeCompraModel conjuntoOrdemDeCompra;
 
-
+    @OneToMany(mappedBy = "ordemDeCompraModel", cascade = CascadeType.ALL)
+    private List<EspessuraModel> espessuras = new ArrayList<>();
 }

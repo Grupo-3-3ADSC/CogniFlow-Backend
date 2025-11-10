@@ -9,10 +9,12 @@ import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
 import sptech.school.CRUD.domain.exception.RequisicaoConflitanteException;
 import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
 import sptech.school.CRUD.infrastructure.persistence.ConjuntoOrdemDeCompra.ConjuntoOrdemDeCompraRepository;
+import sptech.school.CRUD.infrastructure.persistence.espessura.EspessuraRepository;
 import sptech.school.CRUD.infrastructure.persistence.estoque.EstoqueRepository;
 import sptech.school.CRUD.infrastructure.persistence.fornecedor.FornecedorRepository;
 import sptech.school.CRUD.infrastructure.persistence.ordemDeCompra.OrdemDeCompraRepository;
 import sptech.school.CRUD.infrastructure.persistence.usuario.UsuarioRepository;
+import sptech.school.CRUD.interfaces.dto.ItemOrdemDeCompra.ConjuntoAddEspessuraDto;
 import sptech.school.CRUD.interfaces.dto.ItemOrdemDeCompra.ConjuntoOrdemDeCompraListagemDto;
 import sptech.school.CRUD.interfaces.dto.ItemOrdemDeCompra.ConjuntoOrdemDeCompraMapper;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.OrdemDeCompraCadastroDto;
@@ -31,6 +33,7 @@ public class ConjuntoOrdemDeCompraService {
     private final EstoqueRepository estoqueRepository;
     private final UsuarioRepository usuarioRepository;
     private final FornecedorRepository fornecedorRepository;
+    private final EspessuraRepository espessuraRepository;
 
     public List<ConjuntoOrdemDeCompraListagemDto> listarTodos() {
         return conjuntoRepository.findAll().stream()
@@ -79,6 +82,7 @@ public class ConjuntoOrdemDeCompraService {
             }
 
             ordemDeCompra.setPendenciaAlterada(false);
+            ordemDeCompra.setEspessura(dto.getEspessura());
 
             // 3️⃣ ASSOCIA a ordem ao conjunto (bidirecional)
             ordemDeCompra.setConjuntoOrdemDeCompra(conjuntoFinal);
@@ -98,8 +102,17 @@ public class ConjuntoOrdemDeCompraService {
             EstoqueModel estoque = estoqueRepository.findById(dto.getEstoqueId())
                     .orElseThrow(() -> new RecursoNaoEncontradoException("Estoque não encontrado"));
 
-            Integer novaQuantidade = (dto.getQuantidade() != null ? dto.getQuantidade() : 0)
-                    + ordemSalva.getQuantidade();
+            EspessuraModel esp = new EspessuraModel();
+            esp.setEspessura(dto.getEspessura());
+            esp.setOrdemDeCompraModel(ordemSalva);
+            esp.setEstoqueModel(estoque);
+
+            ordemSalva.getEspessuras().add(esp);
+
+            espessuraRepository.save(esp);
+
+            Integer quantidadeAtualEstoque = estoque.getQuantidadeAtual() != null ? estoque.getQuantidadeAtual() : 0;
+            Integer novaQuantidade = quantidadeAtualEstoque + ordemSalva.getQuantidade();
 
             if (estoque.getQuantidadeMaxima() != null && novaQuantidade > estoque.getQuantidadeMaxima()) {
                 throw new RequisicaoInvalidaException("A quantidade comprada ultrapassa o limite máximo de estoque permitido.");

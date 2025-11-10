@@ -43,5 +43,6 @@ public class OrdemDeCompraCadastroDto {
     private Integer estoqueId;
     @NotNull(message = "Usuario  não pode ser nulo ou vazio")
     private Integer usuarioId;
-
+    @NotNull(message = "Espessura não pode ser nulo ou vazio")
+    private String espessura;
 }

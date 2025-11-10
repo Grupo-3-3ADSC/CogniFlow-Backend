@@ -29,6 +29,7 @@ public class OrdemDeCompraMapper {
                 .dataDeEmissao(entity.getDataDeEmissao())
                 .pendenciaAlterada(Boolean.TRUE.equals(entity.getPendenciaAlterada()))
                 .tipoMaterial(entity.getEstoque() != null ? entity.getEstoque().getTipoMaterial() : null)
+                .espessura(entity.getEspessura())
                 .build();
     }
 
@@ -51,6 +52,7 @@ public class OrdemDeCompraMapper {
         ordem.setFornecedorId(dto.getFornecedorId());
         ordem.setEstoqueId(dto.getEstoqueId());
         ordem.setUsuarioId(dto.getUsuarioId());
+        ordem.setEspessura(dto.getEspessura());
 
         return ordem;
     }

@@ -16,6 +16,7 @@ import sptech.school.CRUD.application.service.estoque.EstoqueService;
 import sptech.school.CRUD.application.service.estoque.RetirarEstoqueService;
 import sptech.school.CRUD.application.service.log.AtualizarInfoService;
 import sptech.school.CRUD.application.service.notificacao.NotificationService;
+import sptech.school.CRUD.domain.entity.EspessuraModel;
 import sptech.school.CRUD.interfaces.dto.Estoque.*;
 
 import java.util.List;
@@ -95,4 +96,10 @@ public class EstoqueController {
         return ResponseEntity.ok(resposta);
     }
 
+    @GetMapping("/espessuras/{id}")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<List<EspessuraModel>> buscarEspessurasPorEstoqueId(@PathVariable int id) {
+        List<EspessuraModel> espessuras = estoqueService.buscarEspessurasPorEstoqueId(id);
+        return ResponseEntity.ok(espessuras);
+    }
 }

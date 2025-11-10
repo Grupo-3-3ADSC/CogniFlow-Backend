@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 @RequiredArgsConstructor
 @Getter
 @Setter
@@ -21,7 +24,4 @@ public class EstoqueModel {
         private Integer quantidadeMaxima;
         private Double ipi;
         private LocalDateTime ultimaMovimentacao;
-
-
-
 }

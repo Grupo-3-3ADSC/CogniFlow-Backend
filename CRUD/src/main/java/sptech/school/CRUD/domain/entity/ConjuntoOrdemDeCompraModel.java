@@ -27,13 +27,13 @@ public class ConjuntoOrdemDeCompraModel {
     @JsonManagedReference
     private List<OrdemDeCompraModel> ordensDeCompra = new ArrayList<>();
 
-    // ✅ Método helper para adicionar ordens de forma segura
+    // Método auxiliar para adicionar ordens de forma segura
     public void adicionarOrdem(OrdemDeCompraModel ordem) {
         ordensDeCompra.add(ordem);
         ordem.setConjuntoOrdemDeCompra(this);
     }
 
-    // ✅ Método helper para remover ordens de forma segura
+    // Método auxiliar para remover ordens de forma segura
     public void removerOrdem(OrdemDeCompraModel ordem) {
         ordensDeCompra.remove(ordem);
         ordem.setConjuntoOrdemDeCompra(null);
