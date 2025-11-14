@@ -29,26 +29,6 @@ public class CargoService {
                 .collect(Collectors.toList());
     }
 
-    public CargoListagemDto post(CargoCadastraDto cargo) {
-        if (cargo == null || cargo.getNome() == null || cargo.getNome().isBlank()) {
-            throw new RequisicaoInvalidaException("O nome do cargo é obrigatório.");
-        }
-
-        CargoModel entity = CargoMapper.toCadastro(cargo);
-        CargoModel saved = this.cadastrar(entity);
-
-        return CargoMapper.toListagemDto(saved);
-    }
-
-
-    public CargoModel cadastrar(CargoModel cargo) {
-        if (cargoRepository.existsByNomeIgnoreCase(cargo.getNome())) {
-            throw new RequisicaoConflitanteException("Já existe um cargo com o nome:" + cargo.getNome());
-        }
-
-        return cargoRepository.save(cargo);
-    }
-
     public CargoListagemDto buscarPorId(Integer id) {
         CargoModel cargo = cargoRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Cargo não encontrado com id " + id));

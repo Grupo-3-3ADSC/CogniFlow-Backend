@@ -33,39 +33,6 @@ class CargoServiceTest {
     }
 
     @Test
-    @DisplayName("Cadastro de cargo - Sucesso")
-    void testePostCargoSucesso() {
-        // Arrange
-        CargoCadastraDto dto = new CargoCadastraDto();
-        dto.setNome("Desenvolvedor");
-
-        CargoModel salvo = new CargoModel();
-        salvo.setNome("Desenvolvedor");
-
-        when(cargoRepository.save(any(CargoModel.class))).thenReturn(salvo);
-
-        // Act
-        CargoListagemDto resultado = cargoService.post(dto);
-
-        // Assert
-        assertNotNull(resultado);
-        assertEquals("Desenvolvedor", resultado.getNome());
-        verify(cargoRepository).save(any(CargoModel.class));
-    }
-
-    @Test
-    @DisplayName("Cadastro de cargo - Falha (cargo nulo)")
-    void testePostCargoNulo() {
-        // Act & Assert
-        RequisicaoInvalidaException exception = assertThrows(RequisicaoInvalidaException.class, () -> {
-            cargoService.post(null);
-        });
-
-        assertEquals("O nome do cargo é obrigatório.", exception.getMessage());
-    }
-
-
-    @Test
     @DisplayName("Listagem de cargos - Sucesso")
     void testeGetAllCargos() {
         // Arrange

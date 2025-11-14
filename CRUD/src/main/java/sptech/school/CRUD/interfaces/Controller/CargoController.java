@@ -38,33 +38,6 @@ public class CargoController {
         return ResponseEntity.ok().body(cargoService.getAll());
     }
 
-    @PostMapping
-    @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<CargoListagemDto> post(@RequestBody @Valid CargoCadastraDto cargo) {
-
-        CargoListagemDto cargoPost = cargoService.post(cargo);
-
-        if (cargoPost == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        String mensagemToast = "Novo cargo cadastrado no sistema!";
-        String mensagemEmail = "Novo cargo adicionado no sistema:\n\n" +
-                "Cargo: " + cargoPost.getNome() + "\n";
-
-        notificationService.notificar(
-                "cadastro_cargo",
-                "CRIADO",
-                String.valueOf(cargoPost.getNome()),
-                mensagemToast,
-                "Novos materias no estoque",
-                mensagemEmail,
-                "isaiasoliveirabjj@gmail.com"
-        );
-
-        return ResponseEntity.status(201).body(cargoPost);
-    }
-
     @GetMapping("/{id}")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<CargoListagemDto> getById(@PathVariable Integer id) {
