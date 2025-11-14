@@ -4,8 +4,7 @@ name: CI-BackEnd
 on:
   push:
     branches:
-      - "main"
-      - "feature/ordemDeCompraV2"
+      - "merge-sprint"
   pull_request:
     branches:
       - "main"
