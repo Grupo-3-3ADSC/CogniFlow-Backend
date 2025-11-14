@@ -1,25 +1,14 @@
-# Crie um pipeline de CI/CD no GitHub Actions para o meu projeto
-
-# que inclua as seguintes etapas:
-# 1. Verificação de sintaxe do código
-# 2. Execução de testes unitários
-# 3. Build do projeto
-# 4. Implantação em um ambiente de staging
-# 5. Aprovação manual para implantação em produção
-# 6. Implantação em produção
-# O pipeline deve ser acionado em push para a branch main e em pull requests.
-
 name: CI-BackEnd
 
 # 🔹 Quando o pipeline será executado
 on:
   push:
     branches:
-      - main
-      - feature/ordemDeCompraV2
+      - "main"
+      - "feature/ordemDeCompraV2"
   pull_request:
     branches:
-      - main
+      - "main"
 
 # 🔹 Jobs
 jobs:
@@ -44,15 +33,12 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Build Maven
+      # O comando 'mvn clean install' já compila E executa os testes.
+      # O passo 'mvn test' separado foi removido por ser redundante.
+      - name: Build e Testes com Maven
         run: |
           cd CRUD
           mvn clean install
-
-      - name: Executar Testes
-        run: |
-          cd CRUD
-          mvn test
 
       - name: Upload Relatórios de Teste
         uses: actions/upload-artifact@v4
@@ -94,7 +80,8 @@ jobs:
           name: crud-target
           path: CRUD/target
 
-      - name: Build para Sonar
+      # Este passo é necessário para o Sonar ter o classpath
+      - name: Build para Sonar (sem testes)
         run: |
           cd CRUD
           mvn verify -DskipTests
@@ -103,12 +90,11 @@ jobs:
         run: |
           cd CRUD
           mvn sonar:sonar \
-              -Dsonar.projectKey=Grupo-3-3ADSC_CogniFlow-Backend \
-              -Dsonar.organization=grupo-3-3adsc \
-              -Dsonar.host.url=https://sonarcloud.io \
-              -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
-              -Dsonar.java.binaries=target/classes
-
+            -Dsonar.projectKey=Grupo-3-3ADSC_CogniFlow-Backend \
+            -Dsonar.organization=grupo-3-3adsc \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+            -Dsonar.java.binaries=target/classes
 
   deploy:
     name: Deploy para AWS (preparado)
@@ -128,8 +114,9 @@ jobs:
       - name: Configurar AWS CLI
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          # É mais seguro usar GitHub OIDC ou Instance Profile do EC2
+          # aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          # aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
       - name: Deploy jar no EC2 (exemplo)
