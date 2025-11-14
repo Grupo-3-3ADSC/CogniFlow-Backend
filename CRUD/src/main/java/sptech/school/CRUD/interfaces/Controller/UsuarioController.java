@@ -17,17 +17,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import sptech.school.CRUD.application.service.log.CadastroGestorLogService;
 import sptech.school.CRUD.application.service.log.DeleteLogService;
 import sptech.school.CRUD.application.service.log.LogService;
 import sptech.school.CRUD.application.service.notificacao.NotificationService;
 import sptech.school.CRUD.application.service.usuario.AtualizarUsuarioService;
 import sptech.school.CRUD.application.service.usuario.CadastroUsuarioService;
 import sptech.school.CRUD.application.service.usuario.FotoUsuarioService;
-import sptech.school.CRUD.domain.entity.LogModel;
 import sptech.school.CRUD.domain.entity.UsuarioModel;
 import sptech.school.CRUD.application.service.usuario.UsuarioService;
 import sptech.school.CRUD.infrastructure.config.GerenciadorTokenJwt;
-import sptech.school.CRUD.interfaces.dto.Log.LogDto;
 import sptech.school.CRUD.interfaces.dto.Usuario.*;
 
 import java.util.List;
@@ -52,6 +51,7 @@ public class UsuarioController {
     private final LogService logService;
     private final DeleteLogService deleteLogService;
     private final NotificationService notificationService;
+    private final CadastroGestorLogService cadastroGestorLogService;
 
     @Autowired
     private GerenciadorTokenJwt gerenciadorTokenJwt;
@@ -62,7 +62,8 @@ public class UsuarioController {
     FotoUsuarioService fotoService,
     LogService logService,
     DeleteLogService deleteLogService,
-                             NotificationService notificationService
+    NotificationService notificationService,
+    CadastroGestorLogService cadastroGestorLogService
                              ) {
         this.usuarioService = usuarioService;
         this.cadastroService = cadastroService;
@@ -71,6 +72,7 @@ public class UsuarioController {
         this.logService = logService;
         this.deleteLogService = deleteLogService;
         this.notificationService = notificationService;
+        this.cadastroGestorLogService = cadastroGestorLogService;
     }
 
     @GetMapping("/listarAtivos")
@@ -122,11 +124,17 @@ public class UsuarioController {
     @PostMapping
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<Void> cadastrarComum(
-            @RequestBody @Valid UsuarioCadastroDto usuarioParaCadastro
+            @RequestBody @Valid UsuarioCadastroDto usuarioParaCadastro,
+            Authentication authentication
     ) {
+        UserDetails usuarioLogado = (UserDetails) authentication.getPrincipal();
+
         final UsuarioModel usuario = UsuarioMapper.of(usuarioParaCadastro);
 
         this.cadastroService.cadastrarUsuario(usuario, usuarioParaCadastro.getCargoId());
+
+        cadastroGestorLogService.postarLogCadastroUsuario(usuarioParaCadastro, usuarioLogado.getUsername());
+
 
         String mensagemToast = "Novo usuário cadastrado com sucesso!";
         String mensagemEmail = "Um novo usuário foi cadastrado no sistema:\n\n" +
