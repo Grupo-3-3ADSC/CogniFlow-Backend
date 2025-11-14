@@ -126,40 +126,12 @@ public class UsuarioController {
     ) {
         final UsuarioModel usuario = UsuarioMapper.of(usuarioParaCadastro);
 
-        this.cadastroService.cadastrarUsuarioComum(usuario, usuarioParaCadastro.getCargoId());
+        this.cadastroService.cadastrarUsuario(usuario, usuarioParaCadastro.getCargoId());
 
         String mensagemToast = "Novo usuário cadastrado com sucesso!";
         String mensagemEmail = "Um novo usuário foi cadastrado no sistema:\n\n" +
                 "Nome: " + usuario.getNome() + "\n" +
                 "Cargo: " + usuario.getCargo().getNome() + "\n" +
-                "E-mail: " + usuario.getEmail();
-
-        notificationService.notificar(
-                "cadastro_usuario",
-                "CRIADO",
-                String.valueOf(usuario.getNome()),
-                mensagemToast,
-                "Novo usuário cadastrado",
-                mensagemEmail,
-                "isaiasoliveirabjj@gmail.com"
-        );
-
-        return ResponseEntity.status(201).build();
-    }
-
-    @PostMapping("/gestor")
-    @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<Void> cadastrarGestor(
-            @RequestBody @Valid UsuarioCadastroDto usuarioParaCadastro
-    ) {
-        final UsuarioModel usuario = UsuarioMapper.of(usuarioParaCadastro);
-
-        this.cadastroService.cadastrarUsuarioGestor(usuario);
-
-        String mensagemToast = "Novo usuário cadastrado com sucesso!";
-        String mensagemEmail = "Um novo usuário foi cadastrado no sistema:\n\n" +
-                "Nome: " + usuario.getNome() + "\n" +
-                "Cargo: " + usuario.getCargo() + "\n" +
                 "E-mail: " + usuario.getEmail();
 
         notificationService.notificar(
