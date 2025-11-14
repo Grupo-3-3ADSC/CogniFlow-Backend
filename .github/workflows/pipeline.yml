@@ -4,10 +4,10 @@ name: CI-BackEnd
 on:
   push:
     branches:
-      - "merge-sprint"
+      - merge-sprint2
   pull_request:
     branches:
-      - "main"
+      - main
 
 # 🔹 Jobs
 jobs:
@@ -32,12 +32,15 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      # O comando 'mvn clean install' já compila E executa os testes.
-      # O passo 'mvn test' separado foi removido por ser redundante.
-      - name: Build e Testes com Maven
+      - name: Build Maven
         run: |
           cd CRUD
           mvn clean install
+
+      - name: Executar Testes
+        run: |
+          cd CRUD
+          mvn test
 
       - name: Upload Relatórios de Teste
         uses: actions/upload-artifact@v4
@@ -79,8 +82,7 @@ jobs:
           name: crud-target
           path: CRUD/target
 
-      # Este passo é necessário para o Sonar ter o classpath
-      - name: Build para Sonar (sem testes)
+      - name: Build para Sonar
         run: |
           cd CRUD
           mvn verify -DskipTests
@@ -89,11 +91,12 @@ jobs:
         run: |
           cd CRUD
           mvn sonar:sonar \
-            -Dsonar.projectKey=Grupo-3-3ADSC_CogniFlow-Backend \
-            -Dsonar.organization=grupo-3-3adsc \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
-            -Dsonar.java.binaries=target/classes
+              -Dsonar.projectKey=Grupo-3-3ADSC_CogniFlow-Backend \
+              -Dsonar.organization=grupo-3-3adsc \
+              -Dsonar.host.url=https://sonarcloud.io \
+              -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+              -Dsonar.java.binaries=target/classes
+
 
   deploy:
     name: Deploy para AWS (preparado)
@@ -113,9 +116,8 @@ jobs:
       - name: Configurar AWS CLI
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          # É mais seguro usar GitHub OIDC ou Instance Profile do EC2
-          # aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          # aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
       - name: Deploy jar no EC2 (exemplo)
