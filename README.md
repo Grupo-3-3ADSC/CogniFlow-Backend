@@ -1,19 +1,28 @@
 # API de Estoque - Megaplate
 
-Bem-vindo ao repositório da API de orçamento da Megaplate, desenvolvida pela Cogniflow. Esta API fornece funcionalidades para gerenciamento de orçamento, etc.
+Bem-vindo ao repositório da API REST da Megaplate, desenvolvida pela Cogniflow. Esta API fornece funcionalidades para 
+
+- Gerenciamento de estoque
+- Cadastro e login de usuários
+- Gerar relatórios
+- Entre muitas outras funcionalidades
 
 ## Tecnologias Utilizadas
 
-- Java 17
+- Java 21
 - Spring Boot
 - Spring Data JPA
 - MySQL (banco de dados)
+- Redis
+- RabbitMQ
+- JWT
 
 ## Instalação
 
 ### Requisitos
-- Java 17+
+- Java 21+
 - Maven
+- Docker
 
 ### Configuração do Projeto
 
@@ -21,6 +30,17 @@ Bem-vindo ao repositório da API de orçamento da Megaplate, desenvolvida pela C
    ```sh
    git clone https://github.com/Grupo-3-3ADSC/CogniFlow-Backend.git
    ```
+   
+2. Inicialize os containers necessários do docker (Redis e RabbitMQ): 
+   ```sh
+   sudo docker run -d --name redis-local -p 6379:6379 redis
+   ```
+   
+   ```sh
+   sudo docker run -d --hostname rabbit --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+   ```
+
+3. Utilize um compilador ou uma IDE como intellij ou eclipse para compilar o projeto
 
 ## Endpoints Principais
 
@@ -33,7 +53,6 @@ Bem-vindo ao repositório da API de orçamento da Megaplate, desenvolvida pela C
 
 ### Cargo
 - **GET** `/cargo` - Lista todos os cargos
-- **POST** `/cargo` - Adiciona um novo cargo
 - **PUT** `/cargo/{id}` - Atualiza um cargo
 - **DELETE** `/cargo` - Remove um cargo
 
