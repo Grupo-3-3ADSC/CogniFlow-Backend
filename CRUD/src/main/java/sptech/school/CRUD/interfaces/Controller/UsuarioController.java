@@ -35,7 +35,6 @@ import java.util.Optional;
 @Tag(name = "Usuario", description = "Endpoints de Usuario")
 @RestController
 @RequestMapping("/usuarios")
-@CrossOrigin(origins = "http://localhost:3001")
 @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso"),
         @ApiResponse(responseCode = "400", description = "Requisição inválida"),
@@ -52,6 +51,8 @@ public class UsuarioController {
     private final DeleteLogService deleteLogService;
     private final NotificationService notificationService;
     private final CadastroGestorLogService cadastroGestorLogService;
+
+    private static final String MICROSERVICO_URL = "${microservico.url}";
 
     @Autowired
     private GerenciadorTokenJwt gerenciadorTokenJwt;
@@ -232,7 +233,7 @@ public class UsuarioController {
             @RequestBody @Valid UsuarioSenhaAtualizada request, // DTO para receber a senha
             @RequestHeader(value = "Authorization", required = false) String resetTokenHeader
     ){
-        if (resetTokenHeader == null || !resetTokenHeader.startsWith("Bearer ")) {
+        if (resetTokenHeader == null || !resetTokenHeader.startsWith("Bearer")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
@@ -242,7 +243,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/{email}/reset-token")
-    @CrossOrigin(origins = "http://localhost:3001")
+    @CrossOrigin(origins = MICROSERVICO_URL)
     public ResponseEntity<Void> salvarResetToken(
             @PathVariable String email,
             @RequestBody @Valid ResetTokenRequest request

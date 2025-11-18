@@ -1,10 +1,16 @@
 package sptech.school.CRUD.application.service.usuario;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import sptech.school.CRUD.domain.entity.CargoModel;
 import sptech.school.CRUD.domain.entity.UsuarioModel;
 import sptech.school.CRUD.domain.exception.RecursoNaoEncontradoException;
@@ -18,6 +24,7 @@ import sptech.school.CRUD.interfaces.dto.Usuario.UsuarioMapper;
 import sptech.school.CRUD.interfaces.dto.Usuario.UsuarioPatchDto;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -30,6 +37,13 @@ public class AtualizarUsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
     private final CargoRepository cargoRepository;
+    private final StringRedisTemplate redis;
+
+    private static final String REDIS_TOKEN_PREFIX = "reset:token:";
+    private static final String MICROSERVICO_URL = "${microservico.url}";
+
+    @Value(MICROSERVICO_URL)
+    private String microservicoUrl;
 
     public UsuarioModel atualizarSenha(String email, String password, String resetToken) {
         UsuarioModel usuario = usuarioRepository.findByEmail(email)
@@ -54,13 +68,49 @@ public class AtualizarUsuarioService {
 
         String jti = gerenciadorTokenJwt.extractJti(resetToken);
 
+        if(isTokenJaUsado(jti)){
+            throw new IllegalStateException("token já foi usado");
+        }
+
         usuario.setPassword(passwordEncoder.encode(password));
         usuario.setUpdatedAt(LocalDateTime.now());
 
         usuario.setReset_token(null);
         usuario.setReset_token_expira(null);
 
+        marcarTokenComoUsado(jti);
+
         return usuarioRepository.save(usuario);
+    }
+
+    private boolean isTokenJaUsado(String jti) {
+        try {
+            String key = REDIS_TOKEN_PREFIX + jti;
+            String tokenData = redis.opsForValue().get(key);
+
+            if (tokenData == null) {
+                return false;
+            }
+
+            // Parse do JSON armazenado
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readTree(tokenData);
+
+            return node.has("used") && node.get("used").asBoolean();
+
+        } catch (Exception e) {
+            System.err.println("Erro ao verificar token no Redis: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private void marcarTokenComoUsado(String jti) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = microservicoUrl + "/marcar-token-usado";
+
+        Map<String, String> request = Map.of("jti", jti);
+
+        restTemplate.postForEntity(url, request, String.class);
     }
 
     public UsuarioAtivoDto desativarUsuario(Integer id, UsuarioAtivoDto dto){
