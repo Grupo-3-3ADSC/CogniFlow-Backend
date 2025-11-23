@@ -66,8 +66,7 @@ public class EstoqueController {
                 String.valueOf(resposta.getTipoMaterial()),
                 mensagemToast,
                 "Novos materias no estoque",
-                mensagemEmail,
-                "isaiasoliveirabjj@gmail.com"
+                mensagemEmail
         );
         return ResponseEntity.ok(resposta);
     }

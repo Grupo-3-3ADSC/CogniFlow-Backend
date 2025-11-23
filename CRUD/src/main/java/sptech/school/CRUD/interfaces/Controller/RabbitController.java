@@ -25,7 +25,8 @@ public class RabbitController {
                 request.getEntity(),
                 request.getEventType(),
                 request.getEntityId(),
-                request.getMensagem()
+                request.getMensagem(),
+                request.getEmailDestino()
         );
         return "Evento enviado: " + request;
     }

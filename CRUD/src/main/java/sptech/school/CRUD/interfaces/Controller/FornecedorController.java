@@ -75,8 +75,7 @@ public class FornecedorController {
                 String.valueOf(novoFornecedor.getRazaoSocial()),
                 mensagemToast,
                 "Novo Fornecedor Cadastrado",
-                mensagemEmail,
-                "isaiasoliveirabjj@gmail.com"
+                mensagemEmail
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(novoFornecedor);

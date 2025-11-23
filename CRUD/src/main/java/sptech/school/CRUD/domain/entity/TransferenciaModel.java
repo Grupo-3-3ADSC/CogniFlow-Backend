@@ -22,4 +22,9 @@ public class TransferenciaModel{
     @ManyToOne
     @JoinColumn(name = "estoque_id")
     private EstoqueModel estoque;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private UsuarioModel usuario;
+
 }

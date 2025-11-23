@@ -8,5 +8,6 @@ public class EventRequest {
     private String eventType;  // Ex: "CREATED"
     private String entityId;
     private String mensagem;
+    private String emailDestino;
 
 }

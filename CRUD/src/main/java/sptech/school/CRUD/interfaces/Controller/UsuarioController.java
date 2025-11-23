@@ -149,13 +149,42 @@ public class UsuarioController {
                 String.valueOf(usuario.getNome()),
                 mensagemToast,
                 "Novo usuário cadastrado",
-                mensagemEmail,
-                "isaiasoliveirabjj@gmail.com"
+                mensagemEmail
         );
 
         return ResponseEntity.status(201).build();
     }
 
+<<<<<<< Updated upstream
+=======
+    @PostMapping("/gestor")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<Void> cadastrarGestor(
+            @RequestBody @Valid UsuarioCadastroDto usuarioParaCadastro
+    ) {
+        final UsuarioModel usuario = UsuarioMapper.of(usuarioParaCadastro);
+
+        this.cadastroService.cadastrarUsuarioGestor(usuario);
+
+        String mensagemToast = "Novo usuário cadastrado com sucesso!";
+        String mensagemEmail = "Um novo usuário foi cadastrado no sistema:\n\n" +
+                "Nome: " + usuario.getNome() + "\n" +
+                "Cargo: " + usuario.getCargo() + "\n" +
+                "E-mail: " + usuario.getEmail();
+
+        notificationService.notificar(
+                "cadastro_usuario",
+                "CRIADO",
+                String.valueOf(usuario.getNome()),
+                mensagemToast,
+                "Novo usuário cadastrado",
+                mensagemEmail
+        );
+
+        return ResponseEntity.status(201).build();
+    }
+
+>>>>>>> Stashed changes
     @PostMapping("/login")
 
     public ResponseEntity<UsuarioTokenDto> login(@RequestBody @Valid UsuarioLoginDto usuarioLoginDto){
