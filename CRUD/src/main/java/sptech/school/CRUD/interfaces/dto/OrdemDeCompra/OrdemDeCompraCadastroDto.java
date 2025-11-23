@@ -20,7 +20,7 @@ public class OrdemDeCompraCadastroDto {
     @DecimalMin(value = "0.01", message = "Valor por quilo deve ser maior que zero")
     private Double valorKg;
     @NotBlank(message = "Rastreabilidade não pode ser nulo ou vazio")
-    @Size(min = 16, message = "Rastreabilidade deve ter no mínimo 16 caracteres")
+    @Size(min = 7, max = 17, message = "Rastreabilidade deve ter no mínimo 16 caracteres")
     private String rastreabilidade;
     @NotNull(message = "Valor por Peça não pode ser nulo ou vazio")
     @DecimalMin(value = "0.01", message = "Valor por peça deve ser maior que zero")

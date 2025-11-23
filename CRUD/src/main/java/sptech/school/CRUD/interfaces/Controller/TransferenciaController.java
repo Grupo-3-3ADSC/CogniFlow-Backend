@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.CRUD.application.service.notificacao.EmailService;
 import sptech.school.CRUD.application.service.notificacao.NotificationService;
+import sptech.school.CRUD.application.service.notificacao.NotificationType;
 import sptech.school.CRUD.application.service.transferencia.PaginacaoTransferenciaService;
 import sptech.school.CRUD.infrastructure.adapter.Rabbit.RabbitProducer;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.PaginacaoHistoricoOrdemDeCompraDTO;
@@ -36,23 +37,15 @@ public class TransferenciaController {
     public ResponseEntity<TransferenciaDto> realizarTransferencia(@RequestBody @Valid TransferenciaDto dto) {
         TransferenciaDto resposta = realizarTransferenciaService.realizarTransferencia(dto);
 
-        // Mensagem simples para o toast
-        String mensagemToast = "Uma transferência foi realizada!";
-
-        // Mensagem completa para o e-mail
-        String mensagemEmail = "Uma nova transferência foi realizada:\n\n" +
-                "ID: " + resposta.getId() + "\n" +
-                "Setor: " + resposta.getSetor() + "\n" +
-                "Quantidade: " + resposta.getQuantidadeTransferida() + "\n" +
-                "Tipo de Material: " + resposta.getTipoMaterial();
-
         notificationService.notificar(
-                "transferencia",
-                "CRIADO",
+                NotificationType.TRANSFERENCIA_CRIADA,
                 String.valueOf(resposta.getId()),
-                mensagemToast,
-                "Nova Transferência Realizada",
-                mensagemEmail
+                String.format(
+                        "Setor: %s\nQuantidade: %s\nTipo de Material: %s",
+                        resposta.getSetor(),
+                        resposta.getQuantidadeTransferida(),
+                        resposta.getTipoMaterial()
+                )
 
         );
 

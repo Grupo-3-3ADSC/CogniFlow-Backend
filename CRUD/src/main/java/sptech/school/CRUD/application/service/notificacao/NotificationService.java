@@ -16,6 +16,50 @@ public class NotificationService {
     private final EmailService emailService;
     private final UsuarioEmailRepository usuarioEmailRepository;
 
+    public void notificar(NotificationType tipo, String idReferencia, String detalhes) {
+        try {
+            // 1️⃣ Envia APENAS UM evento WebSocket (broadcast para todos)
+            rabbitProducer.sendEvent(
+                    tipo.getEntity(),
+                    tipo.getEventType(),
+                    idReferencia,
+                    tipo.getMensagemToast(),
+                    null  // Sem email = broadcast
+            );
+
+            System.out.println("✅ [NOTIFICAÇÃO] " + tipo.name() + " #" + idReferencia);
+
+            // 2️⃣ Envia emails individuais
+            List<String> emailsDestino = usuarioEmailRepository.findAllEmails();
+
+            System.out.println("📧 [EMAILS] Enviando para " + emailsDestino.size() + " usuários...");
+
+            String mensagemCompleta = tipo.getMensagemEmailCompleta(idReferencia, detalhes);
+
+            for (String email : emailsDestino) {
+                try {
+                    emailService.enviarEmail(
+                            email,
+                            tipo.getAssuntoEmail(),
+                            mensagemCompleta
+                    );
+                    System.out.println("   ✓ " + email);
+                } catch (Exception e) {
+                    System.err.println("   ✗ Erro: " + email + " - " + e.getMessage());
+                }
+            }
+
+            System.out.println("🎉 [CONCLUÍDO] 1 toast broadcast + " + emailsDestino.size() + " emails");
+
+        } catch (Exception e) {
+            System.err.println("❌ [ERRO CRÍTICO] " + tipo.name() + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Método legado (mantém compatibilidade com código existente)
+     */
     public void notificar(
             String tipoEvento,
             String status,
@@ -25,36 +69,39 @@ public class NotificationService {
             String mensagemEmail
     ) {
         try {
-            // ✅ 1. Envia APENAS UM evento WebSocket (FORA do loop)
-            rabbitProducer.sendEvent(
-                    tipoEvento,
-                    status,
-                    idReferencia,
-                    mensagemToast,
-                    null  // ❗ SEM email = apenas 1 notificação
-            );
+            rabbitProducer.sendEvent(tipoEvento, status, idReferencia, mensagemToast, null);
 
-            System.out.println("✅ [NOTIFICAÇÃO] Evento WebSocket enviado: " + tipoEvento + " #" + idReferencia);
-
-            // ✅ 2. Busca emails e envia (DENTRO do loop, mas SEM gerar eventos)
             List<String> emailsDestino = usuarioEmailRepository.findAllEmails();
-
-            System.out.println("📧 [EMAILS] Enviando para " + emailsDestino.size() + " destinatários...");
 
             for (String email : emailsDestino) {
                 try {
                     emailService.enviarEmail(email, assuntoEmail, mensagemEmail);
-                    System.out.println("   ✓ Email enviado para: " + email);
                 } catch (Exception e) {
-                    System.err.println("   ✗ Erro ao enviar para " + email + ": " + e.getMessage());
+                    System.err.println("   ✗ Erro ao enviar para " + email);
                 }
             }
 
-            System.out.println("🎉 [CONCLUÍDO] 1 notificação WebSocket + " + emailsDestino.size() + " emails");
-
         } catch (Exception e) {
-            System.err.println("❌ [ERRO CRÍTICO] NotificationService: " + e.getMessage());
+            System.err.println("❌ Erro ao notificar: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Notificação simplificada sem emails (apenas WebSocket)
+     */
+    public void notificarSemEmail(NotificationType tipo, String idReferencia) {
+        try {
+            rabbitProducer.sendEvent(
+                    tipo.getEntity(),
+                    tipo.getEventType(),
+                    idReferencia,
+                    tipo.getMensagemToast(),
+                    null
+            );
+            System.out.println("✅ [NOTIFICAÇÃO WS] " + tipo.name() + " #" + idReferencia);
+        } catch (Exception e) {
+            System.err.println("❌ Erro: " + e.getMessage());
         }
     }
 

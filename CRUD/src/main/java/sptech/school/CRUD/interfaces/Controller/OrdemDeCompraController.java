@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sptech.school.CRUD.application.service.ItemOrdemDeCompra.CadastrarMultiplasOrdensService;
 import sptech.school.CRUD.application.service.notificacao.NotificationService;
+import sptech.school.CRUD.application.service.notificacao.NotificationType;
 import sptech.school.CRUD.application.service.ordemDeCompra.CadastrarOrdemDeCompraService;
 import sptech.school.CRUD.application.service.ordemDeCompra.MudarQuantidadeAtualService;
 import sptech.school.CRUD.application.service.ordemDeCompra.PaginacaoOrdemDeCompraService;
@@ -54,20 +55,23 @@ public class OrdemDeCompraController {
                 .map(OrdemDeCompraMapper::toListagemDto)
                 .collect(Collectors.toList());
 
-        // Opcional: Adicionar notificações
-
-//        respostas.forEach(resposta -> {
-//            notificationService.notificar(
-//                "ordem_compra",
-//                "CRIADO",
-//                String.valueOf(resposta.getId()),
-//                "Ordem de compra criada com sucesso!",
-//                "Nova Ordem de Compra Criada",
-//                "Uma nova ordem de compra foi registrada:\n\nID: " + resposta.getId() +
-//                "\nFornecedor: " + resposta.getNomeFornecedor(),
-//                "isaiasoliveirabjj@gmail.com"
-//            );
-//        });
+        notificationService.notificar(
+                NotificationType.ORDEM_COMPRA_CRIADA,
+                "multiplas", // ID genérico
+                String.format(
+                        "Total de ordens criadas: %d\n" +
+                                "IDs: %s\n" +
+                                "Fornecedores: %s",
+                        respostas.size(),
+                        respostas.stream()
+                                .map(r -> r.getId().toString())
+                                .collect(Collectors.joining(", ")),
+                        respostas.stream()
+                                .map(ListagemOrdemDeCompra::getNomeFornecedor)
+                                .distinct()
+                                .collect(Collectors.joining(", "))
+                )
+        );
 
 
         return ResponseEntity.status(HttpStatus.CREATED).body(respostas);
