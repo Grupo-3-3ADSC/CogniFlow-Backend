@@ -1,6 +1,7 @@
 package sptech.school.CRUD.application.service.cargo;
 
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import sptech.school.CRUD.domain.entity.CargoModel;
 import sptech.school.CRUD.infrastructure.persistence.cargo.CargoRepository;
