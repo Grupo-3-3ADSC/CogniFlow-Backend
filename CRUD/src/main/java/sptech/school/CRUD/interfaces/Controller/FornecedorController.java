@@ -16,6 +16,7 @@ import sptech.school.CRUD.application.service.fornecedor.CadastroFornecedorServi
 import sptech.school.CRUD.application.service.fornecedor.PaginacaoFornecedorService;
 import sptech.school.CRUD.application.service.log.DeleteLogService;
 import sptech.school.CRUD.application.service.notificacao.NotificationService;
+import sptech.school.CRUD.application.service.notificacao.NotificationType;
 import sptech.school.CRUD.domain.entity.FornecedorModel;
 import sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorCadastroDto;
 import sptech.school.CRUD.interfaces.dto.Fornecedor.FornecedorCompletoDTO;
@@ -63,19 +64,16 @@ public class FornecedorController {
         // Chama o service passando o DTO diretamente
         FornecedorCadastroDto novoFornecedor = cadastroService.cadastroFornecedor(fornecedorDto);
 
-        String mensagemToast = "Novo fornecedor cadastrado com sucesso!";
-        String mensagemEmail = "Um novo fornecedor foi cadastrado no sistema:\n\n" +
-                "Nome: " + novoFornecedor.getNomeFantasia() + "\n" +
-                "CNPJ: " + novoFornecedor.getCnpj() + "\n" +
-                "E-mail: " + novoFornecedor.getEmail();
-
         notificationService.notificar(
-                "cadastro_fornecedor",
-                "CRIADO",
-                String.valueOf(novoFornecedor.getRazaoSocial()),
-                mensagemToast,
-                "Novo Fornecedor Cadastrado",
-                mensagemEmail
+                NotificationType.FORNECEDOR_CADASTRADO,
+                novoFornecedor.getCnpj(), // CNPJ é único
+                String.format(
+                        "Razão Social: %s\nCNPJ: %s\nEmail: %s\nTelefone: %s",
+                        novoFornecedor.getRazaoSocial(),
+                        novoFornecedor.getCnpj(),
+                        novoFornecedor.getEmail(),
+                        novoFornecedor.getTelefone()
+                )
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(novoFornecedor);

@@ -21,6 +21,7 @@ import sptech.school.CRUD.application.service.log.CadastroGestorLogService;
 import sptech.school.CRUD.application.service.log.DeleteLogService;
 import sptech.school.CRUD.application.service.log.LogService;
 import sptech.school.CRUD.application.service.notificacao.NotificationService;
+import sptech.school.CRUD.application.service.notificacao.NotificationType;
 import sptech.school.CRUD.application.service.usuario.AtualizarUsuarioService;
 import sptech.school.CRUD.application.service.usuario.CadastroUsuarioService;
 import sptech.school.CRUD.application.service.usuario.FotoUsuarioService;
@@ -136,20 +137,15 @@ public class UsuarioController {
 
         cadastroGestorLogService.postarLogCadastroUsuario(usuarioParaCadastro, usuarioLogado.getUsername());
 
-
-        String mensagemToast = "Novo usuário cadastrado com sucesso!";
-        String mensagemEmail = "Um novo usuário foi cadastrado no sistema:\n\n" +
-                "Nome: " + usuario.getNome() + "\n" +
-                "Cargo: " + usuario.getCargo().getNome() + "\n" +
-                "E-mail: " + usuario.getEmail();
-
         notificationService.notificar(
-                "cadastro_usuario",
-                "CRIADO",
-                String.valueOf(usuario.getNome()),
-                mensagemToast,
-                "Novo usuário cadastrado",
-                mensagemEmail
+                NotificationType.USUARIO_CADASTRADO,
+                String.valueOf(usuario.getId()),
+                String.format(
+                        "Nome: %s\nCargo: %s\nE-mail: %s",
+                        usuario.getNome(),
+                        usuario.getCargo().getNome(),
+                        usuario.getEmail()
+                )
         );
 
         return ResponseEntity.status(201).build();
