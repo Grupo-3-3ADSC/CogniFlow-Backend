@@ -2,6 +2,7 @@ package sptech.school.CRUD.infrastructure.adapter.Rabbit;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
+import sptech.school.CRUD.application.service.notificacao.NotificationType;
 
 import java.time.LocalDateTime;
 
@@ -30,6 +31,6 @@ public class RabbitProducer {
                 event
         );
 
-        System.out.println("Evento enviado: " + event);
+        System.out.println("Evento enviado para RabbitMQ: " + event);
     }
 }

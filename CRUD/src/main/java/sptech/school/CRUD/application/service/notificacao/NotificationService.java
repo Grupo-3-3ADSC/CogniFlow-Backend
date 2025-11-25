@@ -13,85 +13,13 @@ import java.util.List;
 public class NotificationService {
 
     private final RabbitProducer rabbitProducer;
-    private final EmailService emailService;
-    private final UsuarioEmailRepository usuarioEmailRepository;
 
+    /**
+     * Notificação completa: WebSocket (instantânea) + E-mail (background)
+     */
     public void notificar(NotificationType tipo, String idReferencia, String detalhes) {
         try {
-            // 1️⃣ Envia APENAS UM evento WebSocket (broadcast para todos)
-            rabbitProducer.sendEvent(
-                    tipo.getEntity(),
-                    tipo.getEventType(),
-                    idReferencia,
-                    tipo.getMensagemToast(),
-                    null  // Sem email = broadcast
-            );
-
-            System.out.println("✅ [NOTIFICAÇÃO] " + tipo.name() + " #" + idReferencia);
-
-            // 2️⃣ Envia emails individuais
-            List<String> emailsDestino = usuarioEmailRepository.findAllEmails();
-
-            System.out.println("📧 [EMAILS] Enviando para " + emailsDestino.size() + " usuários...");
-
-            String mensagemCompleta = tipo.getMensagemEmailCompleta(idReferencia, detalhes);
-
-            for (String email : emailsDestino) {
-                try {
-                    emailService.enviarEmail(
-                            email,
-                            tipo.getAssuntoEmail(),
-                            mensagemCompleta
-                    );
-                    System.out.println("   ✓ " + email);
-                } catch (Exception e) {
-                    System.err.println("   ✗ Erro: " + email + " - " + e.getMessage());
-                }
-            }
-
-            System.out.println("🎉 [CONCLUÍDO] 1 toast broadcast + " + emailsDestino.size() + " emails");
-
-        } catch (Exception e) {
-            System.err.println("❌ [ERRO CRÍTICO] " + tipo.name() + ": " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Método legado (mantém compatibilidade com código existente)
-     */
-    public void notificar(
-            String tipoEvento,
-            String status,
-            String idReferencia,
-            String mensagemToast,
-            String assuntoEmail,
-            String mensagemEmail
-    ) {
-        try {
-            rabbitProducer.sendEvent(tipoEvento, status, idReferencia, mensagemToast, null);
-
-            List<String> emailsDestino = usuarioEmailRepository.findAllEmails();
-
-            for (String email : emailsDestino) {
-                try {
-                    emailService.enviarEmail(email, assuntoEmail, mensagemEmail);
-                } catch (Exception e) {
-                    System.err.println("   ✗ Erro ao enviar para " + email);
-                }
-            }
-
-        } catch (Exception e) {
-            System.err.println("❌ Erro ao notificar: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Notificação simplificada sem emails (apenas WebSocket)
-     */
-    public void notificarSemEmail(NotificationType tipo, String idReferencia) {
-        try {
+            // 1. Notificação em tempo real para todos online → super rápido
             rabbitProducer.sendEvent(
                     tipo.getEntity(),
                     tipo.getEventType(),
@@ -99,9 +27,46 @@ public class NotificationService {
                     tipo.getMensagemToast(),
                     null
             );
-            System.out.println("✅ [NOTIFICAÇÃO WS] " + tipo.name() + " #" + idReferencia);
+
+            System.out.println("[NOTIFICAÇÃO] " + tipo.name() + " #" + idReferencia);
+
+            // 2. Agendamento do envio de e-mail em background
+            String payloadEmail = tipo.getAssuntoEmail() + "|||" +
+                    tipo.getMensagemEmailCompleta(idReferencia, detalhes);
+
+            rabbitProducer.sendEvent(
+                    tipo.getEntity(),
+                    tipo.getEventType() + "_EMAIL",  // sufixo indica que é para envio de e-mail
+                    idReferencia,
+                    payloadEmail,
+                    null
+            );
+
         } catch (Exception e) {
-            System.err.println("❌ Erro: " + e.getMessage());
+            System.err.println("[ERRO CRÍTICO] Falha ao notificar " + tipo.name() + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Apenas WebSocket (ex: ações que não precisam de e-mail)
+     */
+    public void notificarSemEmail(NotificationType tipo, String idReferencia) {
+        rabbitProducer.sendEvent(
+                tipo.getEntity(),
+                tipo.getEventType(),
+                idReferencia,
+                tipo.getMensagemToast(),
+                null
+        );
+        System.out.println("[NOTIFICAÇÃO WS] " + tipo.name() + " #" + idReferencia);
+    }
+
+    // Método legado (opcional: pode remover depois que todo código antigo for atualizado)
+    public void notificar(String tipoEvento, String status, String idReferencia, String mensagemToast, String assuntoEmail, String mensagemEmail) {
+        rabbitProducer.sendEvent(tipoEvento, status, idReferencia, mensagemToast, null);
+        if (assuntoEmail != null && mensagemEmail != null) {
+            rabbitProducer.sendEvent(tipoEvento, status + "_EMAIL", idReferencia, assuntoEmail + "|||" + mensagemEmail, null);
         }
     }
 
