@@ -24,7 +24,14 @@ public class AutenticacaoProvider implements AuthenticationProvider {
         final String username = authentication.getName();
         final String password = authentication.getCredentials().toString();
 
-        UserDetails userDetails = this.usuarioAutorizacaoService.loadUserByUsername(username);
+System.out.println("\n=== DEBUG AUTH PROVIDER ===");
+        System.out.println("1. Username recebido do Front: " + username);
+        System.out.println("2. Senha recebida do Front: " + password);        
+
+UserDetails userDetails = this.usuarioAutorizacaoService.loadUserByUsername(username);
+
+System.out.println("3. Usuário encontrado no Banco (Email): " + userDetails.getUsername());
+        System.out.println("4. Hash da senha no Banco: " + userDetails.getPassword());
 
         if(this.passwordEncoder.matches(password,userDetails.getPassword())) {
             return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

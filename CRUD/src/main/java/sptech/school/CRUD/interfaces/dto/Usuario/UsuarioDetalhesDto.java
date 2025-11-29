@@ -23,9 +23,10 @@ public class UsuarioDetalhesDto implements UserDetails {
     @Override
     public String getPassword(){return password;}
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities(){return null;}
-
+@Override
+public Collection<? extends GrantedAuthority> getAuthorities(){
+    return java.util.Collections.emptyList(); // <--- MUITO IMPORTANTE
+}
     @Override
     public boolean isAccountNonExpired(){return true;}
 

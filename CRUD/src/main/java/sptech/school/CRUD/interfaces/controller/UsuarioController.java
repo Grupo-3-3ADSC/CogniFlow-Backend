@@ -75,6 +75,15 @@ public class UsuarioController {
         this.notificationService = notificationService;
         this.cadastroGestorLogService = cadastroGestorLogService;
     }
+@PostMapping("/login")
+
+    public ResponseEntity<UsuarioTokenDto> login(@RequestBody @Valid UsuarioLoginDto usuarioLoginDto){
+
+        final UsuarioModel usuario = UsuarioMapper.of(usuarioLoginDto);
+        UsuarioTokenDto usuarioTokenDto = this.usuarioService.autenticar(usuario);
+
+        return ResponseEntity.status(200).body(usuarioTokenDto);
+    }
 
     @GetMapping("/listarAtivos")
     @SecurityRequirement(name = "Bearer")
@@ -156,15 +165,6 @@ public class UsuarioController {
         return ResponseEntity.status(201).build();
     }
 
-    @PostMapping("/login")
-
-    public ResponseEntity<UsuarioTokenDto> login(@RequestBody @Valid UsuarioLoginDto usuarioLoginDto){
-
-        final UsuarioModel usuario = UsuarioMapper.of(usuarioLoginDto);
-        UsuarioTokenDto usuarioTokenDto = this.usuarioService.autenticar(usuario);
-
-        return ResponseEntity.status(200).body(usuarioTokenDto);
-    }
 
     @PutMapping("/{id}")
     @SecurityRequirement(name = "Bearer")
