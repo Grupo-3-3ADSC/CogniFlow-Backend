@@ -63,14 +63,14 @@ public class UsuarioService {
 
     public UsuarioTokenDto autenticar(UsuarioModel usuario){
 
-        String key = "tentativas" + usuario.getEmail();
+        //String key = "tentativas" + usuario.getEmail();
 
-        String tentativas = redis.opsForValue().get(key);
-        int qtdTentativas = tentativas != null ? Integer.parseInt(tentativas) : 0;
+        //String tentativas = redis.opsForValue().get(key);
+        //int qtdTentativas = tentativas != null ? Integer.parseInt(tentativas) : 0;
 
-        if(qtdTentativas >= 7){
-            throw new RequisicaoInvalidaException("Número maximo de tentativas de login excedido, por favor tente novamente mais tarde.");
-        }
+//        if(qtdTentativas >= 7){
+//            throw new RequisicaoInvalidaException("Número maximo de tentativas de login excedido, por favor tente novamente mais tarde.");
+//        }
 
         UsuarioModel usuarioAutenticado =
                 usuarioRepository.findByEmail(usuario.getEmail())
@@ -79,17 +79,17 @@ public class UsuarioService {
                         );
 
 
-        if(!passwordEncoder.matches(usuario.getPassword(), usuarioAutenticado.getPassword())){
-            redis.opsForValue().set(
-                    key,
-                    String.valueOf(qtdTentativas + 1),
-                    60, // Expira em 1 minuto
-                    TimeUnit.SECONDS
-            );
-            throw new RequisicaoInvalidaException("Senha incorreta, por favor tente novamente.");
-        }
-
-        redis.delete(key);
+//        if(!passwordEncoder.matches(usuario.getPassword(), usuarioAutenticado.getPassword())){
+//            redis.opsForValue().set(
+//                    key,
+//                    String.valueOf(qtdTentativas + 1),
+//                    60, // Expira em 1 minuto
+//                    TimeUnit.SECONDS
+//            );
+//            throw new RequisicaoInvalidaException("Senha incorreta, por favor tente novamente.");
+//        }
+//
+//        redis.delete(key);
 
         final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(
                 usuario.getEmail(), usuario.getPassword()
