@@ -63,27 +63,34 @@ public class UsuarioService {
 
     public UsuarioTokenDto autenticar(UsuarioModel usuario){
 
-        UsuarioModel usuarioAutenticado =
-                usuarioRepository.findByEmail(usuario.getEmail())
-                        .orElseThrow(
-                                () -> new ResponseStatusException(404, "Email do usuário não cadastrado", null)
-                        );
+        // 1. Busca usuário (para garantir que existe e checar se está ativo depois)
+        UsuarioModel usuarioAutenticado = usuarioRepository.findByEmail(usuario.getEmail())
+                .orElseThrow(
+                        () -> new ResponseStatusException(404, "Email do usuário não cadastrado", null)
+                );
 
-
+        // 2. Monta o token de credenciais
         final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(
                 usuario.getEmail(), usuario.getPassword()
         );
 
-        final Authentication authentication = this.authenticationManager.authenticate(credentials);
+        Authentication authentication;
 
+        // 3. TENTA autenticar. Se a senha não bater, o Spring lança BadCredentialsException
+        try {
+            authentication = this.authenticationManager.authenticate(credentials);
+        } catch (org.springframework.security.authentication.BadCredentialsException e) {
+            // AQUI: Transformamos o erro técnico do Spring em uma mensagem amigável para o front (Erro 400)
+            throw new RequisicaoInvalidaException("Senha incorreta, verifique suas credenciais.");
+        }
 
-                if(!usuarioAutenticado.getAtivo()){
-                    throw new UsernameNotFoundException("Usuário inativo, por favor contatar " +
-                            "um gestor para liberar acesso.");
-                }
+        // 4. Verificação extra de inativo
+        if(!usuarioAutenticado.getAtivo()){
+            throw new UsernameNotFoundException("Usuário inativo, por favor contatar um gestor.");
+        }
 
+        // 5. Autentica no contexto e gera token
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         final String token = gerenciadorTokenJwt.generateToken(authentication);
 
         return UsuarioMapper.of(usuarioAutenticado, token);
