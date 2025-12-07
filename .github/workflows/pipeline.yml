@@ -4,7 +4,7 @@ name: CI-BackEnd
 on:
   push:
     branches:
-      - merge-sprint2
+      - main
   pull_request:
     branches:
       - main
@@ -97,31 +97,27 @@ jobs:
               -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
               -Dsonar.java.binaries=target/classes
 
-
   deploy:
-    name: Deploy para AWS (preparado)
+    name: Deploy para AWS
     runs-on: ubuntu-latest
-    needs: build
-    if: false # não roda até você liberar
+    needs: [build, sonar]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - name: Checkout do código
         uses: actions/checkout@v3
 
-      - name: Download Build Artifacts
-        uses: actions/download-artifact@v4
+      - name: Configurar SSH e fazer deploy no servidor
+        uses: appleboy/ssh-action@v0.1.5
         with:
-          name: crud-target
-          path: CRUD/target
-
-      - name: Configurar AWS CLI
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Deploy jar no EC2 (exemplo)
-        run: |
-          echo "Preparado para copiar o jar para o EC2 quando acesso estiver liberado"
-          # scp target/*.jar usuario@ec2-ip:/home/usuario/app/
-          # ssh usuario@ec2-ip 'systemctl restart app'
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ~/CogniFlow-Backend/CRUD
+            git pull origin main
+            cd ~/microservico-verificacao-de-senha
+            git pull origin main
+            cd ~/CogniFlow-Backend/CRUD
+            docker-compose down
+            docker-compose build
+            docker-compose up -d
