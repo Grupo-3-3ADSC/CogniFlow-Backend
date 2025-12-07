@@ -23,6 +23,9 @@ public class GerenciadorTokenJwt {
     @Value("${jwt.secret}")
     private String secret;
 
+    @Value("${jwt.reset.secret:${jwt.secret}}")
+    private String resetSecret;
+
     @Value("${jwt.validity}")
     private long jwtTokenValidity;
 
@@ -78,7 +81,7 @@ public class GerenciadorTokenJwt {
 
     public boolean isResetTokenValid(String jwt, String email){
         Jws<Claims> parsed = Jwts.parserBuilder()
-                .setSigningKey(parseSecret())
+                .setSigningKey(parseResetSecret())
                 .build()
                 .parseClaimsJws(jwt);
 
@@ -111,7 +114,7 @@ public class GerenciadorTokenJwt {
 
     public String extractJti(String jwt) {
         return Jwts.parserBuilder()
-                .setSigningKey(parseSecret())
+                .setSigningKey(parseResetSecret())
                 .build()
                 .parseClaimsJws(jwt)
                 .getBody()
@@ -132,4 +135,9 @@ public class GerenciadorTokenJwt {
     }
 
     private SecretKey parseSecret() {return Keys.hmacShaKeyFor(this.secret.getBytes(StandardCharsets.UTF_8));}
+
+    private SecretKey parseResetSecret() {
+        return Keys.hmacShaKeyFor(this.resetSecret.getBytes(StandardCharsets.UTF_8));
+    }
+
 }
