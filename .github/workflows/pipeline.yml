@@ -135,10 +135,10 @@ jobs:
             echo "🔄 Atualizando repositórios..."
             
             cd ~/CogniFlow-Backend/CRUD
-            git pull origin develop
+            sudo git pull origin develop
             
             cd ~/microservico-verificacao-de-senha
-            git pull origin develop
+            sudo git pull origin develop
             
             echo "🐳 Reconstruindo containers..."
             cd ~/CogniFlow-Backend/CRUD
