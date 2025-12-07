@@ -63,34 +63,48 @@ public class UsuarioService {
 
     public UsuarioTokenDto autenticar(UsuarioModel usuario){
 
-        // 1. Busca usuário (para garantir que existe e checar se está ativo depois)
-        UsuarioModel usuarioAutenticado = usuarioRepository.findByEmail(usuario.getEmail())
-                .orElseThrow(
-                        () -> new ResponseStatusException(404, "Email do usuário não cadastrado", null)
-                );
+        String key = "tentativas" + usuario.getEmail();
 
-        // 2. Monta o token de credenciais
+        String tentativas = redis.opsForValue().get(key);
+        int qtdTentativas = tentativas != null ? Integer.parseInt(tentativas) : 0;
+
+        if(qtdTentativas >= 7){
+            throw new RequisicaoInvalidaException("Número maximo de tentativas de login excedido, por favor tente novamente mais tarde.");
+        }
+
+        UsuarioModel usuarioAutenticado =
+                usuarioRepository.findByEmail(usuario.getEmail())
+                        .orElseThrow(
+                                () -> new ResponseStatusException(404, "Email do usuário não cadastrado", null)
+                        );
+
+
+        if(!passwordEncoder.matches(usuario.getPassword(), usuarioAutenticado.getPassword())){
+            redis.opsForValue().set(
+                    key,
+                    String.valueOf(qtdTentativas + 1),
+                    60, // Expira em 1 minuto
+                    TimeUnit.SECONDS
+            );
+            throw new RequisicaoInvalidaException("Senha incorreta, por favor tente novamente.");
+        }
+
+        redis.delete(key);
+
         final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(
                 usuario.getEmail(), usuario.getPassword()
         );
 
-        Authentication authentication;
+        final Authentication authentication = this.authenticationManager.authenticate(credentials);
 
-        // 3. TENTA autenticar. Se a senha não bater, o Spring lança BadCredentialsException
-        try {
-            authentication = this.authenticationManager.authenticate(credentials);
-        } catch (org.springframework.security.authentication.BadCredentialsException e) {
-            // AQUI: Transformamos o erro técnico do Spring em uma mensagem amigável para o front (Erro 400)
-            throw new RequisicaoInvalidaException("Senha incorreta, verifique suas credenciais.");
-        }
 
-        // 4. Verificação extra de inativo
-        if(!usuarioAutenticado.getAtivo()){
-            throw new UsernameNotFoundException("Usuário inativo, por favor contatar um gestor.");
-        }
+                if(!usuarioAutenticado.getAtivo()){
+                    throw new UsernameNotFoundException("Usuário inativo, por favor contatar " +
+                            "um gestor para liberar acesso.");
+                }
 
-        // 5. Autentica no contexto e gera token
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
         final String token = gerenciadorTokenJwt.generateToken(authentication);
 
         return UsuarioMapper.of(usuarioAutenticado, token);
