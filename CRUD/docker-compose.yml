@@ -30,6 +30,32 @@ services:
     networks:
       - cogniflow-net
 
+  microservico:
+    build:
+      context: ../../microservico-verificacao-de-senha
+      dockerfile: Dockerfile
+    container_name: microservico-senha
+    ports:
+      - "3001:3001"
+    depends_on:
+      - redis
+      - backend
+    environment:
+      VITE_API_URL: http://backend:8080  # <-- Usar nome do serviço Docker
+      PORT: 3001
+      GMAIL_PASS: kvhngsoxubtxwreb
+      RESET_SECRET: RXhpc3RlIHVtYSB0ZW9yaWEgcXVlIGRpeiBxdWUsIHNlIHVtIGRpYSBhbGd16W0gZGVzY29icmlyIGV4YXRhbWVudGUgcGFyYSBxdWUgc2VydmUgbyBVbml2ZXJzbyBlIHBvciBxdWUgZWxlIGVzdGEgYXF1aSwgZWxlIGRlc2FwYXJlY2Vy4SBpbnN0YW50YW5lYW1lbnRlIGUgc2Vy4SBzdWJzdGl0de1kbyBwb3IgYWxnbyBhaW5kYSBtYWlzIGVzdHJhbmhvIGUgaW5leHBsaWPhdmVsLiBFeGlzdGUgdW1hIHNlZ3VuZGEgdGVvcmlhIHF1ZSBkaXogcXVlIGlzc28gauEgYWNvbnRlY2V1Li4u
+      REDIS_URL: redis://redis:6379  # <-- Usar nome do serviço Redis
+    networks:
+      - cogniflow-net
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+
   mysql:
     image: mysql:8
     container_name: mysql
