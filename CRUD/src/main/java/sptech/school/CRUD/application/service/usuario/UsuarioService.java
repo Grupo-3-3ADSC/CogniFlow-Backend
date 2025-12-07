@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -64,36 +63,19 @@ public class UsuarioService {
 
     public UsuarioTokenDto autenticar(UsuarioModel usuario){
 
-        String key = "tentativas" + usuario.getEmail();
+        UsuarioModel usuarioAutenticado =
+                usuarioRepository.findByEmail(usuario.getEmail())
+                        .orElseThrow(
+                                () -> new ResponseStatusException(404, "Email do usuário não cadastrado", null)
+                        );
 
-        String tentativas = redis.opsForValue().get(key);
-        int qtdTentativas = tentativas != null ? Integer.parseInt(tentativas) : 0;
 
-        if(qtdTentativas >= 7){
-            throw new RequisicaoInvalidaException("Número maximo de tentativas de login excedido, por favor tente novamente mais tarde.");
-        }
-
-        UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(
+        final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(
                 usuario.getEmail(), usuario.getPassword()
         );
 
-        // O try/catch aqui captura se a senha estiver errada vindo do Provider
-        Authentication authentication;
-        try {
-            authentication = this.authenticationManager.authenticate(credentials);
-        } catch (BadCredentialsException e) {
-            // A SENHA ESTÁ ERRADA, INCREMENTA O REDIS AQUI
-            redis.opsForValue().set(
-                    key,
-                    String.valueOf(qtdTentativas + 1),
-                    60, TimeUnit.SECONDS
-            );
-            throw new RequisicaoInvalidaException("Senha incorreta, por favor tente novamente.");
-        }
+        final Authentication authentication = this.authenticationManager.authenticate(credentials);
 
-        redis.delete(key);
-
-        UsuarioModel usuarioAutenticado = usuarioRepository.findByEmail(usuario.getEmail()).get();
 
                 if(!usuarioAutenticado.getAtivo()){
                     throw new UsernameNotFoundException("Usuário inativo, por favor contatar " +
