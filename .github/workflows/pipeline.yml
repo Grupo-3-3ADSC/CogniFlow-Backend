@@ -4,10 +4,10 @@ name: CI-BackEnd
 on:
   push:
     branches:
-      - main
+      - develop
   pull_request:
     branches:
-      - main
+      - develop
 
 # 🔹 Jobs
 jobs:
@@ -101,7 +101,8 @@ jobs:
     name: Deploy para AWS
     runs-on: ubuntu-latest
     needs: [build, sonar]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # Agora só faz deploy quando houver push na branch develop
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
     steps:
       - name: Checkout do código
         uses: actions/checkout@v3
@@ -109,14 +110,14 @@ jobs:
       - name: Configurar SSH e fazer deploy no servidor
         uses: appleboy/ssh-action@v0.1.5
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
+          host: ${{ secrets.EC2_HOST }}   # Note: alterado para EC2_HOST
+          username: ubuntu   # Você pode colocar isso em um secret também, mas como é padrão para EC2, deixei fixo
+          key: ${{ secrets.EC2_SSH_KEY }}   # Note: alterado para EC2_SSH_KEY
           script: |
             cd ~/CogniFlow-Backend/CRUD
-            git pull origin main
+            git pull origin develop
             cd ~/microservico-verificacao-de-senha
-            git pull origin main
+            git pull origin develop
             cd ~/CogniFlow-Backend/CRUD
             docker-compose down
             docker-compose build
