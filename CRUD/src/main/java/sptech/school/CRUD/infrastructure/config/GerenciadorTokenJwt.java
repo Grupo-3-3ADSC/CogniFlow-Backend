@@ -2,9 +2,7 @@ package sptech.school.CRUD.infrastructure.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -14,7 +12,6 @@ import sptech.school.CRUD.interfaces.dto.Usuario.UsuarioDetalhesDto;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -25,9 +22,6 @@ public class GerenciadorTokenJwt {
 
     @Value("${jwt.secret}")
     private String secret;
-
-    @Value("${jwt.reset.secret}")
-    private String resetSecret;
 
     @Value("${jwt.validity}")
     private long jwtTokenValidity;
@@ -58,22 +52,6 @@ public class GerenciadorTokenJwt {
                 .compact();
     }
 
-    public Claims validateResetToken(String token) {
-        try {
-            return Jwts.parserBuilder()
-                    .setSigningKey(getResetSigningKey())
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-        } catch (JwtException | IllegalArgumentException e) {
-            throw new RuntimeException("Token de reset inválido ou expirado", e);
-        }
-    }
-
-    private Key getResetSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(this.resetSecret);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
 
 
     public <T> T getClaimForToken(String token, Function<Claims, T> claimsResolver) {
