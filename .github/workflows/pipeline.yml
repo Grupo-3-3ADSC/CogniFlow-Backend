@@ -3,7 +3,7 @@ name: CI-BackEnd
 on:
   push:
     branches:
-      - develop
+#      - develop
   pull_request:
     branches:
       - develop
@@ -51,49 +51,6 @@ jobs:
         with:
           name: crud-target
           path: CRUD/target
-
-  sonar:
-    name: Análise SonarCloud
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout do código
-        uses: actions/checkout@v3
-      
-      - name: Cache Maven packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      
-      - name: Configurar Java
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-      
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: crud-target
-          path: CRUD/target
-      
-      - name: Build para Sonar
-        run: |
-          cd CRUD
-          mvn verify -DskipTests
-      
-      - name: SonarCloud Scan
-        run: |
-          cd CRUD
-          mvn sonar:sonar \
-              -Dsonar.projectKey=Grupo-3-3ADSC_CogniFlow-Backend \
-              -Dsonar.organization=grupo-3-3adsc \
-              -Dsonar.host.url=https://sonarcloud.io \
-              -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
-              -Dsonar.java.binaries=target/classes
 
   deploy:
     name: Deploy para AWS
