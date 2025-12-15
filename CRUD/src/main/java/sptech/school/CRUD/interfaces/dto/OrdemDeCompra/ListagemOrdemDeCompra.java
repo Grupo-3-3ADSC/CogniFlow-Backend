@@ -16,6 +16,7 @@ public class ListagemOrdemDeCompra {
     private String condPagamento;
     private Double valorKg;
     private String rastreabilidade;
+    private String tipoCompra;
     private Double valorPeca;
     private String descricaoMaterial;
     private Double valorUnitario;

@@ -70,6 +70,17 @@ public class CadastrarMultiplasOrdensService {
             // 3️⃣ ASSOCIA a ordem ao conjunto
             ordemDeCompra.setConjuntoOrdemDeCompra(conjuntoFinal);
 
+            // Cálculo do total com base no tipo de compra
+            Double total = 0.0;
+            if ("UNIDADE".equalsIgnoreCase(dto.getTipoCompra())) {
+                total = dto.getQuantidade() * dto.getValorUnitario();
+                ordemDeCompra.setValorKg(null);
+            } else if ("QUILO".equalsIgnoreCase(dto.getTipoCompra())) {
+                total = dto.getQuantidade() * dto.getValorKg();
+                ordemDeCompra.setValorUnitario(null);
+            }
+
+
             ordens.add(ordemDeCompra);
         }
 
@@ -84,14 +95,17 @@ public class CadastrarMultiplasOrdensService {
             EstoqueModel estoque = estoqueRepository.findById(dto.getEstoqueId())
                     .orElseThrow(() -> new RecursoNaoEncontradoException("Estoque não encontrado"));
 
+            // Atualiza a quantidade no estoque (sem distinção de tipo)
             Integer novaQuantidade = (dto.getQuantidade() != null ? dto.getQuantidade() : 0)
                     + ordemSalva.getQuantidade();
 
+            // Verifica se a quantidade ultrapassa o limite máximo de estoque
             if (estoque.getQuantidadeMaxima() != null && novaQuantidade > estoque.getQuantidadeMaxima()) {
                 throw new RequisicaoInvalidaException("A quantidade comprada ultrapassa o limite máximo de estoque permitido.");
             }
 
-            dto.setQuantidade(novaQuantidade);
+            // Atualiza a quantidade no estoque e salva
+            estoque.setQuantidadeAtual(novaQuantidade);
             estoque.setUltimaMovimentacao(LocalDateTime.now());
             estoqueRepository.save(estoque);
         }

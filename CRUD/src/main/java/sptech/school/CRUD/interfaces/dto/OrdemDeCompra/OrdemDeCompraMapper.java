@@ -16,6 +16,7 @@ public class OrdemDeCompraMapper {
 //                .ie(entity.getIe())
                 .condPagamento(entity.getCondPagamento())
                 .valorKg(entity.getValorKg())
+                .tipoCompra(entity.getTipoCompra())
                 .rastreabilidade(entity.getRastreabilidade())
                 .valorPeca(entity.getValorPeca())
                 .descricaoMaterial(entity.getDescricaoMaterial())
@@ -41,12 +42,21 @@ public class OrdemDeCompraMapper {
         ordem.setPrazoEntrega(dto.getPrazoEntrega());
 //        ordem.setIe(dto.getIe());
         ordem.setCondPagamento(dto.getCondPagamento());
-        ordem.setValorKg(dto.getValorKg());
         ordem.setRastreabilidade(dto.getRastreabilidade());
-        ordem.setValorPeca(dto.getValorPeca());
+        ordem.setTipoCompra(dto.getTipoCompra());
         ordem.setDescricaoMaterial(dto.getDescricaoMaterial());
-        ordem.setValorUnitario(dto.getValorUnitario());
+        ordem.setTipoCompra(dto.getTipoCompra());
+
+        if (dto.getTipoCompra().equalsIgnoreCase("QUILO")) {
+            ordem.setValorKg(dto.getValorKg());
+            ordem.setValorUnitario(null);
+        } else { // UNIDADE
+            ordem.setValorUnitario(dto.getValorUnitario());
+            ordem.setValorKg(null);
+        }
+
         ordem.setQuantidade(dto.getQuantidade());
+
         ordem.setDataDeEmissao(LocalDateTime.now());
         ordem.setFornecedorId(dto.getFornecedorId());
         ordem.setEstoqueId(dto.getEstoqueId());

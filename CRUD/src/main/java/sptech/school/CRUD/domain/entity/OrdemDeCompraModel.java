@@ -26,6 +26,7 @@ public class OrdemDeCompraModel {
     private String descricaoMaterial;
     private Double valorUnitario;
     private Integer quantidade;
+    private String tipoCompra;
     private Double ipi;
     private Integer pendentes;
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
