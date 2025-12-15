@@ -21,7 +21,7 @@ public class PaginacaoOrdemDeCompraService {
     private final OrdemDeCompraRepository ordemDeCompraRepository;
 
     public PaginacaoHistoricoOrdemDeCompraDTO ordemDeCompraPaginada(Integer pagina, Integer tamanho){
-        Pageable pageable = PageRequest.of(pagina, tamanho);
+        Pageable pageable = PageRequest.of(pagina - 1, tamanho);
 
         Page<OrdemDeCompraModel> ordens = ordemDeCompraRepository.findOrdensDeCompraPaginadas(pageable);
 

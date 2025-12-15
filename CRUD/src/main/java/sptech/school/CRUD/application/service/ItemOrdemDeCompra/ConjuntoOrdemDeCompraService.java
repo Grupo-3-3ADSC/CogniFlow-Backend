@@ -49,11 +49,9 @@ public class ConjuntoOrdemDeCompraService {
             throw new RequisicaoInvalidaException("Nenhuma ordem de compra foi enviada.");
         }
 
-        // 1️⃣ Cria o CONJUNTO primeiro (vazio)
         ConjuntoOrdemDeCompraModel conjunto = new ConjuntoOrdemDeCompraModel();
         conjunto = conjuntoRepository.save(conjunto);
 
-        // 2️⃣ Processa cada DTO e cria as ordens
         ConjuntoOrdemDeCompraModel conjuntoFinal = conjunto; // Para usar no loop
 
         for (OrdemDeCompraCadastroDto dto : dtos) {
@@ -80,17 +78,16 @@ public class ConjuntoOrdemDeCompraService {
 
             ordemDeCompra.setPendenciaAlterada(false);
 
-            // 3️⃣ ASSOCIA a ordem ao conjunto (bidirecional)
             ordemDeCompra.setConjuntoOrdemDeCompra(conjuntoFinal);
 
-            // ⚠️ CRÍTICO: Adiciona na lista do conjunto SEM substituir a lista
+
             conjuntoFinal.getOrdensDeCompra().add(ordemDeCompra);
         }
 
-        // 4️⃣ Salva o conjunto (que salvará as ordens em cascata)
+
         conjunto = conjuntoRepository.save(conjunto);
 
-        // 5️⃣ Atualiza os estoques
+
         for (int i = 0; i < conjunto.getOrdensDeCompra().size(); i++) {
             OrdemDeCompraModel ordemSalva = conjunto.getOrdensDeCompra().get(i);
             OrdemDeCompraCadastroDto dto = dtos.get(i);
