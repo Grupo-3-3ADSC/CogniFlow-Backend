@@ -17,7 +17,8 @@ public class TransferenciaModel{
     private LocalDateTime ultimaMovimentacao;
     private Integer quantidadeTransferida;
     private String setor;
-      private String tipoMaterial;
+    private String tipoMaterial;
+    private Boolean confirmada = false;
 
     @ManyToOne
     @JoinColumn(name = "estoque_id")

@@ -17,6 +17,7 @@ import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.OrdemDeCompraCadastroDto;
 import sptech.school.CRUD.interfaces.dto.OrdemDeCompra.OrdemDeCompraMapper;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -86,27 +87,17 @@ public class CadastrarOrdemDeCompraService {
         // 6) Salva a ordem
         OrdemDeCompraModel ordemSalva = ordemDeCompraRepository.save(ordemDeCompra);
 
-// 7) Atualiza estoque SOMENTE se tipo = UNIDADE
+        // 7) Atualiza PENDENTE no estoque (NÃO a quantidade atual)
         if (dto.getTipoCompra().equalsIgnoreCase("UNIDADE")) {
-            // estoque.quantidadeAtual está em unidades (Integer ou similar)
-            // Somamos as unidades compradas (arredondando a quantidade para inteiro)
-            int unidadesCompradas = (int) Math.round(dto.getQuantidade()); // ex: 2.0 -> 2
-            Integer quantidadeAtualEstoque = estoque.getQuantidadeAtual() != null ? estoque.getQuantidadeAtual() : 0;
-            long novaQuantidade = (long) quantidadeAtualEstoque + unidadesCompradas;
-
-            if (estoque.getQuantidadeMaxima() != null && novaQuantidade > estoque.getQuantidadeMaxima()) {
-                throw new RequisicaoInvalidaException("A quantidade comprada ultrapassa o limite máximo de estoque permitido.");
-            }
-
-            // Atualiza no modelo e salva
-            estoque.setQuantidadeAtual((int) novaQuantidade);
+            int unidadesCompradas = (int) Math.round(dto.getQuantidade());
+            Integer pendenteAtual = estoque.getPendente() != null ? estoque.getPendente() : 0;
+            estoque.setPendente(pendenteAtual + unidadesCompradas);
         }
 
-        // Atualiza última movimentação sempre (bom registro)
-        estoque.setUltimaMovimentacao(LocalDateTime.now());
+        // Atualiza última movimentação
+        estoque.setUltimaMovimentacao(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
         estoqueRepository.save(estoque);
 
         return ordemSalva;
     }
 }
-

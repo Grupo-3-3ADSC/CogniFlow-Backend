@@ -35,5 +35,5 @@ public class TransferenciaDto {
     @Min(value = 1, message = "A quantidade deve ser maior que zero")
     private Integer quantidadeTransferida;
 
-
+    private Boolean confirmada;
 }

@@ -31,7 +31,7 @@ public class TransferenciaController {
     private final PaginacaoTransferenciaService paginacaoTransferenciaService;
     private final NotificationService notificationService;
 
-    // Criar/realizar transferência
+    // Criar/realizar transferência (fica pendente)
     @PostMapping
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<TransferenciaDto> realizarTransferencia(@RequestBody @Valid TransferenciaDto dto) {
@@ -47,6 +47,26 @@ public class TransferenciaController {
                         resposta.getTipoMaterial()
                 )
 
+        );
+
+        return ResponseEntity.ok(resposta);
+    }
+
+    // Confirmar uma transferência pendente
+    @PatchMapping("/{id}/confirmar")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<TransferenciaDto> confirmarTransferencia(@PathVariable Integer id) {
+        TransferenciaDto resposta = realizarTransferenciaService.confirmarTransferencia(id);
+
+        notificationService.notificar(
+                NotificationType.TRANSFERENCIA_CRIADA,
+                String.valueOf(resposta.getId()),
+                String.format(
+                        "Transferência CONFIRMADA\nSetor: %s\nQuantidade: %s\nTipo de Material: %s",
+                        resposta.getSetor(),
+                        resposta.getQuantidadeTransferida(),
+                        resposta.getTipoMaterial()
+                )
         );
 
         return ResponseEntity.ok(resposta);

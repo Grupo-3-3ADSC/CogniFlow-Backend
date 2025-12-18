@@ -21,7 +21,12 @@ public class EstoqueModel {
         private Integer quantidadeMaxima;
         private Double ipi;
         private LocalDateTime ultimaMovimentacao;
+        private Integer pendente = 0;
 
-
+        // Setores de transferência
+        private Integer g1 = 0;
+        private Integer g2 = 0;
+        private Integer g3 = 0;
+        private Integer g4 = 0;
 
 }

@@ -4,6 +4,7 @@ import sptech.school.CRUD.domain.entity.EstoqueModel;
 import sptech.school.CRUD.domain.entity.TransferenciaModel;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 public class TransferenciaMapper {
 
@@ -17,7 +18,8 @@ public class TransferenciaMapper {
         entity.setEstoque(estoque); // Usar o estoque fornecido
         entity.setQuantidadeTransferida(dto.getQuantidadeTransferida());
         entity.setSetor(dto.getSetor());
-        entity.setUltimaMovimentacao(LocalDateTime.now());
+        entity.setUltimaMovimentacao(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+        entity.setConfirmada(false);
 
         return entity;
     }
@@ -32,7 +34,8 @@ public class TransferenciaMapper {
         // Não define estoque - deve ser definido externamente
         entity.setQuantidadeTransferida(dto.getQuantidadeTransferida());
         entity.setSetor(dto.getSetor());
-        entity.setUltimaMovimentacao(LocalDateTime.now());
+        entity.setUltimaMovimentacao(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+        entity.setConfirmada(false);
 
         return entity;
     }
@@ -46,6 +49,7 @@ public class TransferenciaMapper {
                 .quantidadeTransferida(entity.getQuantidadeTransferida())
                 .setor(entity.getSetor())
                 .ultimaMovimentacao(entity.getUltimaMovimentacao())
+                .confirmada(entity.getConfirmada())
                 .build();
     }
 
@@ -58,6 +62,7 @@ public class TransferenciaMapper {
                 .quantidadeTransferida(entity.getQuantidadeTransferida())
                 .setor(entity.getSetor())
                 .ultimaMovimentacao(entity.getUltimaMovimentacao())
+                .confirmada(entity.getConfirmada())
                 .build();
     }
 }
