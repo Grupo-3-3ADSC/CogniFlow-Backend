@@ -1,0 +1,35 @@
+package sptech.school.CRUD.infrastructure.persistence.transferencia;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import sptech.school.CRUD.domain.entity.OrdemDeCompraModel;
+import sptech.school.CRUD.domain.entity.TransferenciaModel;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface TransferenciaRepository extends TransferenciaMaterial,TransferenciaQuery,TransferenciaSetor, TransferenciaPaginada {
+    @Override
+    Optional<TransferenciaModel> findBySetor(String setor);
+
+//    Optional<TransferenciaModel> findByTipoMaterial(String tipoMaterial);
+
+    @Query("SELECT o FROM TransferenciaModel o ORDER BY o.id DESC")
+    Page<TransferenciaModel> findTransferenciasPaginadas(Pageable pageable);
+
+    @Override
+    List<TransferenciaModel> findByTipoMaterial(String tipoMaterial);
+
+    // Buscar transferências de um material em um ano específico
+    // Buscar transferências de um material em um ano específico, mais recentes primeiro
+    @Query("SELECT t FROM TransferenciaModel t WHERE t.tipoMaterial = :tipoMaterial AND YEAR(t.ultimaMovimentacao) = :ano ORDER BY t.ultimaMovimentacao DESC")
+    List<TransferenciaModel> findByTipoMaterialAndAno(@Param("tipoMaterial") String tipoMaterial,
+                                                      @Param("ano") Integer ano);
+
+
+}

@@ -1,0 +1,85 @@
+name: CI-BackEnd
+
+# 🔹 Quando o pipeline será executado
+on:
+  push:
+    branches:
+      - main
+      - fix/ci-cd
+  pull_request:
+    branches:
+      - main
+
+# 🔹 Jobs
+jobs:
+  build:
+    name: Build e Testes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build Maven
+        run: |
+          cd CRUD
+          mvn clean install
+
+      - name: Executar Testes
+        run: |
+          cd CRUD
+          mvn test
+
+      - name: Upload Relatórios de Teste
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: CRUD/target/surefire-reports/
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: crud-target
+          path: CRUD/target
+
+
+  deploy:
+    name: Deploy para AWS (preparado)
+    runs-on: ubuntu-latest
+    needs: build
+    if: false # não roda até você liberar
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: crud-target
+          path: CRUD/target
+
+      - name: Configurar AWS CLI
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Deploy jar no EC2 (exemplo)
+        run: |
+          echo "Preparado para copiar o jar para o EC2 quando acesso estiver liberado"
+          # scp target/*.jar usuario@ec2-ip:/home/usuario/app/
+          # ssh usuario@ec2-ip 'systemctl restart app'

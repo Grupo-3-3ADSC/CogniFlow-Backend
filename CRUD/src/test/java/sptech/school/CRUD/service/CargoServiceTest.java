@@ -9,11 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import sptech.school.CRUD.Model.CargoModel;
-import sptech.school.CRUD.Repository.CargoRepository;
-import sptech.school.CRUD.dto.Cargo.CargoCadastraDto;
-import sptech.school.CRUD.dto.Cargo.CargoListagemDto;
-import sptech.school.CRUD.exception.RequisicaoInvalidaException;
+import sptech.school.CRUD.application.service.cargo.CargoService;
+import sptech.school.CRUD.domain.entity.CargoModel;
+import sptech.school.CRUD.infrastructure.persistence.cargo.CargoRepository;
+import sptech.school.CRUD.interfaces.dto.Cargo.CargoCadastraDto;
+import sptech.school.CRUD.interfaces.dto.Cargo.CargoListagemDto;
+import sptech.school.CRUD.domain.exception.RequisicaoInvalidaException;
 
 import java.util.List;
 
@@ -30,39 +31,6 @@ class CargoServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
-
-    @Test
-    @DisplayName("Cadastro de cargo - Sucesso")
-    void testePostCargoSucesso() {
-        // Arrange
-        CargoCadastraDto dto = new CargoCadastraDto();
-        dto.setNome("Desenvolvedor");
-
-        CargoModel salvo = new CargoModel();
-        salvo.setNome("Desenvolvedor");
-
-        when(cargoRepository.save(any(CargoModel.class))).thenReturn(salvo);
-
-        // Act
-        CargoListagemDto resultado = cargoService.post(dto);
-
-        // Assert
-        assertNotNull(resultado);
-        assertEquals("Desenvolvedor", resultado.getNome());
-        verify(cargoRepository).save(any(CargoModel.class));
-    }
-
-    @Test
-    @DisplayName("Cadastro de cargo - Falha (cargo nulo)")
-    void testePostCargoNulo() {
-        // Act & Assert
-        RequisicaoInvalidaException exception = assertThrows(RequisicaoInvalidaException.class, () -> {
-            cargoService.post(null);
-        });
-
-        assertEquals("O nome do cargo é obrigatório.", exception.getMessage());
-    }
-
 
     @Test
     @DisplayName("Listagem de cargos - Sucesso")

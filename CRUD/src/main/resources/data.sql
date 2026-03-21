@@ -213,3 +213,5 @@ WHERE NOT EXISTS (SELECT 1 FROM ordem_de_compra_model WHERE rastreabilidade = 'B
 INSERT INTO ordem_de_compra_model (cond_pagamento, data_de_emissao, descricao_material, estoque_id, fornecedor_id, pendencia_alterada, prazo_entrega, quantidade, rastreabilidade, usuario_id, valor_kg, valor_peca, valor_unitario)
 SELECT '45 dias', '2025-12-19 14:30:15.000000', 'Barra sextavada 15mm', 10, 1, 1, '2025-12-30', 350, 'EFG741852963', 1, 11.90, 4.75, 8.65
 WHERE NOT EXISTS (SELECT 1 FROM ordem_de_compra_model WHERE rastreabilidade = 'EFG741852963');
+
+select * from estoque_model;
