@@ -3,10 +3,10 @@ name: CI-BackEnd
 on:
   push:
     branches:
-#      - develop
+#      - main
   pull_request:
     branches:
-      - develop
+      - main
 
 jobs:
   build:
@@ -55,8 +55,8 @@ jobs:
   deploy:
     name: Deploy para AWS
     runs-on: ubuntu-latest
-    needs: [build, sonar]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - name: Checkout do código
         uses: actions/checkout@v3
@@ -92,7 +92,7 @@ jobs:
             echo "🔄 Atualizando repositórios..."
             
             cd ~/CogniFlow-Backend/CRUD
-            sudo git pull origin develop
+            sudo git pull origin main
             
             cd ~/microservico-verificacao-de-senha
             sudo git pull origin main
