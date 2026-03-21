@@ -1,3 +1,8 @@
+-- 1. CARGOS - Inserir apenas se não existir
+INSERT INTO cargo_model (created_at, nome, updated_at)
+SELECT NOW(), 'comum', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM cargo_model WHERE nome = 'comum');
+
 INSERT INTO cargo_model (created_at, nome, updated_at)
 SELECT NOW(), 'gestor', NOW()
 WHERE NOT EXISTS (SELECT 1 FROM cargo_model WHERE nome = 'gestor');
